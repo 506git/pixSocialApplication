@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">픿아오</string>
+
+    <string name="oauth_client_id">829770041202-f2rt4aefa14fd03g255ga4d3b9d3qnca.apps.googleusercontent.com</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="text_chat_list">대화목록</string>
+    <string name="hint_search_id">ID 검색</string>
+    <string name="text_chat_add">친구 검색</string>
+
+    <string name="text_all_picture">전체 보기</string>
+    <string name="text_img_detail">전체 화면</string>
+
+    <string name="default_notification_channel_id">fcm</string>
+    <string name="fcm_user_token">FCM_USER_TOKEN</string>
+</resources>
