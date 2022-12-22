@@ -99,6 +99,9 @@ class ChatListFragment : Fragment() {
 //        chatViewModel.itemSelectedPos.observe(viewLifecycleOwner){
 //        }
 
+        binding.btnPlay.setSafeOnClickListener {
+
+        }
         val filter = IntentFilter().apply {
             addAction("gallery")
         }
