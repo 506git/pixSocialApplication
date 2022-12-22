@@ -4,45 +4,29 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.res.AssetFileDescriptor
-import android.content.res.AssetManager
+import android.os.Build
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
-import android.text.TextUtils
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.example.domain.model.RoomChat
-import com.example.pixsocialapplication.R
 import com.example.pixsocialapplication.databinding.FragmentChatListBinding
+import com.example.pixsocialapplication.service.PixPushService
 import com.example.pixsocialapplication.ui.MainViewModel
 import com.example.pixsocialapplication.ui.adapter.ChatRoomListViewAdapter
-import com.example.pixsocialapplication.ui.adapter.UserRoomListViewAdapter
 import com.example.pixsocialapplication.ui.common.LoadingDialog
 import com.example.pixsocialapplication.ui.gallery.GalleryActivity
 import com.example.pixsocialapplication.utils.DLog
 import com.example.ssolrangapplication.common.setSafeOnClickListener
-import com.google.android.gms.auth.api.credentials.Credentials
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import org.json.JSONObject
-import java.io.FileInputStream
-import java.io.IOException
-import java.net.HttpURLConnection
-import java.net.URL
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -100,8 +84,13 @@ class ChatListFragment : Fragment() {
 //        }
 
         binding.btnPlay.setSafeOnClickListener {
-            DLog().d("test")
-            DLog().d("test")
+            val intent = Intent(context, PixPushService::class.java)
+            if(Build.VERSION.SDK_INT >= 26){
+                context?.startForegroundService(intent)
+            } else {
+                context?.startService(intent)
+            }
+            activity?.finish()
         }
         val filter = IntentFilter().apply {
             addAction("gallery")
