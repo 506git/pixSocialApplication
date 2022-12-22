@@ -101,6 +101,7 @@ class ChatListFragment : Fragment() {
 
         binding.btnPlay.setSafeOnClickListener {
             DLog().d("test")
+            DLog().d("test")
         }
         val filter = IntentFilter().apply {
             addAction("gallery")
