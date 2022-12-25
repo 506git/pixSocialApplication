@@ -21,21 +21,31 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
+import com.google.firebase.messaging.ktx.messaging
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var binding : ActivityMainBinding
+    private lateinit var binding: ActivityMainBinding
     private lateinit var appBarConfiguration: AppBarConfiguration
     lateinit var behavior: BottomSheetBehavior<LinearLayout>
-    private val mainViewModel : MainViewModel by viewModels()
+    private val mainViewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        Firebase.messaging.subscribeToTopic("pix_all")
+            .addOnCompleteListener { task ->
+                var msg = "Subscribed"
+                if (!task.isSuccessful) {
+                    msg = "Subscribe failed"
+                }
+            }
 
         binding.fabAddChat.setSafeOnClickListener {
 //            behavior.state =
@@ -47,21 +57,21 @@ class MainActivity : AppCompatActivity() {
 
         behavior = BottomSheetBehavior.from(binding.bottomView.bottomSheet)
             .apply {
-            this.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback(){
-                override fun onStateChanged(bottomSheet: View, newState: Int) {
-                    if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+                this.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+                    override fun onStateChanged(bottomSheet: View, newState: Int) {
+                        if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+
+                        }
+                    }
+
+                    override fun onSlide(bottomSheet: View, slideOffset: Float) {
 
                     }
-                }
-
-                override fun onSlide(bottomSheet: View, slideOffset: Float) {
-
-                }
-            })
-        }
+                })
+            }
 
         FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
-            if (!task.isSuccessful){
+            if (!task.isSuccessful) {
                 DLog().e(task.exception.toString())
                 return@addOnCompleteListener
             }
@@ -70,19 +80,19 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-        mainViewModel.fabVisible.observe(this){
+        mainViewModel.fabVisible.observe(this) {
             binding.fabAddChat.visibility = it
         }
 
-        mainViewModel.appbarTitle.observe(this){
+        mainViewModel.appbarTitle.observe(this) {
             binding.appbarTxt.text = it.toString()
         }
 
-        mainViewModel.appbarDesc.observe(this){
+        mainViewModel.appbarDesc.observe(this) {
             binding.appbarDesc.text = it.toString()
         }
 
-        mainViewModel.bottomVisible.observe(this){
+        mainViewModel.bottomVisible.observe(this) {
             behavior.state = it
         }
 

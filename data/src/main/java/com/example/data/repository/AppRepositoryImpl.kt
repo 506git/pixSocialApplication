@@ -13,6 +13,7 @@ import androidx.annotation.RequiresApi
 import com.example.data.mapper.RoomChatMapper
 import com.example.data.model.*
 import com.example.data.repository.dataSource.TestRemoteDataSource
+import com.example.data.service.PushService
 import com.example.domain.core.Result
 import com.example.domain.model.RoomChat
 import com.example.domain.model.RoomInfo
@@ -21,10 +22,13 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.File
 import java.time.LocalDateTime
@@ -39,7 +43,8 @@ class AppRepositoryImpl @Inject constructor(
     private val firebaseDatabase: FirebaseDatabase,
     private val firebaseStorage: FirebaseStorage,
     private val TestRemoteSource: TestRemoteDataSource,
-    private val context : Context
+    private val context : Context,
+    private val pushService: PushService
 ) : AppRepository {
     override suspend fun signUp(email: String, password: String): Flow<Result<Unit>> =
         callbackFlow {
@@ -270,10 +275,22 @@ class AppRepositoryImpl @Inject constructor(
             str == "make"
         }
         if (strlist.size > 1) {
+
             Timber.d("test end@ ==> ${strlist[1]}")
         } else Timber.d("test end@ ==> it.me")
+        val databaseUserReference = firebaseDatabase.getReference("userInfo")
+//            .child((userId))
+        var sendPushToken = ""
+        databaseUserReference.child(strlist[1]).get().addOnSuccessListener {
+//            Timber.d("test end@ ==> ${it.child("fcmToken")}")
+            sendPushToken = it.child("fcmToken").value.toString()
+            CoroutineScope(Dispatchers.IO).launch {
+                pushService.sendPush("",message,sendPushToken)
+            }
 
+        }
         trySend(Result.Success(Unit))
+//        pushService.sendPush("",message,strlist[1])
 
         awaitClose {
             channel.close()

@@ -5,7 +5,12 @@
 
     </domain-config>
 
+<!--    <domain-config cleartextTrafficPermitted="true">-->
+<!--        <domain includeSubdomains="true">firebasestorage.googleapis.com</domain>-->
+<!--    </domain-config>-->
+
     <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="true">http://m.sblib.seoul.kr:8888</domain>
+        <domain includeSubdomains="true">129.154.203.45</domain>
     </domain-config>
+
 </network-security-config>

@@ -4,6 +4,7 @@ package com.example.pixsocialapplication.di
 import android.content.Context
 import com.example.data.repository.AppRepositoryImpl
 import com.example.data.repository.dataSource.TestRemoteDataSource
+import com.example.data.service.PushService
 import com.example.domain.preferences.Preferences
 import com.example.domain.repository.AppRepository
 import com.example.domain.usecase.*
@@ -85,9 +86,10 @@ class AppModule {
         firebaseDatabase: FirebaseDatabase,
         firebaseStorage: FirebaseStorage,
         testRemoteSource: TestRemoteDataSource,
-        @ApplicationContext appContext : Context
+        @ApplicationContext appContext : Context,
+        pushService: PushService
     ): AppRepository {
-        return AppRepositoryImpl(auth, firebaseDatabase,firebaseStorage, testRemoteSource, appContext)
+        return AppRepositoryImpl(auth, firebaseDatabase,firebaseStorage, testRemoteSource, appContext, pushService)
     }
 
     @Provides

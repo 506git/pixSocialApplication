@@ -7,11 +7,18 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.PixelFormat
 import android.os.*
 import android.util.Log
+import android.util.TypedValue
+import android.view.LayoutInflater
+import android.view.View
+import android.view.Window
+import android.view.WindowManager
 import androidx.core.app.NotificationCompat
 import com.example.pixsocialapplication.BuildConfig
 import com.example.pixsocialapplication.R
+import com.example.pixsocialapplication.utils.DLog
 
 
 // TODO: Rename actions, choose action names that describe tasks that this
@@ -39,6 +46,14 @@ class PixPushService : Service() {
     private var notification: Notification? = null
     var mNotificationManager: NotificationManager? = null
     private val mNotificationId = 123
+
+    private var windowManager: WindowManager? = null
+    var mView: View? = null
+
+    private var oldXValue = 0f
+    private var oldYValue = 0f
+
+    private var params: WindowManager.LayoutParams? = null
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 //        if (intent?.action != null && intent.action!!.equals(
@@ -131,12 +146,34 @@ class PixPushService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        HandlerThread("ServiceStartArguments", Process.THREAD_PRIORITY_BACKGROUND).apply {
-            start()
-            // Get the HandlerThread's Looper and use it for our Handler
-            serviceLooper = looper
-            serviceHandler = ServiceHandler(looper)
-        }
+//        HandlerThread("ServiceStartArguments", Process.THREAD_PRIORITY_BACKGROUND).apply {
+//            start()
+//            // Get the HandlerThread's Looper and use it for our Handler
+//            serviceLooper = looper
+//            serviceHandler = ServiceHandler(looper)
+//        }
+
+        val inflate = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+
+        windowManager = getSystemService(WINDOW_SERVICE) as WindowManager
+
+        val flag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+        } else WindowManager.LayoutParams.TYPE_SYSTEM_ALERT
+
+        params = WindowManager.LayoutParams(
+            TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 150F, resources.displayMetrics)
+                .toInt(),
+            TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 150F, resources.displayMetrics)
+                .toInt(),
+            oldXValue.toInt(), oldYValue.toInt(), flag,
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
+            PixelFormat.TRANSLUCENT
+        )
+        mView = inflate.inflate(R.layout.pix_service, null)
+
+        windowManager?.addView(mView, params)
+
 
     }
 
