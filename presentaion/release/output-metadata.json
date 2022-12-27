@@ -11,9 +11,9 @@
       "type": "SINGLE",
       "filters": [],
       "attributes": [],
-      "versionCode": 0,
-      "versionName": "",
-      "outputFile": "presentaion-release.apk"
+      "versionCode": 1,
+      "versionName": "1.0.0",
+      "outputFile": "pic_1.0.0_1_release.apk"
     }
   ],
   "elementType": "File"

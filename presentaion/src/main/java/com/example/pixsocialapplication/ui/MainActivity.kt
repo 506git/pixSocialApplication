@@ -1,23 +1,19 @@
 package com.example.pixsocialapplication.ui
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.widget.LinearLayout
-import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
-import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.NavHostFragment
+import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupWithNavController
 import com.example.pixsocialapplication.R
 import com.example.pixsocialapplication.databinding.ActivityMainBinding
-import com.example.pixsocialapplication.ui.chat.room.ChatRoomViewModel
+import com.example.pixsocialapplication.utils.CommonUtils
 import com.example.pixsocialapplication.utils.DLog
 import com.example.ssolrangapplication.common.setSafeOnClickListener
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
@@ -33,11 +29,28 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
     lateinit var behavior: BottomSheetBehavior<LinearLayout>
     private val mainViewModel: MainViewModel by viewModels()
+    private var time: Long = 0
+
+    private val callback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            if(System.currentTimeMillis() - time >= 2000) {
+                if (this@MainActivity.findNavController(R.id.nav_main_fragment).currentDestination?.id == R.id.chatRoomFragment){
+                    time = System.currentTimeMillis();
+                    CommonUtils.snackBar(this@MainActivity, "한번더 누르면 종료됩니다.", Snackbar.LENGTH_SHORT)
+                } else {
+                    this@MainActivity.findNavController(R.id.nav_main_fragment).popBackStack()
+                }
+            } else if(System.currentTimeMillis() - time < 2000 ){
+                finish();
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        this.onBackPressedDispatcher.addCallback(this, callback)
 
         Firebase.messaging.subscribeToTopic("pix_all")
             .addOnCompleteListener { task ->

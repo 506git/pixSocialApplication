@@ -4,8 +4,10 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.speech.tts.TextToSpeech
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -84,13 +86,19 @@ class ChatListFragment : Fragment() {
 //        }
 
         binding.btnPlay.setSafeOnClickListener {
-            val intent = Intent(context, PixPushService::class.java)
-            if(Build.VERSION.SDK_INT >= 26){
-                context?.startForegroundService(intent)
-            } else {
-                context?.startService(intent)
+            if(Settings.canDrawOverlays(context)){
+                val intent = Intent(context, PixPushService::class.java)
+                if(Build.VERSION.SDK_INT >= 26){
+                    context?.startForegroundService(intent)
+                } else {
+                    context?.startService(intent)
+                }
+                activity?.finish()
+            } else{
+                startActivity(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:${activity?.packageName}")))
             }
-            activity?.finish()
+
+
         }
         val filter = IntentFilter().apply {
             addAction("gallery")
@@ -168,7 +176,6 @@ class ChatListFragment : Fragment() {
             startActivity(Intent(context,GalleryActivity::class.java).apply {
 
             })
-//            view?.findNavController()?.navigate(R.id.action_chatListFragment_to_galleryFragment)
         }
 
 
@@ -181,47 +188,6 @@ class ChatListFragment : Fragment() {
             override fun getVerticalSnapPreference() = SNAP_TO_END
         }
     }
-
-/*    private val MESSAGING_SCOPE = "https://www.googleapis.com/auth/firebase.messaging"
-    private val SCOPES = listOf<String>(MESSAGING_SCOPE)
-    private val PROJECT_ID = "pixsocial-a41c6"
-    private val BASE_URL = "https://fcm.googleapis.com"
-    private val FCM_SEND_ENDPOINT = "/v1/projects/$PROJECT_ID/messages:send"
-
-    @Throws(IOException::class)
-    fun getAccessToken(context: Context) : String {
-        val assertmanager : AssetManager = context.assets
-        val fileDescriptor : AssetFileDescriptor = assertmanager.openFd("fcmdemo.json")
-        val fileInputStream : FileInputStream = fileDescriptor.createInputStream()
-        val googleCredentials: GoogleCredentials =
-            GoogleCredentials.fromStream(fileInputStream).createScoped(SCOPES)
-        return googleCredentials.refreshAccessToken().tokenValue
-    }
-
-    fun SendNotify(msg: String, url :String){
-        CoroutineScope(Dispatchers.IO).launch {
-            val root = JSONObject()
-            val notification = JSONObject()
-            notification.put("body", "test")
-            notification.put("title", "test")
-            root.put("notification", notification)
-            root.put("to", "c7kfyE1tS2uq8SP3AwtoUe:APA91bE4-Dd1T6AZil_Yxj0JaH-9Wr995PTrWHXT0uOMAMEG6CTgpTvg0a5k9cZPc8Wut3dBOZvyvM4QhorSwaFkBsFWKxOAPWmzXLAdG1-c45-YYy_aRdlsVzCx4KkH3zYTEorurEbG")
-
-            val Url = URL("$BASE_URL$FCM_SEND_ENDPOINT")
-            val conn = Url.openConnection() as HttpURLConnection
-            conn.requestMethod = "POST"
-            conn.doOutput = true
-            conn.doInput = true
-            conn.addRequestProperty("Authorization", "key=${getAccessToken(context!!)}")
-            conn.setRequestProperty("Accept", "application/json")
-            conn.setRequestProperty("Content-type", "application/json")
-            val os = conn.outputStream
-            os.write(root.toString().toByteArray(charset("utf-8")))
-            os.flush()
-            conn.responseCode
-        }
-    }
-*/
     override fun onResume() {
         super.onResume()
 

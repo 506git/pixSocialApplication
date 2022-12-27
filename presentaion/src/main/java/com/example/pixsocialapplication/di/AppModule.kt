@@ -3,8 +3,13 @@ package com.example.pixsocialapplication.di
 
 import android.content.Context
 import com.example.data.repository.AppRepositoryImpl
+import com.example.data.repository.dataSource.GalleryDataSource
 import com.example.data.repository.dataSource.TestRemoteDataSource
+import com.example.data.repository.dataSourceImpl.GalleryDataSourceImpl
+import com.example.data.repository.dataSourceImpl.TestRemoteDataSourceImpl
+import com.example.data.service.GalleryService
 import com.example.data.service.PushService
+import com.example.data.service.TestService
 import com.example.domain.preferences.Preferences
 import com.example.domain.repository.AppRepository
 import com.example.domain.usecase.*
@@ -16,6 +21,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import retrofit2.Retrofit
 import javax.inject.Singleton
 
 @Module
@@ -79,6 +85,18 @@ class AppModule {
 //    fun provideDeliveryService(retrofit: Retrofit): LawMakerService {
 //        return retrofit.create(LawMakerService::class.java)
 //    }
+
+
+    @Provides
+    @Singleton
+    fun provideGalleryService(@ApplicationContext appContext : Context): GalleryService {
+        return GalleryService(appContext)
+    }
+
+    @Provides
+    fun provideGalleryDataSource(galleryService: GalleryService) : GalleryDataSource =
+        GalleryDataSourceImpl(service = galleryService)
+
     @Provides
     @Singleton
     fun provideRepository(
@@ -87,9 +105,10 @@ class AppModule {
         firebaseStorage: FirebaseStorage,
         testRemoteSource: TestRemoteDataSource,
         @ApplicationContext appContext : Context,
-        pushService: PushService
+        pushService: PushService,
+        galleryService : GalleryDataSource
     ): AppRepository {
-        return AppRepositoryImpl(auth, firebaseDatabase,firebaseStorage, testRemoteSource, appContext, pushService)
+        return AppRepositoryImpl(auth, firebaseDatabase,firebaseStorage, testRemoteSource, appContext, pushService, galleryService)
     }
 
     @Provides
@@ -116,7 +135,8 @@ class AppModule {
             sendChat = SendChat(repository),
             updateUserFcmToken = UpdateUserFcmToken(repository),
             getGalleryList = GetGalleryList(repository),
-            sendImage = SendImage(repository)
+            sendImage = SendImage(repository),
+            galleryList = GalleryList(repository)
         )
     }
 

@@ -1,3 +1,6 @@
+import groovyjarjarantlr4.runtime.DFA.debug
+import groovyjarjarantlr4.v4.runtime.atn.LexerATNSimulator.debug
+
 plugins {
     id("com.android.application")
     id("kotlin-android")
@@ -7,12 +10,14 @@ plugins {
     id("com.google.gms.google-services")
 }
 android {
-    compileSdk = 32
+    compileSdk = 33
 
     defaultConfig {
         minSdk = Apps.minSdk
-        targetSdk = 32
+        targetSdk = 33
         multiDexEnabled = true
+        versionCode = Apps.versionCode
+        versionName = Apps.versionName
     }
 
     buildFeatures {
@@ -20,6 +25,35 @@ android {
     }
     androidResources {
         noCompress("json")
+    }
+
+    signingConfigs {
+        create("release") {
+            keyAlias = "picSocial"
+            keyPassword = "juns0305"
+            storeFile = file("/Users/oyeongjun/AndroidStudioProjects/pixSocialApplication/Untitled")
+            storePassword = "juns0305"
+        }
+    }
+
+    buildTypes{
+        getByName("release") {
+//            isMinifyEnabled = false
+//            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            signingConfig = signingConfigs.getByName("release")
+//            isDebuggable = false
+
+        }
+    }
+    this.buildOutputs.all {
+
+        val variantOutputImpl = this as com.android.build.gradle.internal.api.BaseVariantOutputImpl
+
+        val variantName: String = variantOutputImpl.name
+
+        val outputFileName = "pic_${defaultConfig.versionName}_${defaultConfig.versionCode}_${variantName}.apk"
+
+        variantOutputImpl.outputFileName = outputFileName
     }
 }
 subprojects {
@@ -92,6 +126,6 @@ dependencies {
 //    implementation(Firebase.CLIENT)
     implementation(Google.GMS)
 
-
 }
+
 

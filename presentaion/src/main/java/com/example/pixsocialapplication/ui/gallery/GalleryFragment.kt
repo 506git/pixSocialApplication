@@ -9,17 +9,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.domain.model.RoomInfo
 import com.example.pixsocialapplication.R
 import com.example.pixsocialapplication.databinding.FragmentGalleryBinding
 import com.example.pixsocialapplication.databinding.ItemSampleBinding
+import com.example.pixsocialapplication.ui.adapter.GalleryAdapter
 import com.example.pixsocialapplication.ui.adapter.GalleryListViewAdapter
 import com.example.pixsocialapplication.ui.adapter.UserRoomListViewAdapter
 import com.example.pixsocialapplication.ui.chat.room.ChatRoomViewModel
 import com.example.pixsocialapplication.ui.common.LoadingDialog
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -62,28 +68,41 @@ class GalleryFragment : Fragment() {
     ): View? {
         binding = FragmentGalleryBinding.inflate(layoutInflater)
 
-        galleryViewModel.getImageList()
-
-        galleryViewModel.getGalleryList.observe(viewLifecycleOwner){
-            if (it == null){
-                galleryArray = arrayListOf()
-            } else galleryArray = it as ArrayList<Uri>
-
-            galleryListViewAdapter.addItem(galleryArray)
-            galleryListViewAdapter.notifyDataSetChanged()
-        }
-        galleryListViewAdapter = GalleryListViewAdapter(galleryArray)
-
-        binding.listGallery.apply {
-            adapter = galleryListViewAdapter
-            layoutManager = GridLayoutManager(context, 3)
-            setHasFixedSize(true)
-        }
-
-        galleryViewModel.loadingState.observe(viewLifecycleOwner){
-            if (it) dialog.show()
-            else if (!it) dialog.dismiss()
-        }
+//        galleryViewModel.getImageList()
+//
+//        galleryViewModel.getGalleryList.observe(viewLifecycleOwner){
+//            if (it == null){
+//                galleryArray = arrayListOf()
+//            } else galleryArray = it as ArrayList<Uri>
+//
+//            galleryListViewAdapter.addItem(galleryArray)
+//            galleryListViewAdapter.notifyDataSetChanged()
+//        }
+//        galleryListViewAdapter = GalleryListViewAdapter(galleryArray)
+//
+//        binding.listGallery.apply {
+//            adapter = galleryListViewAdapter
+//            layoutManager = GridLayoutManager(context, 3)
+//            setHasFixedSize(true)
+//        }
+//
+//        galleryViewModel.loadingState.observe(viewLifecycleOwner){
+//            if (it) dialog.show()
+//            else if (!it) dialog.dismiss()
+//        }
+//
+//        val items = galleryViewModel.pagingData
+//        val galleryAdapter = GalleryAdapter()
+//
+//        binding.bindAdapter(galleryAdapter = galleryAdapter)
+//        lifecycleScope.launch {
+//            repeatOnLifecycle(Lifecycle.State.STARTED) {
+//                items.collectLatest {
+//                    galleryAdapter.submitData(it)
+//
+//                }
+//            }
+//        }
 
         return binding.root
     }
@@ -107,4 +126,12 @@ class GalleryFragment : Fragment() {
                 }
             }
     }
+}
+
+private fun FragmentGalleryBinding.bindAdapter(galleryAdapter: GalleryAdapter) {
+    listGallery.adapter = galleryAdapter
+    listGallery.layoutManager = GridLayoutManager(listGallery.context,3)
+//    listGallery.layoutManager = LinearLayoutManager(listGallery.context)
+//    val decoration = DividerItemDecoration(chatList.context, DividerItemDecoration.VERTICAL)
+//    chatList.addItemDecoration(decoration)
 }

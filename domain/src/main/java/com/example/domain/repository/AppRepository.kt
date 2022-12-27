@@ -26,5 +26,8 @@ interface AppRepository {
     suspend fun sendChat(message: String, roomId : String) : Flow<Result<Unit>>
     suspend fun sendImage(message: String, roomId : String) : Flow<Result<Unit>>
     fun getGalleryList() : Flow<Result<List<Uri>>>
+
+    fun galleryList() : Flow<PagingData<Uri>>
+
 //    suspend fun fetchImageList() : Flow<PagingData<LawMaker>>
 }

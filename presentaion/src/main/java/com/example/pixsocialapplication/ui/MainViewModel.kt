@@ -10,6 +10,7 @@ import com.example.domain.core.Result
 import com.example.domain.model.RoomInfo
 import com.example.domain.usecase.UseCase
 import com.example.pixsocialapplication.R
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -33,17 +34,20 @@ class MainViewModel @Inject constructor(private val useCase: UseCase) : ViewMode
 
     fun findChatUser(userId: String){
         viewModelScope.launch(Dispatchers.IO) {
+
             useCase.findUserId(userId).collect(){
                 when (it){
                     is Result.Error -> {
-
+                        withContext(Dispatchers.Main) {
+                            _bottomVisible.value = BottomSheetBehavior.STATE_HIDDEN
+                        }
                     }
                     is Result.Loading -> {
 
                     }
                     is Result.Success -> {
                         withContext(Dispatchers.Main) {
-
+                            _bottomVisible.value = BottomSheetBehavior.STATE_HIDDEN
                         }
                     }
                 }

@@ -49,6 +49,9 @@ class ChatViewModel @Inject constructor(private val useCase: UseCase) : ViewMode
         _itemSelectedPos.value = uri.toString()
     }
 
+    val pagingData: Flow<PagingData<Uri>> =
+        useCase.galleryList().cachedIn(viewModelScope)
+
 //    val items: Flow<PagingData<Article>> = Pager(
 //        config = PagingConfig(pageSize = ITEMS_PER_PAGE, enablePlaceholders = false),
 //        pagingSourceFactory = { repository.articlePagingSource() }

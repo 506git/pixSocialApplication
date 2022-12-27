@@ -36,6 +36,7 @@ class LogInActivity : AppCompatActivity() {
             if (it.launchGoogleSignIn && it.databaseInit) {
 //                logInViewModel.updateUserProfile("test")
                 startActivity(Intent(baseContext, MainActivity::class.java))
+                finish()
             }
         }
     }

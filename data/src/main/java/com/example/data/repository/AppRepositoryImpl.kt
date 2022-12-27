@@ -8,11 +8,15 @@ import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
+import android.widget.Gallery
 import android.widget.ImageView
 import androidx.annotation.RequiresApi
+import androidx.paging.PagingData
 import com.example.data.mapper.RoomChatMapper
 import com.example.data.model.*
+import com.example.data.repository.dataSource.GalleryDataSource
 import com.example.data.repository.dataSource.TestRemoteDataSource
+import com.example.data.service.GalleryService
 import com.example.data.service.PushService
 import com.example.domain.core.Result
 import com.example.domain.model.RoomChat
@@ -44,7 +48,8 @@ class AppRepositoryImpl @Inject constructor(
     private val firebaseStorage: FirebaseStorage,
     private val TestRemoteSource: TestRemoteDataSource,
     private val context : Context,
-    private val pushService: PushService
+    private val pushService: PushService,
+    private val galleryDataSource: GalleryDataSource
 ) : AppRepository {
     override suspend fun signUp(email: String, password: String): Flow<Result<Unit>> =
         callbackFlow {
@@ -381,6 +386,9 @@ class AppRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun galleryList() = galleryDataSource.getGalleryData()
+
+    override fun getTestData() = TestRemoteSource.getTestData()
 //    override suspend fun getImageList(): Flow<Result<Unit>> = callbackFlow {
 //        send(Result.Loading())
 //
@@ -468,7 +476,7 @@ class AppRepositoryImpl @Inject constructor(
         } else return Pair(str1, str2)
     }
 
-    override fun getTestData() = TestRemoteSource.getTestData()
+
 
     override fun getRoomInfo(): Flow<Result<List<RoomInfo>>> = callbackFlow {
         send(Result.Loading())

@@ -17,7 +17,7 @@ class TestRemoteDataSourceImpl @Inject constructor(private val service: TestServ
 
     override fun getTestData(): Flow<PagingData<LibraryDataSearchList>> {
         return Pager(
-            config = PagingConfig(pageSize = 10),
+            config = PagingConfig(pageSize = 50),
             pagingSourceFactory = { TestPagingSource(service) }
         ).flow
     }

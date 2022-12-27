@@ -36,6 +36,9 @@ class GalleryViewModel @Inject constructor(private val useCase: UseCase) : ViewM
     private val _loadingState = MutableLiveData<Boolean>(false)
     val loadingState: LiveData<Boolean> get() = _loadingState
 
+    val pagingData: Flow<PagingData<Uri>> =
+        useCase.galleryList().cachedIn(viewModelScope)
+
     fun getImageList() {
         viewModelScope.launch(Dispatchers.IO) {
             useCase.getGalleryList().collect() {
