@@ -126,6 +126,9 @@ dependencies {
 //    implementation(Firebase.CLIENT)
     implementation(Google.GMS)
 
+    // lottie
+    implementation(Libs.LOTTIE)
+
 }
 
 

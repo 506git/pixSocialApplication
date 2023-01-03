@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:animateLayoutChanges="true"
+        android:background="@color/main_color"
         tools:context=".ui.chat.list.ChatListFragment">
 
 
@@ -19,6 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginBottom="10dp"
+            android:background="@color/white"
             app:layout_constraintBottom_toTopOf="@+id/edit_send_chat"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -29,33 +31,34 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@+id/btn_gallery" />
 
         <ImageButton
             android:id="@+id/btn_gallery"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginEnd="10dp"
             android:background="@drawable/icon_photo"
             android:scaleType="fitCenter"
-            android:layout_marginEnd="10dp"
             app:layout_constraintBottom_toBottomOf="@+id/edit_send_chat"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintRight_toLeftOf="@+id/btn_play"
-            app:layout_constraintTop_toTopOf="@+id/edit_send_chat" />
+            app:layout_constraintTop_toBottomOf="@+id/chat_list" />
 
         <ImageButton
             android:id="@+id/btn_play"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginEnd="10dp"
             android:background="@drawable/icon_play2"
             android:scaleType="fitCenter"
-            android:layout_marginEnd="10dp"
             app:layout_constraintBottom_toBottomOf="@+id/edit_send_chat"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/edit_send_chat" />
+            app:layout_constraintTop_toBottomOf="@+id/chat_list" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

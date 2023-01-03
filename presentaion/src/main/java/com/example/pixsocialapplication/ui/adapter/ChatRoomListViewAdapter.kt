@@ -23,10 +23,19 @@ class ChatRoomListViewAdapter(dataSet: ArrayList<RoomChat>) :
         fun onItemClick(position: Int)
     }
 
+    interface ChatItemLongClickListener {
+        fun onItemLongClick(position: Int)
+    }
+
     private lateinit var mItemClickListener: ChatItemClickListener
+    private lateinit var mItemLongClickListener: ChatItemLongClickListener
 
     fun setChatItemClickListener(itemClickListener: ChatItemClickListener) {
         mItemClickListener = itemClickListener
+    }
+
+    fun setChatItemLongClickListener(itemLongClickListener: ChatItemLongClickListener){
+        mItemLongClickListener = itemLongClickListener
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -65,6 +74,10 @@ class ChatRoomListViewAdapter(dataSet: ArrayList<RoomChat>) :
         init {
             itemView.setOnClickListener {
                 mItemClickListener.onItemClick(absoluteAdapterPosition)
+            }
+            itemView.setOnLongClickListener {
+                mItemLongClickListener.onItemLongClick(absoluteAdapterPosition)
+                return@setOnLongClickListener false
             }
         }
 

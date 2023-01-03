@@ -7,6 +7,7 @@
     <string name="text_chat_list">대화목록</string>
     <string name="hint_search_id">ID 검색</string>
     <string name="text_chat_add">친구 검색</string>
+    <string name="text_chat_add_desc">찾을 친구의 구글 아이디를 입력해주세요!</string>
 
     <string name="text_all_picture">전체 보기</string>
     <string name="text_img_detail">전체 화면</string>

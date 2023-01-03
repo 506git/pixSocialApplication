@@ -14,10 +14,10 @@
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_margin="10dp"
         android:id="@+id/bottom_collapse"
         android:layout_width="match_parent"
-        android:layout_height="180dp">
+        android:layout_height="160dp"
+        android:layout_margin="10dp">
 
         <TextView
             android:id="@+id/text_chat_add"
@@ -29,6 +29,18 @@
             android:textStyle="bold"
             app:layout_constraintLeft_toLeftOf="@+id/layout_edit_search"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/text_chat_add_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="@string/text_chat_add_desc"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="@+id/layout_edit_search"
+            app:layout_constraintTop_toBottomOf="@+id/text_chat_add" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/layout_edit_search"
@@ -45,7 +57,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.8">
+            app:layout_constraintVertical_bias="1">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edit_search"

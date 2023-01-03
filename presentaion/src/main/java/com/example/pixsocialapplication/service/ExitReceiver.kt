@@ -16,7 +16,7 @@ class ExitReceiver : BroadcastReceiver() {
         val message = intent?.getStringExtra("MESSAGE")
 
         if (message != null) {
-            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+//            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
         }
 
 //        isMyServiceRunning(PixIntentService::class.java))

@@ -39,7 +39,6 @@ class SplashActivity : AppCompatActivity() {
     )
 
     private val permissionList_s = listOf<String>(
-//        android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
         android.Manifest.permission.READ_MEDIA_IMAGES,
         android.Manifest.permission.POST_NOTIFICATIONS
     )
@@ -202,9 +201,15 @@ class SplashActivity : AppCompatActivity() {
         val deniedPermission = checkPermissions()
 
         if (deniedPermission.size > 0) {
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+                ActivityCompat.requestPermissions(
+                    this@SplashActivity, permissionList_s.toTypedArray(), REQ_PERMISSION_MAIN
+                )
+            } else
             ActivityCompat.requestPermissions(
                 this@SplashActivity, permissionList.toTypedArray(), REQ_PERMISSION_MAIN
             )
+
         } else {
 
             CoroutineScope(Dispatchers.Main).async {

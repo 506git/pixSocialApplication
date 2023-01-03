@@ -1,24 +1,21 @@
 package com.example.pixsocialapplication.service
 
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.*
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.PixelFormat
 import android.os.*
-import android.util.Log
 import android.util.TypedValue
-import android.view.LayoutInflater
-import android.view.View
-import android.view.Window
-import android.view.WindowManager
+import android.view.*
+import android.widget.ImageView
 import androidx.core.app.NotificationCompat
-import com.example.pixsocialapplication.BuildConfig
 import com.example.pixsocialapplication.R
 import com.example.pixsocialapplication.utils.DLog
+import com.example.pixsocialapplication.utils.ImageLoader
 
 
 // TODO: Rename actions, choose action names that describe tasks that this
@@ -55,12 +52,18 @@ class PixPushService : Service() {
 
     private var params: WindowManager.LayoutParams? = null
 
+    private var imageUrl = ""
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 //        if (intent?.action != null && intent.action!!.equals(
 //                ACTION_STOP_FOREGROUND, ignoreCase = true)) {
 //            stopSelf()
 //        }
         generateForegroundNotification()
+        if (intent != null) {
+            startPic(intent)
+        }
+//        imageUrl = intent?.getStringExtra("imageUri").toString()
 
         serviceHandler?.obtainMessage()?.also { msg ->
             msg.arg1 = startId
@@ -140,18 +143,12 @@ class PixPushService : Service() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-    }
+    var startX = 0f
+    var startY = 0f
 
-    override fun onCreate() {
-        super.onCreate()
-//        HandlerThread("ServiceStartArguments", Process.THREAD_PRIORITY_BACKGROUND).apply {
-//            start()
-//            // Get the HandlerThread's Looper and use it for our Handler
-//            serviceLooper = looper
-//            serviceHandler = ServiceHandler(looper)
-//        }
+    @SuppressLint("ClickableViewAccessibility")
+    fun startPic(intent : Intent){
+        imageUrl = intent.getStringExtra("imageUri").toString()
 
         val inflate = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
@@ -172,10 +169,41 @@ class PixPushService : Service() {
         )
         mView = inflate.inflate(R.layout.pix_service, null)
 
+        val imagePic = mView!!.findViewById<ImageView>(R.id.image_pic)
+        mView!!.setOnTouchListener { v, motionEvent ->
+            when (motionEvent.action){
+                MotionEvent.ACTION_DOWN -> {
+                    startX = motionEvent.rawX
+                    startY = motionEvent.rawY
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    val movedX: Float = motionEvent.rawX - startX
+                    val movedY: Float = motionEvent.rawY - startY
+
+                    setCoordinateUpdate(movedX, movedY)
+                    startX = motionEvent.rawX
+                    startY = motionEvent.rawY
+//                    v.x = v.x + movedX
+//                    v.y = v.y + movedY
+                }
+            }
+            true
+        }
+        DLog().d("test : $imageUrl")
+        ImageLoader(applicationContext).imageLoadWithURL(imageUrl, imagePic)
         windowManager?.addView(mView, params)
 
-
     }
+
+    private fun setCoordinateUpdate(x: Float, y: Float) {
+        if (windowManager != null) {
+            params?.x = params?.x?.plus(x.toInt())
+            params?.y = params?.y?.plus(y.toInt())
+
+            windowManager!!.updateViewLayout(mView, params)
+        }
+    }
+
 
     override fun onBind(p0: Intent?): IBinder? {
         return null

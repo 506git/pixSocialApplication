@@ -129,6 +129,7 @@ class MyFirebaseMessagingService: FirebaseMessagingService() {
 
         val message = data["body"]
         val imageUrl = data["imageUrl"]
+        val title = data["title"]
         val channelId = getString(R.string.default_notification_channel_id)
 
         val notificationCompat = NotificationCompat.Builder(this, channelId)
@@ -136,7 +137,7 @@ class MyFirebaseMessagingService: FirebaseMessagingService() {
 
         notificationCompat.apply {
             setSmallIcon(R.drawable.pic_icon)
-            setContentTitle(getString(R.string.app_name))
+            setContentTitle(title)
             setContentTitle(message)
             priority = NotificationCompat.PRIORITY_HIGH
             setAutoCancel(true)

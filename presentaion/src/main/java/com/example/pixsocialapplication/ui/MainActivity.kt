@@ -34,7 +34,9 @@ class MainActivity : AppCompatActivity() {
     private val callback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             if(System.currentTimeMillis() - time >= 2000) {
-                if (this@MainActivity.findNavController(R.id.nav_main_fragment).currentDestination?.id == R.id.chatRoomFragment){
+                if (behavior.state == BottomSheetBehavior.STATE_EXPANDED){
+                    mainViewModel.setBottomVisible(BottomSheetBehavior.STATE_HIDDEN)
+                } else if (this@MainActivity.findNavController(R.id.nav_main_fragment).currentDestination?.id == R.id.chatRoomFragment){
                     time = System.currentTimeMillis();
                     CommonUtils.snackBar(this@MainActivity, "한번더 누르면 종료됩니다.", Snackbar.LENGTH_SHORT)
                 } else {

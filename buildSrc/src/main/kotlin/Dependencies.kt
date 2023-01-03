@@ -3,7 +3,7 @@ object Apps {
     const val minSdk = 21
     const val targetSdk = 32
     const val versionCode = 1
-    const val versionName = "1.0.0"
+    const val versionName = "1.0.1"
 }
 
 object Versions {
@@ -42,6 +42,7 @@ object Versions {
 
     const val RETROFIT = "2.9.0"
     const val OKHTTP = "4.3.1"
+    const val LOTTIE = "5.2.0"
 }
 
 object Kotlin {
@@ -96,5 +97,7 @@ object Libs {
 
     const val OKHTTP                     = "com.squareup.okhttp3:okhttp:${Versions.OKHTTP}"
     const val OKHTTP_LOGGING_INTERCEPTOR = "com.squareup.okhttp3:logging-interceptor:${Versions.OKHTTP}"
+
+    const val LOTTIE = "com.airbnb.android:lottie:${Versions.LOTTIE}"
 
 }

@@ -1,9 +1,7 @@
 package com.example.pixsocialapplication.ui.chat.list
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.app.AlertDialog
+import android.content.*
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -13,6 +11,7 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.observe
@@ -55,6 +54,7 @@ class ChatListFragment : Fragment() {
 
     private lateinit var tts : TextToSpeech
 
+    private var longClick = false
     private var mBroadCastReceiver : BroadcastReceiver? = object : BroadcastReceiver(){
         override fun onReceive(p0: Context?, intent: Intent?) {
             val data = intent?.getStringExtra("uri")
@@ -86,17 +86,9 @@ class ChatListFragment : Fragment() {
 //        }
 
         binding.btnPlay.setSafeOnClickListener {
-            if(Settings.canDrawOverlays(context)){
-                val intent = Intent(context, PixPushService::class.java)
-                if(Build.VERSION.SDK_INT >= 26){
-                    context?.startForegroundService(intent)
-                } else {
-                    context?.startService(intent)
-                }
-                activity?.finish()
-            } else{
-                startActivity(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:${activity?.packageName}")))
-            }
+            chatViewModel.sendMessage(binding.editSendChat.text.toString(), roomId.toString())
+            binding.editSendChat.setText("")
+
 
 
         }
@@ -125,13 +117,46 @@ class ChatListFragment : Fragment() {
 
         chatRoomListViewAdapter.setChatItemClickListener(object : ChatRoomListViewAdapter.ChatItemClickListener {
             override fun onItemClick(position: Int) {
+                if (!longClick){
+                    val chatSelected = chatListArray[position]
+                    if(chatSelected.messageType == "speak")
+                        tts.speak(chatListArray[position].message.toString(),TextToSpeech.QUEUE_FLUSH,null,"uid")
+                    else if (chatSelected.messageType == "photo")
+                        startActivity(Intent(context,ImageDatailActivity::class.java).apply {
+                            putExtra("name", chatSelected.messageSenderName)
+                            putExtra("imageUri", chatSelected.message) })
+                } else longClick = false
+
+            }
+        })
+
+        chatRoomListViewAdapter.setChatItemLongClickListener(object : ChatRoomListViewAdapter.ChatItemLongClickListener {
+            override fun onItemLongClick(position: Int) {
+                longClick = true
                 val chatSelected = chatListArray[position]
-                if(chatSelected.messageType == "speak")
-                    tts.speak(chatListArray[position].message.toString(),TextToSpeech.QUEUE_FLUSH,null,"uid")
-                else if (chatSelected.messageType == "photo")
-                    startActivity(Intent(context,ImageDatailActivity::class.java).apply {
-                        putExtra("name", chatSelected.messageSenderName)
-                        putExtra("imageUri", chatSelected.message) })
+                if (chatSelected.messageType == "photo"){
+                    AlertDialog.Builder(context)
+                        .setMessage("실행하시겠습니까?")
+                        .setNegativeButton("cancel", DialogInterface.OnClickListener { dialogInterface, i ->
+                            dialog.dismiss()
+                        })
+                        .setPositiveButton("ok",DialogInterface.OnClickListener { dialogInterface, i ->
+                            if(Settings.canDrawOverlays(context)){
+                                val intent = Intent(context, PixPushService::class.java).apply {
+                                    putExtra("imageUri", chatSelected.message)
+                                }
+                                if(Build.VERSION.SDK_INT >= 26){
+                                    context?.startForegroundService(intent)
+                                } else {
+                                    context?.startService(intent)
+                                }
+                                activity?.finish()
+                            } else{
+                                startActivity(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:${activity?.packageName}")))
+                            }
+                        })
+                        .create().show()
+                }
             }
 
         })
@@ -151,13 +176,12 @@ class ChatListFragment : Fragment() {
             }
         }
 
-        binding.editSendChat.setOnKeyListener { view, keyCode, keyEvent ->
-            if (keyCode == KeyEvent.KEYCODE_ENTER && keyEvent.action == KeyEvent.ACTION_UP) {
-                chatViewModel.sendMessage(binding.editSendChat.text.toString(), roomId.toString())
-                binding.editSendChat.setText("")
-            }
-            return@setOnKeyListener false
-        }
+//        binding.editSendChat.setOnKeyListener { view, keyCode, keyEvent ->
+//            if (keyCode == KeyEvent.KEYCODE_ENTER && keyEvent.action == KeyEvent.ACTION_UP) {
+//
+//            }
+//            return@setOnKeyListener false
+//        }
 
         tts = TextToSpeech(context, TextToSpeech.OnInitListener { status ->
             if (status == TextToSpeech.SUCCESS) {
