@@ -93,6 +93,7 @@ object NetworkModule {
 
 //    private const val BASE_URL = "http://ec2-34-218-220-255.us-west-2.compute.amazonaws.com:3000"
     private const val BASE_URL = "http://m.sblib.seoul.kr:8888/SungBukWebService/"
-    private const val PUSH_BASE_URL = "http://129.154.203.45:7777"
+//    private const val PUSH_BASE_URL = "http://129.154.203.45:7777"
+    private const val PUSH_BASE_URL = "http://140.238.2.67:7777"
 
 }

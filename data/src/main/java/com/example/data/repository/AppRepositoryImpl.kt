@@ -290,7 +290,11 @@ class AppRepositoryImpl @Inject constructor(
 //            Timber.d("test end@ ==> ${it.child("fcmToken")}")
             sendPushToken = it.child("fcmToken").value.toString()
             CoroutineScope(Dispatchers.IO).launch {
-                pushService.sendPush(currentUser?.displayName.toString(),message,sendPushToken)
+                pushService.sendPush(
+//                    currentUser?.displayName.toString(), message, sendPushToken
+                    SendDTO(currentUser?.displayName.toString(), message, sendPushToken)
+                )
+//                Log.d("TESTEE", "code ${log.resultCode} message : ${log.resultMessage}")
             }
 
         }

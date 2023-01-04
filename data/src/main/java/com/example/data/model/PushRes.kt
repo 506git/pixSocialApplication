@@ -3,6 +3,9 @@ package com.example.data.model
 import com.google.gson.annotations.SerializedName
 
 data class PushRes (
-    @SerializedName("")
-    val contents : String? = ""
+    @SerializedName("resultCode")
+    val resultCode : String? = "",
+
+    @SerializedName("resultMessage")
+    val resultMessage : String? = ""
 )
