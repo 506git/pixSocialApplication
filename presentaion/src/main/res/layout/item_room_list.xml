@@ -4,12 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:elevation="0dp"
+    app:cardBackgroundColor="@color/main_background_color"
     app:cardElevation="0dp"
     app:contentPadding="5dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent">
 
         <ImageView
             android:id="@+id/img_room"

@@ -86,7 +86,7 @@ class MyFirebaseMessagingService: FirebaseMessagingService() {
         notificationCompat.apply {
             setSmallIcon(R.drawable.pic_icon)
             setContentTitle(getString(R.string.app_name))
-            setContentTitle(messageBody.body)
+            setContentText(messageBody.body)
             priority = NotificationCompat.PRIORITY_HIGH
             setAutoCancel(true)
             setContentIntent(pendingIntent)
@@ -138,7 +138,7 @@ class MyFirebaseMessagingService: FirebaseMessagingService() {
         notificationCompat.apply {
             setSmallIcon(R.drawable.pic_icon)
             setContentTitle(title)
-            setContentTitle(message)
+            setContentText(message)
             priority = NotificationCompat.PRIORITY_HIGH
             setAutoCancel(true)
             setContentIntent(pendingIntent)

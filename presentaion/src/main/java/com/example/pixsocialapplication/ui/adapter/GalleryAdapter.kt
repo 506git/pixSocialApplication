@@ -37,6 +37,16 @@ class GalleryAdapter : PagingDataAdapter<Uri, GalleryAdapter.ViewHolder>(
     ARTICLE_DIFF_CALLBACK
 ) {
 
+    interface galleryItemClickListener{
+        fun onItemClick(position: Int, uri: Uri)
+    }
+
+    private lateinit var mItemClickListener: galleryItemClickListener
+
+    fun setGalleryItemClickListener(itemClickListener : GalleryAdapter.galleryItemClickListener){
+        mItemClickListener = itemClickListener
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder(
             ItemGalleryBinding.inflate(
@@ -69,16 +79,22 @@ class GalleryAdapter : PagingDataAdapter<Uri, GalleryAdapter.ViewHolder>(
 
     inner class ViewHolder(private val binding: ItemGalleryBinding) :
         RecyclerView.ViewHolder(binding.root) {
+//
+//        init {
+//            binding.cardView.setOnClickListener{
+//                mItemClickListener.onItemClick(absoluteAdapterPosition, )
+//            }
+//        }
+
         fun bind(test: Uri) {
-            DLog().d("test :")
-            DLog().d("test : $test")
             binding.apply {
                 ImageLoader(context = binding.imgGallery.context).imageLoadWithURL(
                     test.toString(),
                     binding.imgGallery
                 )
-//                binding.textTitle.text = test.toString()
-
+                cardView.setOnClickListener {
+                    mItemClickListener.onItemClick(absoluteAdapterPosition, test)
+                }
             }
         }
     }

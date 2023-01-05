@@ -84,6 +84,18 @@ class GalleryActivity : AppCompatActivity() {
 //        val items = galleryViewModel.pagingData
         val galleryAdapter = GalleryAdapter()
 
+        galleryAdapter.setGalleryItemClickListener(object : GalleryAdapter.galleryItemClickListener{
+            override fun onItemClick(position: Int, uri : Uri) {
+
+                sendBroadcast(Intent("gallery").apply { putExtra("uri","$uri") })
+                finish()
+//
+//                DLog().d("activity : ${galleryArray[position]}")
+                galleryViewModel.setItemSelected(uri.toString())
+            }
+
+        })
+
         binding.listGallery.apply {
             adapter = galleryAdapter
             layoutManager = GridLayoutManager(context, 3)

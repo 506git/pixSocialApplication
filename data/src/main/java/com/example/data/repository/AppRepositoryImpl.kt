@@ -273,33 +273,25 @@ class AppRepositoryImpl @Inject constructor(
         )
 
         var strlist = roomId.trim().split("@")
-        Timber.d("test start@ ==> $strlist")
         strlist = strlist.filterNot { str ->
             str == currentUser?.uid.toString().trim()
         }.filterNot { str ->
             str == "make"
         }
         if (strlist.size > 1) {
-
-            Timber.d("test end@ ==> ${strlist[1]}")
-        } else Timber.d("test end@ ==> it.me")
-        val databaseUserReference = firebaseDatabase.getReference("userInfo")
-//            .child((userId))
-        var sendPushToken = ""
-        databaseUserReference.child(strlist[1]).get().addOnSuccessListener {
-//            Timber.d("test end@ ==> ${it.child("fcmToken")}")
-            sendPushToken = it.child("fcmToken").value.toString()
-            CoroutineScope(Dispatchers.IO).launch {
-                pushService.sendPush(
-//                    currentUser?.displayName.toString(), message, sendPushToken
-                    SendDTO(currentUser?.displayName.toString(), message, sendPushToken)
-                )
-//                Log.d("TESTEE", "code ${log.resultCode} message : ${log.resultMessage}")
+            val databaseUserReference = firebaseDatabase.getReference("userInfo")
+            var sendPushToken = ""
+            databaseUserReference.child(strlist[1]).get().addOnSuccessListener {
+                sendPushToken = it.child("fcmToken").value.toString()
+                CoroutineScope(Dispatchers.IO).launch {
+                    pushService.sendPush(
+                        SendDTO(currentUser?.displayName.toString(), message, sendPushToken)
+                    )
+                    trySend(Result.Success(Unit))
+                }
             }
+        } else  trySend(Result.Success(Unit))
 
-        }
-        trySend(Result.Success(Unit))
-//        pushService.sendPush("",message,strlist[1])
 
         awaitClose {
             channel.close()
@@ -324,7 +316,32 @@ class AppRepositoryImpl @Inject constructor(
                             message_sender_name = currentUser?.displayName.toString()
                         )
                     )
-                    trySend(Result.Success(Unit))
+
+                    var strlist = roomId.trim().split("@")
+                    strlist = strlist.filterNot { str ->
+                        str == currentUser?.uid.toString().trim()
+                    }.filterNot { str ->
+                        str == "make"
+                    }
+                    if (strlist.size > 1) {
+                        val databaseUserReference = firebaseDatabase.getReference("userInfo")
+                        var sendPushToken = ""
+                        databaseUserReference.child(strlist[1]).get().addOnSuccessListener {
+                            sendPushToken = it.child("fcmToken").value.toString()
+                            CoroutineScope(Dispatchers.IO).launch {
+                                pushService.sendPush(
+                                    SendDTO(
+                                        currentUser?.displayName.toString(),
+                                        "사진이 전송되었습니다.",
+                                        sendPushToken
+                                    )
+                                )
+                                trySend(Result.Success(Unit))
+                            }
+                        }
+                    }else  {
+                        trySend(Result.Success(Unit))
+                    }
                 }
             }
         }

@@ -40,7 +40,7 @@ class GalleryPagingSource @Inject constructor(private val service: GalleryServic
             delay(LOAD_DELAY_MILLIS)
             LoadResult.Page(
                 data = items,
-                prevKey = if (page == 1) null else page - 60,
+                prevKey = if (page <= 1) null else page - 60,
                 nextKey = if (items.isEmpty()) null else page + 60
             )
 

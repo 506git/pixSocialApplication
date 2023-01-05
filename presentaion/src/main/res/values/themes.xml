@@ -25,4 +25,5 @@
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
         <item name="android:textSize">13sp</item>
     </style>
+
 </resources>
