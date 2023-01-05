@@ -63,7 +63,6 @@ class MainActivity : AppCompatActivity() {
             }
 
         binding.fabAddChat.setSafeOnClickListener {
-//            behavior.state =
             mainViewModel.setBottomVisible(BottomSheetBehavior.STATE_EXPANDED)
         }
         val bottomSheetView = layoutInflater.inflate(R.layout.bottom_sheet_add_chat, null)

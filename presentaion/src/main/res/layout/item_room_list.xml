@@ -28,21 +28,20 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:text="title"
-            android:textSize="15sp"
+            android:text="username"
+            android:textSize="14sp"
             android:textStyle="bold"
             app:layout_constraintLeft_toRightOf="@+id/img_room"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintWidth_percent="0.8" />
 
-
         <TextView
             android:id="@+id/text_id"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="1dp"
-            android:text="libcode"
+            android:layout_marginTop="2dp"
+            android:text="userid"
             android:textSize="11sp"
             app:layout_constraintLeft_toRightOf="@+id/img_room"
             app:layout_constraintRight_toRightOf="parent"
