@@ -24,10 +24,12 @@ interface AppRepository {
 
     fun getRoomChat(roomId : String) : Flow<Result<List<RoomChat>>>
     suspend fun sendChat(message: String, roomId : String) : Flow<Result<Unit>>
+
     suspend fun sendImage(message: String, roomId : String) : Flow<Result<Unit>>
     fun getGalleryList() : Flow<Result<List<Uri>>>
 
     fun galleryList() : Flow<PagingData<Uri>>
 
+    suspend fun removeChat(messageId: String, roomId : String) : Flow<Result<Unit>>
 //    suspend fun fetchImageList() : Flow<PagingData<LawMaker>>
 }

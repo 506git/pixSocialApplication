@@ -136,7 +136,8 @@ class AppModule {
             updateUserFcmToken = UpdateUserFcmToken(repository),
             getGalleryList = GetGalleryList(repository),
             sendImage = SendImage(repository),
-            galleryList = GalleryList(repository)
+            galleryList = GalleryList(repository),
+            removeChat = RemoveChat(repository)
         )
     }
 

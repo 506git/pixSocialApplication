@@ -239,6 +239,7 @@ class AppRepositoryImpl @Inject constructor(
                     val firebaseUserItem = snapshotChild.getValue(com.example.data.model.RoomChat::class.java)
                     val firebaseItem = RoomChatMapper.mapperToRoomChat(firebaseUserItem!!)
                     firebaseItem.messageSender = if (firebaseItem.messageId == currentUserUid) "me" else "you"
+                    firebaseItem.messageKey = snapshotChild.key.toString()
                     firebaseItem.let {
                         userRoomChatList = userRoomChatList + it
                     }
@@ -408,6 +409,21 @@ class AppRepositoryImpl @Inject constructor(
     }
 
     override fun galleryList() = galleryDataSource.getGalleryData()
+
+    override suspend fun removeChat(messageId: String, roomId : String): Flow<Result<Unit>> = callbackFlow {
+        send(Result.Loading())
+        try{
+            val databaseReference = firebaseDatabase.getReference("roomInfo").child(roomId).child(messageId)
+            databaseReference.removeValue()
+            trySend(Result.Success(Unit))
+        } catch (e: Exception){
+            trySend(Result.Error(e))
+        }
+
+        awaitClose {
+            channel.close()
+        }
+    }
 
     override fun getTestData() = TestRemoteSource.getTestData()
 //    override suspend fun getImageList(): Flow<Result<Unit>> = callbackFlow {

@@ -26,5 +26,7 @@ class UseCase(
     val sendImage : SendImage,
 
     val getGalleryList : GetGalleryList,
-    val galleryList : GalleryList
+    val galleryList : GalleryList,
+
+    val removeChat : RemoveChat
 )

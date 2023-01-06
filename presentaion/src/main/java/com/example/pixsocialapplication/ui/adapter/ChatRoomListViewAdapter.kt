@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.domain.model.RoomChat
 import com.example.domain.model.RoomInfo
 import com.example.pixsocialapplication.R
+import com.example.pixsocialapplication.utils.CommonUtils
 import com.example.pixsocialapplication.utils.ImageLoader
 
 import timber.log.Timber
@@ -75,10 +76,10 @@ class ChatRoomListViewAdapter(dataSet: ArrayList<RoomChat>) :
             itemView.setOnClickListener {
                 mItemClickListener.onItemClick(absoluteAdapterPosition)
             }
-            itemView.setOnLongClickListener {
-                mItemLongClickListener.onItemLongClick(absoluteAdapterPosition)
-                return@setOnLongClickListener false
-            }
+//            itemView.setOnLongClickListener {
+//                mItemLongClickListener.onItemLongClick(absoluteAdapterPosition)
+//                return@setOnLongClickListener false
+//            }
         }
 
         private val txtMessage = itemView.findViewById<TextView>(R.id.text_message)
@@ -93,10 +94,18 @@ class ChatRoomListViewAdapter(dataSet: ArrayList<RoomChat>) :
                     event.message.toString(),
                     imgMessage
                 )
+                imgMessage.setOnLongClickListener {
+                    mItemLongClickListener.onItemLongClick(absoluteAdapterPosition)
+                    return@setOnLongClickListener false
+                }
             } else {
                 txtMessage.visibility = View.VISIBLE
                 txtMessage.text = event.message?.trim()
                 imgMessage.visibility = View.GONE
+                txtMessage.setOnLongClickListener {
+                    mItemLongClickListener.onItemLongClick(absoluteAdapterPosition)
+                    return@setOnLongClickListener false
+                }
             }
             txtName.text = event.messageSenderName
             ImageLoader(context = itemView.context).imageCircleLoadWithURL(
@@ -116,6 +125,4 @@ class ChatRoomListViewAdapter(dataSet: ArrayList<RoomChat>) :
         private const val VIEW_TYPE_ME = 1
         private const val VIEW_TYPE_YOU = 2
     }
-
-//    class ViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 }

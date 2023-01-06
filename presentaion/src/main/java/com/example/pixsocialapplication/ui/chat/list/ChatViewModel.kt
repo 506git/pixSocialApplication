@@ -5,19 +5,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.domain.core.Result
 import com.example.domain.usecase.UseCase
-import com.example.data.model.ImageInfo
-import com.example.domain.model.LibraryDataSearchList
 import com.example.domain.model.RoomChat
-import com.example.domain.model.RoomInfo
-import com.example.pixsocialapplication.ui.chat.list.testData.Article
 import com.example.pixsocialapplication.ui.chat.list.testData.ArticleRepository
-import com.example.pixsocialapplication.utils.DLog
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -77,6 +70,31 @@ class ChatViewModel @Inject constructor(private val useCase: UseCase) : ViewMode
 //            }
 //        }
 //    }
+
+    fun removeChat(messageId: String, roomId: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            useCase.removeChat(messageId, roomId).collect() {
+                when (it) {
+                    is Result.Error -> {
+                        withContext(Dispatchers.Main) {
+                            _loadingState.value = false
+                        }
+                    }
+                    is Result.Loading -> {
+                        withContext(Dispatchers.Main) {
+                            _loadingState.value = true
+                        }
+                    }
+                    is Result.Success -> {
+                        withContext(Dispatchers.Main) {
+                            _loadingState.value = false
+                        }
+                    }
+
+                }
+            }
+        }
+    }
 
     fun getRoomChatList(roomId: String) {
         viewModelScope.launch(Dispatchers.IO) {

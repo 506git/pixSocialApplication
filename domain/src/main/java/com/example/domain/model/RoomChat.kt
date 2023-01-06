@@ -9,5 +9,6 @@ data class RoomChat (
     val messageDate: String? = "",
     val messageSenderImage: String? = "",
     var messageSender : String = "you",
-    val messageSenderName : String? = ""
+    val messageSenderName : String? = "",
+    var messageKey : String = ""
 )

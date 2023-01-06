@@ -7,12 +7,19 @@
     <string name="text_chat_list">대화목록</string>
     <string name="hint_search_id">ID 검색</string>
     <string name="text_chat_add">친구 검색</string>
+
+    <string name="text_title_alert">알림</string>
+    <string name="text_delete">삭제</string>
+    <string name="text_play">픿 실행</string>
+
     <string name="text_chat_add_desc">찾을 친구의 구글 아이디를 입력해주세요!</string>
 
     <string name="text_all_picture">전체 보기</string>
     <string name="text_img_detail">전체 화면</string>
 
     <string name="default_notification_channel_id">fcm</string>
+    <string name="default_notification_channel_group">fcm_group_pix</string>
+
     <string name="fcm_user_token">FCM_USER_TOKEN</string>
 
     <string name="permission_request">앱을 사용하기 위해선 권한이 필요합니다.</string>
