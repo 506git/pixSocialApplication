@@ -16,7 +16,7 @@
     <fragment
         android:id="@+id/chatRoomFragment"
         android:name="com.example.pixsocialapplication.ui.chat.room.ChatRoomFragment"
-        android:label="fragment_chat_room"
+        android:label="@string/text_menu_chat_list"
         tools:layout="@layout/fragment_chat_room" >
         <action
             android:id="@+id/action_chatRoomFragment_to_chatListFragment"
@@ -27,4 +27,14 @@
         android:name="com.example.pixsocialapplication.ui.gallery.GalleryFragment"
         android:label="fragment_gallery"
         tools:layout="@layout/fragment_gallery" />
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.pixsocialapplication.ui.profile.ProfileFragment"
+        android:label="@string/text_menu_profile"
+        tools:layout="@layout/fragment_profile" />
+    <fragment
+        android:id="@+id/friendsFragment"
+        android:name="com.example.pixsocialapplication.ui.friends.FriendsFragment"
+        android:label="@string/text_menu_friends"
+        tools:layout="@layout/fragment_friends" />
 </navigation>

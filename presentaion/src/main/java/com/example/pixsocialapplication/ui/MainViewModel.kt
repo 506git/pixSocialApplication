@@ -60,6 +60,10 @@ class MainViewModel @Inject constructor(private val useCase: UseCase) : ViewMode
         _appbarDesc.value = desc
     }
 
+    fun navAppbarTitle(title : String){
+        _appbarTitle.value = title
+    }
+
     fun setFabVisible(visible : Int){
         _fabVisible.value = visible
     }

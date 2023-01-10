@@ -7,13 +7,18 @@ import android.widget.LinearLayout
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.NavController
+import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupWithNavController
 import com.example.pixsocialapplication.R
 import com.example.pixsocialapplication.databinding.ActivityMainBinding
 import com.example.pixsocialapplication.utils.CommonUtils
 import com.example.pixsocialapplication.utils.DLog
 import com.example.ssolrangapplication.common.setSafeOnClickListener
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
@@ -53,6 +58,15 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         this.onBackPressedDispatcher.addCallback(this, callback)
+
+        val navView : BottomNavigationView = binding.bottomNavigation
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_main_fragment) as NavHostFragment
+        val navController = navHostFragment.navController
+        navView.setupWithNavController(navController)
+
+        navController.addOnDestinationChangedListener { controller, destination, arguments ->
+            mainViewModel.navAppbarTitle(title = destination.label.toString())
+        }
 
         Firebase.messaging.subscribeToTopic("pix_all")
             .addOnCompleteListener { task ->
