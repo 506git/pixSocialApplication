@@ -1,7 +1,6 @@
 package com.example.pixsocialapplication.ui.intro
 
 import android.content.Intent
-import android.os.Binder
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
@@ -10,11 +9,10 @@ import com.example.pixsocialapplication.databinding.ActivityLogInBinding
 import com.example.pixsocialapplication.ui.MainActivity
 import com.example.pixsocialapplication.utils.AuthResultContract
 import com.example.pixsocialapplication.utils.CommonUtils
-import com.example.ssolrangapplication.common.setSafeOnClickListener
+import com.example.pixsocialapplication.utils.setSafeOnClickListener
 import com.google.android.gms.common.api.ApiException
 
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 @AndroidEntryPoint
 class LogInActivity : AppCompatActivity() {

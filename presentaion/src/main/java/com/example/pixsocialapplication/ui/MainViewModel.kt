@@ -34,7 +34,6 @@ class MainViewModel @Inject constructor(private val useCase: UseCase) : ViewMode
 
     fun findChatUser(userId: String){
         viewModelScope.launch(Dispatchers.IO) {
-
             useCase.findUserId(userId).collect(){
                 when (it){
                     is Result.Error -> {

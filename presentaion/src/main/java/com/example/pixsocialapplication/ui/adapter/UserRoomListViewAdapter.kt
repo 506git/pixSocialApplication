@@ -59,11 +59,11 @@ class UserRoomListViewAdapter(dataSet: ArrayList<RoomInfo>) : RecyclerView.Adapt
         fun bind(event: RoomInfo) {
             txtName.text = event.room_name
             txtId.text = event.room_title
-            CoroutineScope(Dispatchers.Main).launch{
-                ImageLoader(context = itemView.context).imageLoadWithBitmap(CommonUtils.convertPixelArtUrl(itemView.resources, event.room_img.toString())!!, imgRoom)
-            }
+//            CoroutineScope(Dispatchers.Main).launch{
+//                ImageLoader(context = itemView.context).imageLoadWithBitmap(CommonUtils.convertPixelArtUrl(itemView.resources, event.room_img.toString())!!, imgRoom)
+//            }
 
-//            ImageLoader(context = itemView.context).imageCircleLoadWithURL(event.room_img.toString(), imgRoom)
+            ImageLoader(context = itemView.context).imageCircleLoadWithURL(event.room_img.toString(), imgRoom)
         }
     }
 

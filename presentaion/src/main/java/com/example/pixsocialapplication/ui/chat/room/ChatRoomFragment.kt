@@ -136,12 +136,12 @@ class ChatRoomFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        mainViewModel.setFabVisible(View.VISIBLE)
+//        mainViewModel.setFabVisible(View.VISIBLE)
     }
 
     override fun onPause() {
         super.onPause()
-        mainViewModel.setFabVisible(View.GONE)
+//        mainViewModel.setFabVisible(View.GONE)
         mainViewModel.setBottomVisible(BottomSheetBehavior.STATE_HIDDEN)
     }
 

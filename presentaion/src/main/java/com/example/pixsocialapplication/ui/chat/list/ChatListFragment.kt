@@ -25,7 +25,7 @@ import com.example.pixsocialapplication.ui.common.LoadingDialog
 import com.example.pixsocialapplication.ui.gallery.GalleryActivity
 import com.example.pixsocialapplication.utils.CommonUtils
 import com.example.pixsocialapplication.utils.DLog
-import com.example.ssolrangapplication.common.setSafeOnClickListener
+import com.example.pixsocialapplication.utils.setSafeOnClickListener
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*

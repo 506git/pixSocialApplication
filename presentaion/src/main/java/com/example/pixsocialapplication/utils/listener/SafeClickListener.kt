@@ -1,4 +1,4 @@
-package com.example.ssolrangapplication.common.Listener
+package com.example.pixsocialapplication.utils.listener
 
 import android.os.SystemClock
 import android.view.View

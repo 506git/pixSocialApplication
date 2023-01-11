@@ -1,7 +1,7 @@
-package com.example.ssolrangapplication.common
+package com.example.pixsocialapplication.utils
 
 import android.view.View
-import com.example.ssolrangapplication.common.Listener.SafeClickListener
+import com.example.pixsocialapplication.utils.listener.SafeClickListener
 
 
 /**
