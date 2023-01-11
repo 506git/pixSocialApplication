@@ -9,6 +9,7 @@ import com.example.pixsocialapplication.R
 import com.example.pixsocialapplication.databinding.ActivityLogInBinding
 import com.example.pixsocialapplication.ui.MainActivity
 import com.example.pixsocialapplication.utils.AuthResultContract
+import com.example.pixsocialapplication.utils.CommonUtils
 import com.example.ssolrangapplication.common.setSafeOnClickListener
 import com.google.android.gms.common.api.ApiException
 
@@ -39,6 +40,8 @@ class LogInActivity : AppCompatActivity() {
                 finish()
             }
         }
+
+        binding.imgTitle.setImageBitmap(CommonUtils.convertPixelArt(resources, R.drawable.pic_icon))
     }
 
     private val googleSignInLauncher = registerForActivityResult(AuthResultContract()) { task ->

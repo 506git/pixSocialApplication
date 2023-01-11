@@ -10,7 +10,11 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.domain.model.RoomInfo
 import com.example.pixsocialapplication.R
+import com.example.pixsocialapplication.utils.CommonUtils
 import com.example.pixsocialapplication.utils.ImageLoader
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 import timber.log.Timber
 
@@ -55,7 +59,11 @@ class UserRoomListViewAdapter(dataSet: ArrayList<RoomInfo>) : RecyclerView.Adapt
         fun bind(event: RoomInfo) {
             txtName.text = event.room_name
             txtId.text = event.room_title
-            ImageLoader(context = itemView.context).imageCircleLoadWithURL(event.room_img.toString(), imgRoom)
+            CoroutineScope(Dispatchers.Main).launch{
+                ImageLoader(context = itemView.context).imageLoadWithBitmap(CommonUtils.convertPixelArtUrl(itemView.resources, event.room_img.toString())!!, imgRoom)
+            }
+
+//            ImageLoader(context = itemView.context).imageCircleLoadWithURL(event.room_img.toString(), imgRoom)
         }
     }
 

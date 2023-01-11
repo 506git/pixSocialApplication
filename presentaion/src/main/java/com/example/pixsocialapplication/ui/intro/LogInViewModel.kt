@@ -13,6 +13,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import com.example.domain.core.Result
+import com.example.pixsocialapplication.utils.DLog
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.GlobalScope
@@ -63,6 +64,7 @@ class LogInViewModel @Inject constructor(private val useCase: UseCase) : ViewMod
     }
 
     fun signInWithGoogleIdToken(idToken: String) {
+        DLog().d("login start")
         viewModelScope.launch(IO) {
             useCase.signInWithGoogleIdToken(idToken).collect() {
                 when (it) {
@@ -81,7 +83,6 @@ class LogInViewModel @Inject constructor(private val useCase: UseCase) : ViewMod
                         }
                         initUserInfoUpdateDB()
                     }
-
                 }
             }
         }

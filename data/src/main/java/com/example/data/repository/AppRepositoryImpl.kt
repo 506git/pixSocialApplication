@@ -84,10 +84,14 @@ class AppRepositoryImpl @Inject constructor(
 
     override suspend fun signInWithCredential(idToken: String): Flow<Result<Unit>> = callbackFlow {
         send(Result.Loading())
+
         val firebaseCredential = GoogleAuthProvider.getCredential(idToken, null)
         auth.signInWithCredential(firebaseCredential).addOnSuccessListener {
             if (it.user != null) {
-                trySend(Result.Success(Unit))
+                it.user!!.getIdToken(true).addOnSuccessListener { result ->
+                    val token = result.token.toString()
+                    trySend(Result.Success(Unit))
+                }
             }
         }.addOnFailureListener {
             trySend(Result.Error(it))
@@ -117,6 +121,7 @@ class AppRepositoryImpl @Inject constructor(
         callbackFlow {
             send(Result.Loading())
             val currentUserUid = auth.currentUser//?.uid.toString()
+
             val databaseReference =
                 firebaseDatabase.getReference("userInfo").child(currentUserUid?.uid.toString())
             databaseReference
