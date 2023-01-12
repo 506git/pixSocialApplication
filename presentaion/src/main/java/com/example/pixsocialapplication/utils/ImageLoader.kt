@@ -42,7 +42,7 @@ class ImageLoader(private val context: Context) {
     }
 
     fun imageLoadWithUrlToBlur(url: String, v :ImageView) {
-        Glide.with(this.context).load(url).apply(RequestOptions.bitmapTransform(BlurTransformation(25,5))).into(v)
+        Glide.with(this.context).load(url).apply(RequestOptions.bitmapTransform(BlurTransformation(30,20))).into(v)
     }
 
     fun imageLoadWithUrlToPixel(url:String, v : ImageView){

@@ -1,5 +1,7 @@
 package com.example.pixsocialapplication.ui
 
+import android.content.Intent
+import android.icu.number.Scale.none
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
@@ -13,6 +15,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.example.pixsocialapplication.R
 import com.example.pixsocialapplication.databinding.ActivityMainBinding
+import com.example.pixsocialapplication.ui.settings.SettingsActivity
 import com.example.pixsocialapplication.utils.CommonUtils
 import com.example.pixsocialapplication.utils.DLog
 import com.example.pixsocialapplication.utils.setSafeOnClickListener
@@ -94,10 +97,6 @@ class MainActivity : AppCompatActivity() {
                     msg = "Subscribe failed"
                 }
             }
-
-        binding.fabAddChat.setSafeOnClickListener {
-            mainViewModel.setBottomVisible(BottomSheetBehavior.STATE_EXPANDED)
-        }
         val bottomSheetView = layoutInflater.inflate(R.layout.bottom_sheet_add_chat, null)
         val bottomSheetDialog = BottomSheetDialog(this)
         bottomSheetDialog.setContentView(bottomSheetView)
@@ -124,11 +123,6 @@ class MainActivity : AppCompatActivity() {
             mainViewModel.updateUserFcmToken(task.result)
         }
 
-
-//        mainViewModel.fabVisible.observe(this) {
-//            binding.fabAddChat.visibility = it
-//        }
-
         mainViewModel.appbarTitle.observe(this) {
             binding.appbarTxt.text = it.toString()
         }
@@ -148,6 +142,12 @@ class MainActivity : AppCompatActivity() {
                 mainViewModel.setBottomVisible(BottomSheetBehavior.STATE_COLLAPSED)
             }
             return@setOnKeyListener false
+        }
+
+        binding.btnSettings.setSafeOnClickListener {
+            startActivity(Intent(this@MainActivity, SettingsActivity::class.java))
+//            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+            overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_right_exit)
         }
 
         behavior.apply {
