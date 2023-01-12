@@ -8,11 +8,7 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.findNavController
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -21,15 +17,11 @@ import com.example.pixsocialapplication.R
 import com.example.pixsocialapplication.databinding.FragmentChatRoomBinding
 import com.example.pixsocialapplication.ui.MainViewModel
 import com.example.pixsocialapplication.ui.adapter.ArticleAdapter
-import com.example.pixsocialapplication.ui.adapter.TestAdapter
 import com.example.pixsocialapplication.ui.adapter.UserRoomListViewAdapter
 import com.example.pixsocialapplication.ui.common.LoadingDialog
-import com.example.pixsocialapplication.utils.DLog
+import com.example.pixsocialapplication.ui.profile.ProfileFragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
-import timber.log.Timber
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -104,16 +96,26 @@ class ChatRoomFragment : Fragment() {
         }
 
         userRoomListViewAdapter.setRoomItemClickListener(object : UserRoomListViewAdapter.RoomItemClickListener {
-            override fun onItemClick(position: Int) {
-                val bundle = bundleOf(
-                    "roomTitle" to roomArray[position].room_title,
-                    "roomName" to roomArray[position].room_name,
-                    "roomId" to roomArray[position].room_id
-                )
-//                val bundle = Bundle().apply {
-//                    this.putSerializable("roomInfo", roomArray[position])
-//                }
-                view?.findNavController()?.navigate(R.id.action_chatRoomFragment_to_chatListFragment, bundle)
+            override fun onItemClick(view: View, position: Int) {
+                when (view.id){
+                    R.id.img_room -> {
+                        ProfileFragment().apply {
+                            arguments = bundleOf(
+                                "userName" to roomArray[position].room_name,
+                                "userImage" to roomArray[position].room_img,
+                                "userEmail" to roomArray[position].room_title
+                            )
+                        }.show(activity!!.supportFragmentManager,"profile")
+                    }
+                    else -> {
+                        val bundle = bundleOf(
+                            "roomTitle" to roomArray[position].room_title,
+                            "roomName" to roomArray[position].room_name,
+                            "roomId" to roomArray[position].room_id
+                        )
+                        view.findNavController().navigate(R.id.action_chatRoomFragment_to_chatListFragment, bundle)
+                    }
+                }
             }
         })
 

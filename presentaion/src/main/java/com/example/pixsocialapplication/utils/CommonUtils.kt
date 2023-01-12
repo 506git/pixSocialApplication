@@ -7,9 +7,13 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.os.Build
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.Gravity
 import android.view.View
+import android.view.WindowInsets
+import android.view.WindowManager
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import com.example.pixsocialapplication.utils.pixel.Pixelate.fromBitmap
@@ -17,13 +21,14 @@ import com.example.pixsocialapplication.utils.pixel.PixelateLayer
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.*
 import java.net.URL
+import kotlin.system.exitProcess
 
 object CommonUtils {
 
     fun appFinish() {
         ActivityCompat.finishAffinity(Activity())
         System.runFinalization()
-        System.exit(0)
+        exitProcess(0)
     }
 
     fun snackBar(activity: Activity, message: String, duration: Int) {
@@ -43,6 +48,49 @@ object CommonUtils {
         }
         return dialog
     }
+
+
+    fun getScreenHeight(context: Context): Int {
+        val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+//            var statusBarSize = 0
+//            var resourceId  = context.resources.getIdentifier("status_bar_height", "dimen", "android")
+//            if (resourceId > 0) statusBarSize = context.resources.getDimensionPixelSize(resourceId)
+
+            val windowMetrics = wm.currentWindowMetrics
+            val insets = windowMetrics.windowInsets
+                .getInsetsIgnoringVisibility(WindowInsets.Type.systemBars())
+            windowMetrics.bounds.height() - insets.bottom - insets.top
+        } else {
+            val displayMetrics = DisplayMetrics()
+            wm.defaultDisplay.getMetrics(displayMetrics)
+            displayMetrics.heightPixels
+        }
+    }
+
+    fun getScreenWidth(context: Context): Int {
+        val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val windowMetrics = wm.currentWindowMetrics
+            val insets = windowMetrics.windowInsets
+                .getInsetsIgnoringVisibility(WindowInsets.Type.systemBars())
+            windowMetrics.bounds.width() - insets.left - insets.right
+        } else {
+            val displayMetrics = DisplayMetrics()
+            wm.defaultDisplay.getMetrics(displayMetrics)
+            displayMetrics.widthPixels
+        }
+    }
+
+
+
+
+    //------------------------------------------------
+    //------------------------------------------------
+    //------------------------------------------------
+    //------------------------------------------------
+    //------------------------------------------------
+
 
     fun convertPixelArt(
         resources: Resources,
@@ -66,7 +114,7 @@ object CommonUtils {
         val job = CoroutineScope(Dispatchers.IO).async {
             try {
                 var bitmap: Bitmap? = null
-// 화면 크기에 가장 근접하는 이미지의 리스케일 사이즈를 구한다.
+                // 화면 크기에 가장 근접하는 이미지의 리스케일 사이즈를 구한다.
                 withContext(Dispatchers.IO) {
                     bitmap = decodeBitmapFromResource(resources, url, width, height)
 //                    bitmap = BitmapFactory.decodeStream(URL(url).openStream())

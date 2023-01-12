@@ -7,9 +7,9 @@
         android:title="@string/text_menu_friends" />
 
     <item
-        android:id="@+id/profileFragment"
+        android:id="@+id/addFriendsFragment"
         android:icon="@drawable/icon_add_friends"
-        android:title="@string/text_menu_profile" />
+        android:title="@string/text_menu_add_friends" />
 
     <item
         android:id="@+id/chatRoomFragment"

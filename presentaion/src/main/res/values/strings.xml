@@ -27,4 +27,5 @@
     <string name="text_menu_profile">프로필</string>
     <string name="text_menu_friends">친구목록</string>
     <string name="text_menu_chat_list">대화목록</string>
+    <string name="text_menu_add_friends">친구추가</string>
 </resources>

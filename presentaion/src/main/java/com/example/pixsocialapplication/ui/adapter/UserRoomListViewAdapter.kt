@@ -5,24 +5,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.domain.model.RoomInfo
 import com.example.pixsocialapplication.R
-import com.example.pixsocialapplication.utils.CommonUtils
 import com.example.pixsocialapplication.utils.ImageLoader
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-
-import timber.log.Timber
 
 class UserRoomListViewAdapter(dataSet: ArrayList<RoomInfo>) : RecyclerView.Adapter<UserRoomListViewAdapter.ViewHolder>() {
     private val eventList : ArrayList<RoomInfo> = dataSet
 
     interface RoomItemClickListener{
-        fun onItemClick(position: Int)
+        fun onItemClick(view: View, position: Int)
     }
 
     private lateinit var mItemClickListener: RoomItemClickListener
@@ -50,7 +42,7 @@ class UserRoomListViewAdapter(dataSet: ArrayList<RoomInfo>) : RecyclerView.Adapt
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         init {
             itemView.setOnClickListener{
-                mItemClickListener.onItemClick(absoluteAdapterPosition)
+                mItemClickListener.onItemClick(it, absoluteAdapterPosition)
             }
         }
         private val txtName = itemView.findViewById<TextView>(R.id.text_name)
@@ -59,10 +51,9 @@ class UserRoomListViewAdapter(dataSet: ArrayList<RoomInfo>) : RecyclerView.Adapt
         fun bind(event: RoomInfo) {
             txtName.text = event.room_name
             txtId.text = event.room_title
-//            CoroutineScope(Dispatchers.Main).launch{
-//                ImageLoader(context = itemView.context).imageLoadWithBitmap(CommonUtils.convertPixelArtUrl(itemView.resources, event.room_img.toString())!!, imgRoom)
-//            }
-
+            imgRoom.setOnClickListener {
+                mItemClickListener.onItemClick(it, absoluteAdapterPosition)
+            }
             ImageLoader(context = itemView.context).imageCircleLoadWithURL(event.room_img.toString(), imgRoom)
         }
     }

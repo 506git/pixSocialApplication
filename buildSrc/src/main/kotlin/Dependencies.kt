@@ -37,8 +37,12 @@ object Versions {
     const val HILT_PLUG = "2.38.1"
     const val HILT = "2.40"
 
+    // Timber
     const val TIMBER = "4.7.1"
+
+    //Glide
     const val GLIDE = "4.11.0"
+    const val GLIDE_TRANS = "4.3.0"
 
     const val RETROFIT = "2.9.0"
     const val OKHTTP = "4.3.1"
@@ -91,6 +95,8 @@ object Libs {
 
     const val GLIDE = "com.github.bumptech.glide:glide:${Versions.GLIDE}"
     const val GLIDE_ANNOTATION = "com.github.bumptech.glide:compiler:${Versions.GLIDE}"
+    const val GLIDE_TRANS = "jp.wasabeef:glide-transformations:${Versions.GLIDE_TRANS}"
+    const val GPU_FILTER = "jp.co.cyberagent.android:gpuimage:2.1.0"
 
     const val RETROFIT = "com.squareup.retrofit2:retrofit:${Versions.RETROFIT}"
     const val GSON = "com.squareup.retrofit2:converter-gson:${Versions.RETROFIT}"

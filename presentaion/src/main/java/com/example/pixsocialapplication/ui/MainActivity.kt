@@ -76,12 +76,11 @@ class MainActivity : AppCompatActivity() {
 
         navView.setOnItemSelectedListener { item ->
             when(item.itemId){
-                R.id.profileFragment -> {
+                R.id.addFriendsFragment -> {
                     mainViewModel.setBottomVisible(BottomSheetBehavior.STATE_EXPANDED)
                     return@setOnItemSelectedListener false
                 }
                 else -> {
-//                    mainViewModel.navAppbarTitle(title = item.title.toString())
                     navController.navigate(item.itemId)
                     return@setOnItemSelectedListener true
                 }

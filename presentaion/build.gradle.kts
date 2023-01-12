@@ -100,6 +100,8 @@ dependencies {
     // Glide
     implementation(Libs.GLIDE)
     annotationProcessor(Libs.GLIDE_ANNOTATION)
+    implementation(Libs.GLIDE_TRANS)
+    implementation(Libs.GPU_FILTER)
 
     // Navigation
     implementation(AndroidX.NAVIGATION)
