@@ -27,11 +27,11 @@
         android:name="com.example.pixsocialapplication.ui.gallery.GalleryFragment"
         android:label="fragment_gallery"
         tools:layout="@layout/fragment_gallery" />
-    <fragment
-        android:id="@+id/profileFragment"
-        android:name="com.example.pixsocialapplication.ui.profile.ProfileFragment"
-        android:label="@string/text_menu_profile"
-        tools:layout="@layout/fragment_profile" />
+<!--    <fragment-->
+<!--        android:id="@+id/profileFragment"-->
+<!--        android:name="com.example.pixsocialapplication.ui.profile.ProfileFragment"-->
+<!--        android:label="@string/text_menu_profile"-->
+<!--        tools:layout="@layout/fragment_profile" />-->
     <fragment
         android:id="@+id/friendsFragment"
         android:name="com.example.pixsocialapplication.ui.friends.FriendsFragment"

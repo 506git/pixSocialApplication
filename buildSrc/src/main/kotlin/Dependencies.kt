@@ -3,7 +3,7 @@ object Apps {
     const val minSdk = 21
     const val targetSdk = 32
     const val versionCode = 1
-    const val versionName = "1.0.1"
+    const val versionName = "1.0.01"
 }
 
 object Versions {
@@ -40,13 +40,16 @@ object Versions {
     // Timber
     const val TIMBER = "4.7.1"
 
-    //Glide
+    // Glide
     const val GLIDE = "4.11.0"
     const val GLIDE_TRANS = "4.3.0"
 
     const val RETROFIT = "2.9.0"
     const val OKHTTP = "4.3.1"
     const val LOTTIE = "5.2.0"
+
+    // Room
+    const val ROOM_VERSION = "2.5.0"
 }
 
 object Kotlin {
@@ -106,4 +109,6 @@ object Libs {
 
     const val LOTTIE = "com.airbnb.android:lottie:${Versions.LOTTIE}"
 
+    const val ROOM = "androidx.room:room-runtime:${Versions.ROOM_VERSION}"
+    const val ROOM_COMPILE = "androidx.room:room-compiler:${Versions.ROOM_VERSION}"
 }

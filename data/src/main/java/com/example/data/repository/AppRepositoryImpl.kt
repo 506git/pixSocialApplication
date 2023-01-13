@@ -90,6 +90,10 @@ class AppRepositoryImpl @Inject constructor(
             if (it.user != null) {
                 it.user!!.getIdToken(true).addOnSuccessListener { result ->
                     val token = result.token.toString()
+                    CoroutineScope(Dispatchers.IO).launch {
+                        TestRemoteSource.getUserData(token)
+                    }
+                    Log.d("TEST TOKEN =>","test $token" )
                     trySend(Result.Success(Unit))
                 }
             }

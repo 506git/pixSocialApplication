@@ -85,20 +85,6 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab_add_chat"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="15dp"
-            android:backgroundTint="@color/main_bottom_color"
-            android:src="@drawable/icon_plus"
-            android:visibility="gone"
-            app:borderWidth="0dp"
-            app:fabSize="normal"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
-
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/nav_main_fragment"
             android:name="androidx.navigation.fragment.NavHostFragment"

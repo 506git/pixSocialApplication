@@ -22,4 +22,8 @@ class TestRemoteDataSourceImpl @Inject constructor(private val service: TestServ
         ).flow
     }
 
+    override suspend fun getUserData(accessToken: String) {
+        return service.getUser(accessToken)
+    }
+
 }

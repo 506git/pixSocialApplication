@@ -28,4 +28,15 @@
     <string name="text_menu_friends">친구목록</string>
     <string name="text_menu_chat_list">대화목록</string>
     <string name="text_menu_add_friends">친구추가</string>
+
+    <!-- setting options string -->
+    <string name="text_block_user">차단된 사용자</string>
+    <string name="text_user_term">이용약관 / 개인정보처리방침</string>
+    <string name="text_user_push">푸쉬 사용 여부</string>
+    <string name="text_use_permission">사용 권한 보기</string>
+    <string name="text_delete_cache">캐시 지우기</string>
+    <string name="text_version">사용버전 / 최신버전</string>
+    <string name="text_service_center">고객센터</string>
+    <string name="text_logout">로그아웃</string>
 </resources>
+

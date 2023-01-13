@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
                     this@MainActivity.findNavController(R.id.nav_main_fragment).popBackStack()
                 }
             } else if(System.currentTimeMillis() - time < 2000 ){
-                finish();
+                finish()
             }
         }
     }
@@ -58,11 +58,31 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        // 뒤로가기
         this.onBackPressedDispatcher.addCallback(this, callback)
+
+        // fcm 구독
+        Firebase.messaging.subscribeToTopic("pix_all").addOnCompleteListener { task ->
+            var msg = "Subscribed"
+            if (!task.isSuccessful) {
+                msg = "Subscribe failed"
+            }
+        }
+
+        // fcm 토큰
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                DLog().e(task.exception.toString())
+                return@addOnCompleteListener
+            }
+            mainViewModel.setToken(getString(R.string.fcm_user_token), task.result)
+            mainViewModel.updateUserFcmToken(task.result)
+        }
 
         val navView : BottomNavigationView = binding.bottomNavigation
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_main_fragment) as NavHostFragment
         val navController = navHostFragment.navController
+
         navView.setupWithNavController(navController)
 
         navController.addOnDestinationChangedListener { controller, destination, arguments ->
@@ -90,13 +110,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        Firebase.messaging.subscribeToTopic("pix_all")
-            .addOnCompleteListener { task ->
-                var msg = "Subscribed"
-                if (!task.isSuccessful) {
-                    msg = "Subscribe failed"
-                }
-            }
         val bottomSheetView = layoutInflater.inflate(R.layout.bottom_sheet_add_chat, null)
         val bottomSheetDialog = BottomSheetDialog(this)
         bottomSheetDialog.setContentView(bottomSheetView)
@@ -114,15 +127,6 @@ class MainActivity : AppCompatActivity() {
                 })
             }
 
-        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
-            if (!task.isSuccessful) {
-                DLog().e(task.exception.toString())
-                return@addOnCompleteListener
-            }
-            mainViewModel.setToken(getString(R.string.fcm_user_token), task.result)
-            mainViewModel.updateUserFcmToken(task.result)
-        }
-
         mainViewModel.appbarTitle.observe(this) {
             binding.appbarTxt.text = it.toString()
         }
@@ -138,7 +142,6 @@ class MainActivity : AppCompatActivity() {
         binding.bottomView.editSearch.setOnKeyListener { view, keyCode, keyEvent ->
             if (keyCode == KeyEvent.KEYCODE_ENTER && keyEvent.action == KeyEvent.ACTION_UP) {
                 mainViewModel.findChatUser(binding.bottomView.editSearch.text.toString().trim())
-//                behavior.state = BottomSheetBehavior.STATE_HIDDEN
                 mainViewModel.setBottomVisible(BottomSheetBehavior.STATE_COLLAPSED)
             }
             return@setOnKeyListener false
@@ -146,12 +149,10 @@ class MainActivity : AppCompatActivity() {
 
         binding.btnSettings.setSafeOnClickListener {
             startActivity(Intent(this@MainActivity, SettingsActivity::class.java))
-//            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
             overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_right_exit)
         }
 
         behavior.apply {
-//            isGestureInsetBottomIgnored = true
             isDraggable = true
             state = BottomSheetBehavior.STATE_HIDDEN
         }

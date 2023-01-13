@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/settings_navigation"
+    app:startDestination="@id/settingsMainFragment">
+
+    <fragment
+        android:id="@+id/settingsMainFragment"
+        android:name="com.example.pixsocialapplication.ui.settings.main.SettingsMainFragment"
+        android:label="SettingsMainFragment"
+        tools:layout="@layout/fragment_settings_main" >
+        <action
+            android:id="@+id/action_settingsMainFragment_to_settingDetailFragment"
+            app:destination="@id/settingDetailFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/settingDetailFragment"
+        android:name="com.example.pixsocialapplication.ui.settings.detail.SettingDetailFragment"
+        android:label="fragment_setting_detail"
+        tools:layout="@layout/fragment_setting_detail" />
+
+</navigation>

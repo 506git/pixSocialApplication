@@ -2,10 +2,12 @@ package com.example.pixsocialapplication.utils
 
 import android.app.Activity
 import android.content.Context
+import android.content.DialogInterface
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.graphics.Typeface
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.util.DisplayMetrics
@@ -14,8 +16,11 @@ import android.view.Gravity
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
+import androidx.core.content.res.ResourcesCompat
+import com.example.pixsocialapplication.R
 import com.example.pixsocialapplication.utils.pixel.Pixelate.fromBitmap
 import com.example.pixsocialapplication.utils.pixel.PixelateLayer
 import com.google.android.material.snackbar.Snackbar
@@ -47,6 +52,13 @@ object CommonUtils {
             window?.setGravity(Gravity.CENTER_VERTICAL)
         }
         return dialog
+    }
+
+    fun alertDialog(context: Context, message: String, btnText: String, cancelable: Boolean = false, onClick: DialogInterface.OnClickListener) {
+        val dialog = AlertDialog.Builder(context).setTitle("알림").setCancelable(cancelable)
+            .setMessage(message).setPositiveButton(btnText, onClick)
+            .create()
+        dialog.show()
     }
 
 

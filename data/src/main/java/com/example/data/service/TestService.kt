@@ -3,6 +3,8 @@ package com.example.data.service
 import com.example.data.model.TestRes
 import com.example.domain.model.Test
 import retrofit2.http.GET
+import retrofit2.http.Header
+import retrofit2.http.Headers
 import retrofit2.http.Query
 
 interface TestService {
@@ -15,4 +17,9 @@ interface TestService {
         @Query("currentCount") page: Int = 1,
         @Query("pageCount") pageCount : Int = 10
     ) :  TestRes
+
+    @GET("users/test")
+    suspend fun getUser(
+        @Header("authorization") accessToken: String
+    )
 }

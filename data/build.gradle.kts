@@ -32,8 +32,6 @@ dependencies {
     // Retrofit2
     implementation(Libs.RETROFIT)
 
-
-
     // Gson 변환기
     implementation(Libs.GSON)
 
@@ -57,5 +55,9 @@ dependencies {
 
     //paging
     implementation(AndroidX.TEST_PAGING)
+
+    //room
+    implementation(Libs.ROOM)
+    implementation(Libs.ROOM_COMPILE)
 
 }

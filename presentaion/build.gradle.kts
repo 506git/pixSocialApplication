@@ -131,6 +131,9 @@ dependencies {
     // lottie
     implementation(Libs.LOTTIE)
 
+    //room
+    implementation(Libs.ROOM)
+    implementation(Libs.ROOM_COMPILE)
 }
 
 

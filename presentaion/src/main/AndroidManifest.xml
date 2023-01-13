@@ -30,19 +30,9 @@
         android:theme="@style/Theme.PixSocialApplication"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-        <activity
-            android:name=".ui.settings.SettingsActivity"
-            android:exported="false" />
 
         <service
             android:name=".service.PixPushService"
-            android:exported="false" />
-
-        <activity
-            android:name=".ui.chat.list.ImageDatailActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.gallery.GalleryActivity"
             android:exported="false" />
 
         <meta-data
@@ -69,9 +59,6 @@
         <receiver android:name=".service.ExitReceiver" />
 
         <activity
-            android:name=".ui.intro.LogInActivity"
-            android:exported="false" />
-        <activity
             android:name=".ui.intro.SplashActivity"
             android:exported="true"
             android:theme="@style/Theme.Splash">
@@ -81,11 +68,30 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".ui.intro.LogInActivity"
+            android:exported="false" />
+
         <activity
             android:name=".ui.MainActivity"
             android:exported="true"
             android:theme="@style/Base.Theme.MyApplication"
             android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".ui.settings.SettingsActivity"
+            android:theme="@style/Base.Theme.MyApplication"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.chat.list.ImageDatailActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.gallery.GalleryActivity"
+            android:exported="false" />
+
     </application>
 
 </manifest>
