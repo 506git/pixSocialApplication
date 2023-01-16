@@ -1,13 +1,19 @@
 package com.example.pixsocialapplication.ui
 
 import android.content.Intent
+import android.content.pm.ShortcutInfo
+import android.content.pm.ShortcutManager
+import android.graphics.drawable.Icon
 import android.icu.number.Scale.none
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
 import android.widget.LinearLayout
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
@@ -36,6 +42,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var behavior: BottomSheetBehavior<LinearLayout>
     private val mainViewModel: MainViewModel by viewModels()
     private var time: Long = 0
+    var shortcutManager: ShortcutManager? = null
 
     private val callback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
@@ -156,5 +163,25 @@ class MainActivity : AppCompatActivity() {
             isDraggable = true
             state = BottomSheetBehavior.STATE_HIDDEN
         }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+                shortcutManager = getSystemService<ShortcutManager>(ShortcutManager::class.java)
+                addNaverShortcut()
+            }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N_MR1)
+    private fun addNaverShortcut() {
+
+        val shortcut = ShortcutInfo.Builder(this, "shortcut_open_naver")
+            .setShortLabel("Settings")
+            .setLongLabel("Open the Settings")
+            .setIntent( Intent(applicationContext, SettingsActivity::class.java).apply { action = Intent.ACTION_VIEW })
+            .setIcon(Icon.createWithResource(this, R.drawable.pic_icon))
+            .build()
+
+        shortcutManager?.dynamicShortcuts = listOf(shortcut)
     }
 }
