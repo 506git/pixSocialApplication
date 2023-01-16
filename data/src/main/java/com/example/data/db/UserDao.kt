@@ -10,13 +10,13 @@ import com.example.data.model.LocalUser
 @Dao
 interface UserDao {
     @Query("SELECT * FROM localUser")
-    fun getAll() : List<LocalUser>
+    fun getAll() : LocalUser
 //
 //    @Query("SELECT * FROM localUser WHERE ")
 //    fun getUserImage() : String
 
     @Insert(onConflict = REPLACE)
-    fun insertMovies(movies: LocalUser)
+    fun insertUser(users: LocalUser)
 
     @Delete
     fun delete(localUser: LocalUser)

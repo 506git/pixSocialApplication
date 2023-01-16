@@ -6,5 +6,4 @@ data class UserProfile(
     val name: String? = null,
     val phoneNumber: String? = null,
     val imageUrl: String? = null,
-
 )

@@ -14,7 +14,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object LocalDBModule {
-
     @Provides
     @Singleton
     fun provideMovieDao(userDatabase: UserDatabase): UserDao {

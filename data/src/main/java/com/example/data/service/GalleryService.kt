@@ -3,7 +3,6 @@ package com.example.data.service
 import android.content.ContentResolver
 import android.content.Context
 import android.database.Cursor
-import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle

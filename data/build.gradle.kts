@@ -58,6 +58,6 @@ dependencies {
 
     //room
     implementation(Libs.ROOM)
-    implementation(Libs.ROOM_COMPILE)
+    kapt(Libs.ROOM_COMPILE)
 
 }

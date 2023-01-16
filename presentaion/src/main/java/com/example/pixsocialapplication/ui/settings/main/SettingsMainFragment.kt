@@ -2,17 +2,26 @@ package com.example.pixsocialapplication.ui.settings.main
 
 import android.content.DialogInterface
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.findNavController
+import com.example.domain.model.User
 import com.example.pixsocialapplication.R
 import com.example.pixsocialapplication.databinding.FragmentSettingsMainBinding
 import com.example.pixsocialapplication.utils.CommonUtils
+import com.example.pixsocialapplication.utils.DLog
+import com.example.pixsocialapplication.utils.ImageLoader
 import com.example.pixsocialapplication.utils.setSafeOnClickListener
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SettingsMainFragment : Fragment() {
@@ -54,14 +63,37 @@ class SettingsMainFragment : Fragment() {
         }
 
         initObserve()
-        // Inflate the layout for this fragment
+
         return binding.root
     }
 
     private fun initObserve() {
         settingViewModel.getBuildVersion(context!!)
+        settingViewModel.getUserInfo()
+
         settingViewModel.buildVersion.observe(viewLifecycleOwner) {
             binding.btnVersion.text = "${getString(R.string.text_version)} : $it / $it"
         }
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED){
+                settingViewModel.state.collect(){
+                    val user = it.data
+                    with(binding) {
+                        txtUserName.text = user?.displayName ?: ""
+                        txtUserDesc.text = user?.desc ?: ""
+                        ImageLoader(context!!).imageCircleLoadWithURL(
+                            user?.imageUrl.toString() ?: "", imgProfile
+                        )
+                    }
+                }
+            }
+        }
+//        settingViewModel.userInfo.observe(viewLifecycleOwner) {
+//            with(binding){
+//                txtUserName.text = it?.displayName?:""
+//                txtUserDesc.text = it?.desc?:""
+//                ImageLoader(context!!).imageCircleLoadWithURL(it?.imageUrl.toString()?:"", imgProfile)
+//            }
+//        }
     }
 }
