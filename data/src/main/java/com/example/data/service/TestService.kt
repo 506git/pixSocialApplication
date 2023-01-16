@@ -2,10 +2,7 @@ package com.example.data.service
 
 import com.example.data.model.TestRes
 import com.example.domain.model.Test
-import retrofit2.http.GET
-import retrofit2.http.Header
-import retrofit2.http.Headers
-import retrofit2.http.Query
+import retrofit2.http.*
 
 interface TestService {
 
@@ -18,8 +15,13 @@ interface TestService {
         @Query("pageCount") pageCount : Int = 10
     ) :  TestRes
 
-    @GET("users/test")
-    suspend fun getUser(
+    @POST("users/google-login")
+    suspend fun googleLogin(
+        @Header("authorization") accessToken: String
+    )
+
+    @POST("users/google-login")
+    suspend fun getUserInfo(
         @Header("authorization") accessToken: String
     )
 }

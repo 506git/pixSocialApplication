@@ -10,5 +10,7 @@ import kotlinx.coroutines.flow.Flow
 interface TestRemoteDataSource {
      fun getTestData(): Flow<PagingData<LibraryDataSearchList>>
 
-     suspend fun getUserData(accessToken : String)
+     suspend fun googleLogin(accessToken : String)
+
+     suspend fun getUserInfo(uid : String)
 }

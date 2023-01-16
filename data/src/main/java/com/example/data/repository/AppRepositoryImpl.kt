@@ -83,7 +83,7 @@ class AppRepositoryImpl @Inject constructor(
                 it.user!!.getIdToken(true).addOnSuccessListener { result ->
                     val token = result.token.toString()
                     CoroutineScope(Dispatchers.IO).launch {
-                        TestRemoteSource.getUserData(token)
+                        TestRemoteSource.googleLogin(token)
                     }
                     Log.d("TEST TOKEN =>","test $token" )
                     trySend(Result.Success(Unit))
@@ -101,6 +101,9 @@ class AppRepositoryImpl @Inject constructor(
         send(Result.Loading())
         val user = auth.currentUser
         if (user != null) {
+            CoroutineScope(Dispatchers.IO).launch {
+                TestRemoteSource.getUserInfo(user.uid)
+            }
             trySend(Result.Success(Unit))
         } else trySend(Result.Error(NullPointerException()))
 
