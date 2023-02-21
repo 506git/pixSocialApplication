@@ -4,15 +4,20 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.example.pixsocialapplication.R
 import com.example.pixsocialapplication.databinding.ActivityLogInBinding
 import com.example.pixsocialapplication.ui.MainActivity
-import com.example.pixsocialapplication.utils.AuthResultContract
-import com.example.pixsocialapplication.utils.CommonUtils
-import com.example.pixsocialapplication.utils.setSafeOnClickListener
+import com.example.pixsocialapplication.utils.*
 import com.google.android.gms.common.api.ApiException
+import com.google.android.material.snackbar.Snackbar
 
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class LogInActivity : AppCompatActivity() {
@@ -27,16 +32,17 @@ class LogInActivity : AppCompatActivity() {
 
         binding.btnGoogleSign.setSafeOnClickListener {
             googleSignInLauncher.launch(1)
-//            logInViewModel.googleLogIn()
-//            startActivity(Intent(baseContext, MainActivity::class.java))
         }
 
         logInViewModel.state.observe(this){
             if (it.launchGoogleSignIn && it.databaseInit) {
-//                logInViewModel.updateUserProfile("test")
                 startActivity(Intent(baseContext, MainActivity::class.java))
                 finish()
             }
+        }
+
+        repeatOnStarted {
+            logInViewModel.eventFlow.collect { event -> handleEvent(event, this@LogInActivity) }
         }
 
         binding.imgTitle.setImageBitmap(CommonUtils.convertPixelArt(resources, R.drawable.pic_icon))

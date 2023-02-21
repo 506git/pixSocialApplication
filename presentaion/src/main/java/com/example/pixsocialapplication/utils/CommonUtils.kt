@@ -65,10 +65,6 @@ object CommonUtils {
     fun getScreenHeight(context: Context): Int {
         val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-//            var statusBarSize = 0
-//            var resourceId  = context.resources.getIdentifier("status_bar_height", "dimen", "android")
-//            if (resourceId > 0) statusBarSize = context.resources.getDimensionPixelSize(resourceId)
-
             val windowMetrics = wm.currentWindowMetrics
             val insets = windowMetrics.windowInsets
                 .getInsetsIgnoringVisibility(WindowInsets.Type.systemBars())

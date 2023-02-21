@@ -13,7 +13,7 @@ interface TestService {
         @Query("libCode") libCode : String = "111301",
         @Query("currentCount") page: Int = 1,
         @Query("pageCount") pageCount : Int = 10
-    ) :  TestRes
+    ) : TestRes
 
     @POST("users/google-login")
     suspend fun googleLogin(
