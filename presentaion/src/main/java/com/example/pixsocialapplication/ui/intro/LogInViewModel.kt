@@ -46,17 +46,13 @@ class LogInViewModel @Inject constructor(
             useCase.googleAutoLogIn().collect() {
                 when (it) {
                     is Result.Error -> {
-                        viewModelScope.launch {
-                            event(Event.OffLine(false))
-                            event(Event.ShowToast(it.exception.toString()))
-                            withContext(Dispatchers.Main) {
-                                _state.value = _state.value?.copy(
-                                    isGoogleLoading = true,
-                                    launchGoogleSignIn = true
-                                )
-                            }
-                            initUserInfoUpdateDB()
+                        withContext(Dispatchers.Main) {
+                            _state.value = _state.value?.copy(
+                                isGoogleLoading = false,
+                                launchGoogleSignIn = false
+                            )
                         }
+
                     }
                     is Result.Loading -> {
 
@@ -69,6 +65,7 @@ class LogInViewModel @Inject constructor(
                                 databaseInit = false
                             )
                         }
+
                     }
                 }
             }
@@ -90,15 +87,7 @@ class LogInViewModel @Inject constructor(
                 when (it) {
                     is Result.Error -> {
                         viewModelScope.launch {
-                            event(Event.OffLine(false))
                             event(Event.ShowToast(it.exception.toString()))
-                            withContext(Dispatchers.Main) {
-                                _state.value = _state.value?.copy(
-                                    isGoogleLoading = true,
-                                    launchGoogleSignIn = true
-                                )
-                            }
-                            initUserInfoUpdateDB()
                         }
 //                        withContext(Dispatchers.Main) {
 //                            _snackBar.emit(it.exception.toString())

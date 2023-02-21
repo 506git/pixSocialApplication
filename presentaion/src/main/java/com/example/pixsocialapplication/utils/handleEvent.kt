@@ -6,6 +6,5 @@ import com.google.android.material.snackbar.Snackbar
 
 fun handleEvent (event: Event, context: Context) = when (event) {
     is Event.ShowToast -> CommonUtils.snackBar(context as Activity, event.text, Snackbar.LENGTH_SHORT)
-    is Event.OffLine -> CommonUtils.networkState = event.state
     else -> {}
 }
