@@ -70,10 +70,7 @@ class MainActivity : AppCompatActivity() {
 
         // fcm 구독
         Firebase.messaging.subscribeToTopic("pix_all").addOnCompleteListener { task ->
-            var msg = "Subscribed"
-            if (!task.isSuccessful) {
-                msg = "Subscribe failed"
-            }
+
         }
 
         // fcm 토큰

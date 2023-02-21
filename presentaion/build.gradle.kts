@@ -1,6 +1,3 @@
-import groovyjarjarantlr4.runtime.DFA.debug
-import groovyjarjarantlr4.v4.runtime.atn.LexerATNSimulator.debug
-
 plugins {
     id("com.android.application")
     id("kotlin-android")
@@ -38,21 +35,13 @@ android {
 
     buildTypes{
         getByName("release") {
-//            isMinifyEnabled = false
-//            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             signingConfig = signingConfigs.getByName("release")
-//            isDebuggable = false
-
         }
     }
     this.buildOutputs.all {
-
         val variantOutputImpl = this as com.android.build.gradle.internal.api.BaseVariantOutputImpl
-
         val variantName: String = variantOutputImpl.name
-
         val outputFileName = "pic_${defaultConfig.versionName}_${defaultConfig.versionCode}_${variantName}.apk"
-
         variantOutputImpl.outputFileName = outputFileName
     }
 }

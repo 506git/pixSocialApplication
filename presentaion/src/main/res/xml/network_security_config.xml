@@ -13,4 +13,11 @@
         <domain includeSubdomains="true">140.238.2.67</domain>
     </domain-config>
 
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">limgs.iptime.org</domain>
+    </domain-config>
+
+
+    limgs.iptime.org:7777
+
 </network-security-config>

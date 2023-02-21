@@ -13,6 +13,5 @@ dependencyResolutionManagement {
     }
 }
 
-
 include (":presentaion", ":domain", ":data")
 rootProject.name="pixSocialApplication"

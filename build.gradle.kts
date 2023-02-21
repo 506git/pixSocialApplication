@@ -7,7 +7,7 @@ plugins {
 
 buildscript{
     dependencies {
-        classpath("com.google.gms:google-services:4.3.13")
+        classpath("com.google.gms:google-services:4.3.15")
         classpath(Libs.HILT_PLUG)
     }
 }

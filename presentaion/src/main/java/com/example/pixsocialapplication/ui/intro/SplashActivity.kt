@@ -118,8 +118,6 @@ class SplashActivity : AppCompatActivity() {
         when(requestCode) {
             // 메인 퍼미션 권한 요청 코드
             REQ_PERMISSION_MAIN -> {
-                DLog().d("message : ${permissions[0].toString()} result ${grantResults[0]}")
-                DLog().d("message : ${permissions[1].toString()} result ${grantResults[1]}")
                 val deniedPermissionList = mutableListOf<String>()
                 if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
                     deniedPermissionList.add(permissions[0])
@@ -197,7 +195,7 @@ class SplashActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        DLog().d("permission dinye2")
+
         val deniedPermission = checkPermissions()
 
         if (deniedPermission.size > 0) {
@@ -209,9 +207,7 @@ class SplashActivity : AppCompatActivity() {
             ActivityCompat.requestPermissions(
                 this@SplashActivity, permissionList.toTypedArray(), REQ_PERMISSION_MAIN
             )
-
         } else {
-
             CoroutineScope(Dispatchers.Main).async {
                 delay(500)
                 goToMain()
