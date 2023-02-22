@@ -24,11 +24,21 @@ android {
         noCompress("json")
     }
 
+    //------------------개인------
+//    signingConfigs {
+//        create("release") {
+//            keyAlias = "picSocial"
+//            keyPassword = "juns0305"
+//            storeFile = file("/Users/oyeongjun/AndroidStudioProjects/pixSocialApplication/Untitled")
+//            storePassword = "juns0305"
+//        }
+//    }
+    //-------------------회사-------------
     signingConfigs {
         create("release") {
             keyAlias = "picSocial"
             keyPassword = "juns0305"
-            storeFile = file("/Users/oyeongjun/AndroidStudioProjects/pixSocialApplication/Untitled")
+            storeFile = file("C://Users/LG/keyStore/picsocial.jks")
             storePassword = "juns0305"
         }
     }

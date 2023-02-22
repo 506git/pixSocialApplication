@@ -41,9 +41,9 @@ object NetworkModule {
     fun provideHttpClient(cache: Cache): OkHttpClient {
         return OkHttpClient.Builder().apply {
             cache(cache)
-            connectTimeout(15L, TimeUnit.SECONDS)
-            writeTimeout(15L, TimeUnit.SECONDS)
-            readTimeout(15L, TimeUnit.SECONDS)
+            connectTimeout(TIMEOUT, TimeUnit.SECONDS)
+            writeTimeout(TIMEOUT, TimeUnit.SECONDS)
+            readTimeout(TIMEOUT, TimeUnit.SECONDS)
             addInterceptor(HttpLoggingInterceptor().apply {
                 level = HttpLoggingInterceptor.Level.BODY
             })
@@ -96,5 +96,8 @@ object NetworkModule {
     private const val BASE_URL = "http://limgs.iptime.org:7777"
 //    private const val PUSH_BASE_URL = "http://129.154.203.45:7777"
     private const val PUSH_BASE_URL = "http://140.238.2.67:7777"
+    private const val TIMEOUT = 5L
 
 }
+
+

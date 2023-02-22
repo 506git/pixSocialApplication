@@ -29,10 +29,10 @@
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBKGC0Wu3_VoTOO1A29QZhyXnZOELr22wg"
+          "current_key": "AIzaSyAWkbTR8YrhV_zPbL5kujCaWjLibJT8rv0"
         },
         {
-          "current_key": "AIzaSyAWkbTR8YrhV_zPbL5kujCaWjLibJT8rv0"
+          "current_key": "AIzaSyBKGC0Wu3_VoTOO1A29QZhyXnZOELr22wg"
         }
       ],
       "services": {
@@ -71,6 +71,14 @@
           }
         },
         {
+          "client_id": "829770041202-rb3r0ovv4t5286qk3ciuapk2kfvjj3hd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.pixsocialapplication",
+            "certificate_hash": "12412afedd4b9fc171a011d2ee03f7c56c740641"
+          }
+        },
+        {
           "client_id": "829770041202-ttqhr43anb7ik6tiejnb3nr2r325ct7j.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -85,10 +93,10 @@
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBKGC0Wu3_VoTOO1A29QZhyXnZOELr22wg"
+          "current_key": "AIzaSyAWkbTR8YrhV_zPbL5kujCaWjLibJT8rv0"
         },
         {
-          "current_key": "AIzaSyAWkbTR8YrhV_zPbL5kujCaWjLibJT8rv0"
+          "current_key": "AIzaSyBKGC0Wu3_VoTOO1A29QZhyXnZOELr22wg"
         }
       ],
       "services": {

@@ -96,6 +96,7 @@ class AppRepositoryImpl @Inject constructor(
         }.addOnFailureListener {
             trySend(Result.Error(it))
         }
+
         awaitClose {
             channel.close()
         }
@@ -104,8 +105,8 @@ class AppRepositoryImpl @Inject constructor(
     override suspend fun googleAutoLogIn(): Flow<Result<Unit>> = callbackFlow {
         send(Result.Loading())
         val user = auth.currentUser
+
         if (user != null) {
-//            CoroutineScope(Dispatchers.IO).launch {
             runCatching {
                 TestRemoteSource.getUserInfo(user.uid)
             }.onSuccess {
