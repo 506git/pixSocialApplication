@@ -5,8 +5,8 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
-import android.util.Log
 import androidx.annotation.RequiresApi
+import com.example.data.dto.SendDTO
 import com.example.data.mapper.RoomChatMapper
 import com.example.data.model.*
 import com.example.data.repository.dataSource.GalleryDataSource
@@ -578,6 +578,4 @@ class AppRepositoryImpl @Inject constructor(
     override fun signOut() {
         auth.signOut()
     }
-
-
 }

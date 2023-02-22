@@ -15,6 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import com.example.domain.core.Result
 import com.example.domain.model.User
+import com.example.pixsocialapplication.utils.CommonUtils
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.withContext
@@ -69,7 +70,7 @@ class SettingViewModel @Inject constructor(private val useCase: UseCase, private
     }
 
     fun logout(){
-
+        useCase.signOut()
     }
 
     init {

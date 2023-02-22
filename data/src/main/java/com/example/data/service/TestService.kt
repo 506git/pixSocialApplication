@@ -1,7 +1,8 @@
 package com.example.data.service
 
+import com.example.data.dto.FriendsAddDTO
+import com.example.data.dto.SendDTO
 import com.example.data.model.TestRes
-import com.example.domain.model.Test
 import retrofit2.http.*
 
 interface TestService {
@@ -20,8 +21,13 @@ interface TestService {
         @Header("authorization") accessToken: String
     )
 
-    @POST("users/google-login")
+    @POST("users/one")
     suspend fun getUserInfo(
         @Header("authorization") accessToken: String
+    )
+
+    @POST("users/addFriend")
+    suspend fun addFriend(
+        @Body friendsAddDTO: FriendsAddDTO
     )
 }

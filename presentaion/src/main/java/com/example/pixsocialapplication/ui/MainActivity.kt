@@ -152,7 +152,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.btnSettings.setSafeOnClickListener {
-            startActivity(Intent(this@MainActivity, SettingsActivity::class.java))
+            startActivity(
+                Intent(this@MainActivity, SettingsActivity::class.java).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                }
+            )
             overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_right_exit)
         }
 

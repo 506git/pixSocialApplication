@@ -31,8 +31,11 @@ class SettingsActivity : AppCompatActivity() {
         binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.btnBack.setSafeOnClickListener {
-            onBackPressed()
+        with(binding){
+            btnBack.setSafeOnClickListener {
+                onBackPressed()
+            }
+
         }
 
         // 뒤로가기

@@ -29,8 +29,8 @@ import java.net.URL
 import kotlin.system.exitProcess
 
 object CommonUtils {
-    fun appFinish() {
-        ActivityCompat.finishAffinity(Activity())
+    fun appFinish(activity: Activity = Activity()) {
+        ActivityCompat.finishAffinity(activity)
         System.runFinalization()
         exitProcess(0)
     }

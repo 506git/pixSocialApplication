@@ -1,7 +1,6 @@
 package com.example.data.service
 
-import com.example.data.model.PushRes
-import com.example.data.model.SendDTO
+import com.example.data.dto.SendDTO
 import retrofit2.http.*
 
 interface PushService {

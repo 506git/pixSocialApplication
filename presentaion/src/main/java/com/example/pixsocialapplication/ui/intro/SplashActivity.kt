@@ -16,9 +16,11 @@ import com.example.pixsocialapplication.R
 import com.example.pixsocialapplication.databinding.ActivitySplashBinding
 import com.example.pixsocialapplication.ui.MainActivity
 import com.example.pixsocialapplication.utils.DLog
+import com.example.pixsocialapplication.utils.repeatOnStarted
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.collect
 
 @AndroidEntryPoint
 class SplashActivity : AppCompatActivity() {
@@ -51,12 +53,35 @@ class SplashActivity : AppCompatActivity() {
         val content: View = findViewById(android.R.id.content)
         logInViewModel.signInGoogleAutoLogIn()
 
-        logInViewModel.skipIntro.observe(this){
-            start = it
+        repeatOnStarted {
+            logInViewModel.skipIntro.collect{
+                start = it
+            }
         }
 
-        logInViewModel.state.observe(this){
-            userState = it.launchGoogleSignIn
+        repeatOnStarted {
+            logInViewModel.state.collect{
+                userState = it.launchGoogleSignIn
+            }
+
+        }
+
+        val deniedPermission = checkPermissions()
+
+        if (deniedPermission.size > 0) {
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+                ActivityCompat.requestPermissions(
+                    this@SplashActivity, permissionList_s.toTypedArray(), REQ_PERMISSION_MAIN
+                )
+            } else
+                ActivityCompat.requestPermissions(
+                    this@SplashActivity, permissionList.toTypedArray(), REQ_PERMISSION_MAIN
+                )
+        } else {
+            CoroutineScope(Dispatchers.Main).async {
+                delay(500)
+                goToMain()
+            }
         }
 
 //        val deniedPermission = checkPermissions()
@@ -196,23 +221,5 @@ class SplashActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
-        val deniedPermission = checkPermissions()
-
-        if (deniedPermission.size > 0) {
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-                ActivityCompat.requestPermissions(
-                    this@SplashActivity, permissionList_s.toTypedArray(), REQ_PERMISSION_MAIN
-                )
-            } else
-            ActivityCompat.requestPermissions(
-                this@SplashActivity, permissionList.toTypedArray(), REQ_PERMISSION_MAIN
-            )
-        } else {
-            CoroutineScope(Dispatchers.Main).async {
-                delay(500)
-                goToMain()
-//                goMain.await()
-            }
-        }
     }
 }

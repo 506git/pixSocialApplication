@@ -137,7 +137,8 @@ class AppModule {
             getGalleryList = GetGalleryList(repository),
             sendImage = SendImage(repository),
             galleryList = GalleryList(repository),
-            removeChat = RemoveChat(repository)
+            removeChat = RemoveChat(repository),
+            signOut = SignOut(repository)
         )
     }
 }

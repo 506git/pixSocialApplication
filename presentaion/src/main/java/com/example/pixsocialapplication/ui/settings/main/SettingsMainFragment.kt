@@ -1,6 +1,7 @@
 package com.example.pixsocialapplication.ui.settings.main
 
 import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -15,6 +16,7 @@ import androidx.navigation.findNavController
 import com.example.domain.model.User
 import com.example.pixsocialapplication.R
 import com.example.pixsocialapplication.databinding.FragmentSettingsMainBinding
+import com.example.pixsocialapplication.ui.intro.LogInActivity
 import com.example.pixsocialapplication.utils.CommonUtils
 import com.example.pixsocialapplication.utils.DLog
 import com.example.pixsocialapplication.utils.ImageLoader
@@ -59,7 +61,13 @@ class SettingsMainFragment : Fragment() {
             btnServiceCenter.setSafeOnClickListener { }
             btnUsePush.setSafeOnClickListener { }
             btnVersion.setSafeOnClickListener { }
-            btnLogout.setSafeOnClickListener { settingViewModel.logout() }
+            btnLogout.setSafeOnClickListener {
+                settingViewModel.logout()
+                activity?.finish()
+                startActivity(Intent(activity, LogInActivity::class.java).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                })
+            }
         }
 
         initObserve()

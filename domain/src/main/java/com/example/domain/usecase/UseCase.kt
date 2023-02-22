@@ -8,6 +8,8 @@ class UseCase(
     val getStringPreferences: GetStringPreferences,
     val signUp: SignUp,
     val signIn: SignIn,
+    val signOut: SignOut,
+
     val signInWithGoogleIdToken: SignInWithGoogleIdToken,
     val googleAutoLogIn: GoogleAutoLogIn,
     val googleSignIn : GoogleSignIn,

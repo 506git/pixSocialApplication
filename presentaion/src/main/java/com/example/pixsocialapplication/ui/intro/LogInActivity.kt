@@ -30,14 +30,16 @@ class LogInActivity : AppCompatActivity() {
         binding = ActivityLogInBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.btnGoogleSign.setSafeOnClickListener {
-            googleSignInLauncher.launch(1)
-        }
+//        binding.btnGoogleSign.setSafeOnClickListener {
+//            googleSignInLauncher.launch(1)
+//        }
 
-        logInViewModel.state.observe(this){
-            if (it.launchGoogleSignIn && it.databaseInit) {
-                startActivity(Intent(baseContext, MainActivity::class.java))
-                finish()
+        repeatOnStarted {
+            logInViewModel.state.collect {
+                if (it.launchGoogleSignIn && it.databaseInit) {
+                    startActivity(Intent(baseContext, MainActivity::class.java))
+                    finish()
+                }
             }
         }
 
@@ -45,7 +47,12 @@ class LogInActivity : AppCompatActivity() {
             logInViewModel.eventFlow.collect { event -> handleEvent(event, this@LogInActivity) }
         }
 
-        binding.imgTitle.setImageBitmap(CommonUtils.convertPixelArt(resources, R.drawable.pic_icon))
+        with(binding){
+            imgTitle.setImageBitmap(CommonUtils.convertPixelArt(resources, R.drawable.pic_icon))
+            btnGoogleSign.setSafeOnClickListener { googleSignInLauncher.launch(1) }
+        }
+//
+//        binding.imgTitle.setImageBitmap(CommonUtils.convertPixelArt(resources, R.drawable.pic_icon))
     }
 
     private val googleSignInLauncher = registerForActivityResult(AuthResultContract()) { task ->

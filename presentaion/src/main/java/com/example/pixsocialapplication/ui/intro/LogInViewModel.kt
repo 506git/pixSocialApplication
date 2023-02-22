@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.domain.appdata_usecase.AppDataUseCase
 import com.example.domain.core.Result
 import com.example.domain.core.UiEvent
 import com.example.domain.database_usecase.DatabaseUseCase
@@ -27,59 +28,40 @@ import javax.inject.Inject
 @HiltViewModel
 class LogInViewModel @Inject constructor(
     private val useCase: UseCase,
+    private val appDataUseCase: AppDataUseCase,
     private val databaseUseCase: DatabaseUseCase
 ) : ViewModel() {
-    private var _state = MutableLiveData(SignInState())
-    val state: LiveData<SignInState> = _state
 
-    private val _skipIntro = MutableLiveData<Boolean>()
-    val skipIntro: LiveData<Boolean> = _skipIntro
+    private var _state = MutableSharedFlow<SignInState>()
+    val state = _state.asSharedFlow()
 
-//    private val _eventFlow = MutableSharedFlow<Event>()
-//    val eventFlow = _eventFlow.asSharedFlow()
+    private val _skipIntro = MutableSharedFlow<Boolean>()
+    val skipIntro get() = _skipIntro.asSharedFlow()
 
     private val _eventFlow = MutableEventFlow<Event>()
-    val eventFlow = _eventFlow.asEventFlow()
+    val eventFlow get() =  _eventFlow.asEventFlow()
 
     fun signInGoogleAutoLogIn() {
         viewModelScope.launch(Dispatchers.IO) {
             useCase.googleAutoLogIn().collect() {
                 when (it) {
                     is Result.Error -> {
-                        viewModelScope.launch {
-                            event(Event.OffLine(false))
-                            event(Event.ShowToast(it.exception.toString()))
-                            withContext(Dispatchers.Main) {
-                                _state.value = _state.value?.copy(
-                                    isGoogleLoading = true,
-                                    launchGoogleSignIn = true
-                                )
-                            }
-                            initUserInfoUpdateDB()
-                        }
-
+                        event(Event.OffLine(false))
+                        event(Event.ShowToast(it.exception.toString()))
+                        _state.emit(SignInState(isGoogleLoading = true, launchGoogleSignIn = true))
+                        initUserInfoUpdateDB()
                     }
                     is Result.Loading -> {
 
                     }
                     is Result.Success -> {
-                        withContext(Dispatchers.Main) {
-                            _state.value = _state.value?.copy(
-                                isGoogleLoading = true,
-                                launchGoogleSignIn = true,
-                                databaseInit = false
-                            )
-                        }
-
+                        _state.emit(SignInState(isGoogleLoading = true, launchGoogleSignIn = true, databaseInit= false))
                     }
                 }
             }
         }
     }
 
-    fun showToast() {
-        event(Event.ShowToast("토스트"))
-    }
     private fun event(event: Event) {
         viewModelScope.launch {
             _eventFlow.emit(event)
@@ -94,28 +76,15 @@ class LogInViewModel @Inject constructor(
                         viewModelScope.launch {
                             event(Event.OffLine(false))
                             event(Event.ShowToast(it.exception.toString()))
-                            withContext(Dispatchers.Main) {
-                                _state.value = _state.value?.copy(
-                                    isGoogleLoading = true,
-                                    launchGoogleSignIn = true
-                                )
-                            }
+                            _state.emit(SignInState(isGoogleLoading = true, launchGoogleSignIn = true))
                             initUserInfoUpdateDB()
                         }
-//                        withContext(Dispatchers.Main) {
-//                            _snackBar.emit(it.exception.toString())
-//                        }
                     }
                     is Result.Loading -> {
 
                     }
                     is Result.Success -> {
-                        withContext(Dispatchers.Main) {
-                            _state.value = _state.value?.copy(
-                                isGoogleLoading = true,
-                                launchGoogleSignIn = true
-                            )
-                        }
+                        _state.emit(SignInState(isGoogleLoading = true, launchGoogleSignIn = true))
                         initUserInfoUpdateDB()
                     }
                 }
@@ -153,13 +122,7 @@ class LogInViewModel @Inject constructor(
 
                     }
                     is Result.Success -> {
-                        withContext(Main) {
-                            _state.value = _state.value?.copy(
-                                isGoogleLoading = true,
-                                launchGoogleSignIn = true,
-                                databaseInit = true
-                            )
-                        }
+                        _state.emit(SignInState(isGoogleLoading = true, launchGoogleSignIn = true,  databaseInit = true))
                     }
                 }
             }

@@ -3,6 +3,7 @@ package com.example.data.repository.dataSourceImpl
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import com.example.data.dto.FriendsAddDTO
 import com.example.data.model.TestRes
 import com.example.data.paging.TestPagingSource
 import com.example.data.repository.dataSource.TestRemoteDataSource
@@ -29,5 +30,10 @@ class TestRemoteDataSourceImpl @Inject constructor(private val service: TestServ
     override suspend fun getUserInfo(uid: String) {
         return service.getUserInfo(uid)
     }
+
+    override suspend fun addFriendsAdd(friendsAddDTO: FriendsAddDTO) {
+        return service.addFriend(friendsAddDTO)
+    }
+
 
 }
