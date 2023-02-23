@@ -10,7 +10,7 @@ import com.example.data.dto.SendDTO
 import com.example.data.mapper.RoomChatMapper
 import com.example.data.model.*
 import com.example.data.repository.dataSource.GalleryDataSource
-import com.example.data.repository.dataSource.TestRemoteDataSource
+import com.example.data.repository.dataSource.RemoteDataSource
 import com.example.data.service.PushService
 import com.example.domain.core.Result
 import com.example.domain.model.RoomChat
@@ -38,7 +38,7 @@ class AppRepositoryImpl @Inject constructor(
     private val auth: FirebaseAuth,
     private val firebaseDatabase: FirebaseDatabase,
     private val firebaseStorage: FirebaseStorage,
-    private val TestRemoteSource: TestRemoteDataSource,
+    private val TestRemoteSource: RemoteDataSource,
     private val context: Context,
     private val pushService: PushService,
     private val galleryDataSource: GalleryDataSource

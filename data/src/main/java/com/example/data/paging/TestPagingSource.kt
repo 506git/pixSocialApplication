@@ -3,7 +3,7 @@ package com.example.data.paging
 import androidx.paging.*
 import com.example.data.mapper.TestMapper
 
-import com.example.data.service.TestService
+import com.example.data.service.RemoteService
 import com.example.domain.model.Contents
 import com.example.domain.model.LibraryDataSearchList
 import com.example.domain.model.Test
@@ -15,7 +15,7 @@ import java.io.IOException
 import javax.inject.Inject
 
 @OptIn(ExperimentalPagingApi::class)
-class TestPagingSource @Inject constructor(private val service: TestService)
+class TestPagingSource @Inject constructor(private val service: RemoteService)
     : PagingSource<Int, LibraryDataSearchList>()  {
 
     override fun getRefreshKey(state: PagingState<Int, LibraryDataSearchList>): Int? {

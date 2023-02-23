@@ -5,7 +5,7 @@ import androidx.paging.*
 import com.example.data.mapper.TestMapper
 import com.example.data.service.GalleryService
 
-import com.example.data.service.TestService
+import com.example.data.service.RemoteService
 import com.example.domain.core.Result
 import com.example.domain.model.Contents
 import com.example.domain.model.LibraryDataSearchList

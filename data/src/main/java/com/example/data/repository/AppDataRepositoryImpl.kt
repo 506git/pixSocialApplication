@@ -1,15 +1,12 @@
 package com.example.data.repository
 
 import android.content.Context
-import com.example.data.db.UserDao
 import com.example.data.dto.FriendsAddDTO
-import com.example.data.mapper.UserMapper
-import com.example.data.repository.dataSource.TestRemoteDataSource
+import com.example.data.repository.dataSource.RemoteDataSource
 import com.example.data.service.PushService
 import com.example.domain.core.Result
 import com.example.domain.model.User
 import com.example.domain.repository.AppDataRepository
-import com.example.domain.repository.DatabaseRepository
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -18,7 +15,7 @@ import javax.inject.Inject
 
 class AppDataRepositoryImpl @Inject constructor(
     private val auth: FirebaseAuth,
-    private val TestRemoteSource: TestRemoteDataSource,
+    private val TestRemoteSource: RemoteDataSource,
     private val context: Context,
     private val pushService: PushService,
 ) : AppDataRepository {

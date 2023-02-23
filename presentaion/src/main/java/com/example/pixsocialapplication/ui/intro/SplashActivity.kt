@@ -143,26 +143,29 @@ class SplashActivity : AppCompatActivity() {
         when(requestCode) {
             // 메인 퍼미션 권한 요청 코드
             REQ_PERMISSION_MAIN -> {
-                val deniedPermissionList = mutableListOf<String>()
-                if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                    deniedPermissionList.add(permissions[0])
-                }
+                if(grantResults.isNotEmpty()){
+                    val deniedPermissionList = mutableListOf<String>()
+                    if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                        deniedPermissionList.add(permissions[0])
+                    }
 //                grantResults.forEachIndexed { index, i ->
 //                    if (i == PackageManager.PERMISSION_DENIED) {
 //                        // 거부된 권한
 //                        deniedPermissionList.add(permissions[index])
 //                    }
 //                }
-                if (deniedPermissionList.size > 0) {
-                    // 거부된 권한 존재
-                    makePermissionSnackBar()
-                } else {
-                    // 권한 모두 동의
-                    CoroutineScope(Dispatchers.Main).async {
-                        delay(500)
-                        goToMain()
+                    if (deniedPermissionList.size > 0) {
+                        // 거부된 권한 존재
+                        makePermissionSnackBar()
+                    } else {
+                        // 권한 모두 동의
+                        CoroutineScope(Dispatchers.Main).async {
+                            delay(500)
+                            goToMain()
+                        }
                     }
                 }
+
             }
         }
     }

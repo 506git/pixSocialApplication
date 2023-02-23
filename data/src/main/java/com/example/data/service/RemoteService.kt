@@ -5,7 +5,7 @@ import com.example.data.dto.SendDTO
 import com.example.data.model.TestRes
 import retrofit2.http.*
 
-interface TestService {
+interface RemoteService {
 
     @GET("request/requestService.jsp?")
     suspend fun getTest(
@@ -21,7 +21,7 @@ interface TestService {
         @Header("authorization") accessToken: String
     )
 
-    @POST("users/one")
+    @GET("users/one")
     suspend fun getUserInfo(
         @Header("authorization") accessToken: String
     )

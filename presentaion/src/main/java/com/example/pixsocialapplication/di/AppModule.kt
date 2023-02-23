@@ -4,12 +4,10 @@ package com.example.pixsocialapplication.di
 import android.content.Context
 import com.example.data.repository.AppRepositoryImpl
 import com.example.data.repository.dataSource.GalleryDataSource
-import com.example.data.repository.dataSource.TestRemoteDataSource
+import com.example.data.repository.dataSource.RemoteDataSource
 import com.example.data.repository.dataSourceImpl.GalleryDataSourceImpl
-import com.example.data.repository.dataSourceImpl.TestRemoteDataSourceImpl
 import com.example.data.service.GalleryService
 import com.example.data.service.PushService
-import com.example.data.service.TestService
 import com.example.domain.preferences.Preferences
 import com.example.domain.repository.AppRepository
 import com.example.domain.usecase.*
@@ -21,7 +19,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import retrofit2.Retrofit
 import javax.inject.Singleton
 
 @Module
@@ -103,7 +100,7 @@ class AppModule {
         auth: FirebaseAuth,
         firebaseDatabase: FirebaseDatabase,
         firebaseStorage: FirebaseStorage,
-        testRemoteSource: TestRemoteDataSource,
+        testRemoteSource: RemoteDataSource,
         @ApplicationContext appContext : Context,
         pushService: PushService,
         galleryService : GalleryDataSource

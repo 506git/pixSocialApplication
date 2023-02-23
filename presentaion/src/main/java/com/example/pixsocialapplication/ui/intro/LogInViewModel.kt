@@ -107,7 +107,6 @@ class LogInViewModel @Inject constructor(
                     }
                 }
             }
-
         }
     }
 

@@ -1,5 +1,6 @@
 package com.example.pixsocialapplication.ui
 
+import android.app.Application
 import android.view.View
 import androidx.core.content.res.TypedArrayUtils.getString
 import androidx.lifecycle.*
@@ -9,6 +10,7 @@ import com.example.domain.model.RoomInfo
 import com.example.domain.usecase.UseCase
 import com.example.pixsocialapplication.R
 import com.example.pixsocialapplication.utils.DLog
+import com.example.pixsocialapplication.utils.NetworkConnection
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -19,6 +21,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
+    private val application: Application,
     private val useCase: UseCase,
     private val appDataUseCase: AppDataUseCase
     ) : ViewModel() {
@@ -34,6 +37,8 @@ class MainViewModel @Inject constructor(
 
     private val _bottomVisible = MutableSharedFlow<Int>()
     val bottomVisible get() = _bottomVisible.asLiveData()
+
+    val network = NetworkConnection(application)
 
 //    fun findChatUser(userId: String){
 //        viewModelScope.launch(Dispatchers.IO) {
@@ -55,20 +60,23 @@ class MainViewModel @Inject constructor(
 
     fun findChatUser(userId: String){
         viewModelScope.launch(Dispatchers.IO) {
-            appDataUseCase.addFriends(userId).collect(){
-                when (it){
-                    is Result.Error -> {
-                        DLog().d(it.exception.toString())
-                        _bottomVisible.emit(BottomSheetBehavior.STATE_HIDDEN)
-                    }
-                    is Result.Loading -> {
+            if (network.value == true) {
+                appDataUseCase.addFriends(userId).collect(){
+                    when (it){
+                        is Result.Error -> {
+                            DLog().d(it.exception.toString())
+                            _bottomVisible.emit(BottomSheetBehavior.STATE_HIDDEN)
+                        }
+                        is Result.Loading -> {
 
-                    }
-                    is Result.Success -> {
-                        DLog().d("good")
-                        _bottomVisible.emit(BottomSheetBehavior.STATE_HIDDEN)
+                        }
+                        is Result.Success -> {
+                            _bottomVisible.emit(BottomSheetBehavior.STATE_HIDDEN)
+                        }
                     }
                 }
+            } else {
+
             }
         }
     }

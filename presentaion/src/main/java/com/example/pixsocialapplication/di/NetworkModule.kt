@@ -3,7 +3,7 @@ package com.example.pixsocialapplication.di
 import android.app.Application
 import com.example.data.service.LawMakerService
 import com.example.data.service.PushService
-import com.example.data.service.TestService
+import com.example.data.service.RemoteService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -80,8 +80,8 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideDeliveryRemoteService(@baseServer retrofit: Retrofit): TestService {
-        return retrofit.create(TestService::class.java)
+    fun provideDeliveryRemoteService(@baseServer retrofit: Retrofit): RemoteService {
+        return retrofit.create(RemoteService::class.java)
     }
 
 
