@@ -2,6 +2,7 @@ package com.example.data.repository.dataSource
 
 import androidx.paging.PagingData
 import com.example.data.dto.FriendsAddDTO
+import com.example.data.dto.FriendsList
 
 import com.example.domain.model.LibraryDataSearchList
 import kotlinx.coroutines.flow.Flow
@@ -14,4 +15,6 @@ interface RemoteDataSource {
      suspend fun getUserInfo(uid : String)
 
      suspend fun addFriendsAdd(friendsAddDTO: FriendsAddDTO)
+
+     suspend fun getFriendsList(id : String) : FriendsList
 }

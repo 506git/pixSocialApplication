@@ -60,7 +60,7 @@ class MainViewModel @Inject constructor(
 
     fun findChatUser(userId: String){
         viewModelScope.launch(Dispatchers.IO) {
-            if (network.value == true) {
+//            if (network.value == true) {
                 appDataUseCase.addFriends(userId).collect(){
                     when (it){
                         is Result.Error -> {
@@ -75,9 +75,9 @@ class MainViewModel @Inject constructor(
                         }
                     }
                 }
-            } else {
-
-            }
+//            } else {
+//
+//            }
         }
     }
 

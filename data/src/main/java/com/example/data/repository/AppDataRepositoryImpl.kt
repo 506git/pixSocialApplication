@@ -55,4 +55,20 @@ class AppDataRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getFriendsList(id: String): Flow<Result<Unit>> = callbackFlow{
+        send(Result.Loading())
+
+        runCatching {
+            TestRemoteSource.getFriendsList(id = id)
+        }.onSuccess { it ->
+            trySend(Result.Success(Unit))
+        }.onFailure { e ->
+            trySend(Result.Error(Exception(e)))
+        }
+
+        awaitClose {
+            channel.close()
+        }
+    }
+
 }

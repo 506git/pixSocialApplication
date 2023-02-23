@@ -34,8 +34,6 @@ class ChatRoomViewModel @Inject constructor(private val useCase: UseCase) : View
     private val _loadingState = MutableLiveData<Boolean>(false)
     val loadingState: LiveData<Boolean> get() = _loadingState
 
-
-
     fun getRoomListRepos() {
         viewModelScope.launch(Dispatchers.IO) {
             useCase.getRoomInfo().collect() {

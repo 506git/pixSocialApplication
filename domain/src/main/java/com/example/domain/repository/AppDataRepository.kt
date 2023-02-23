@@ -11,4 +11,6 @@ interface AppDataRepository {
     suspend fun addFriends(friendsEmail: String) : Flow<Result<Unit>>
 
     suspend fun getUserInfo(id : String) : Flow<Result<User>>
+
+    suspend fun getFriendsList(id : String) : Flow<Result<Unit>>
 }

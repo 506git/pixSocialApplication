@@ -48,6 +48,7 @@ class ChatListFragment : Fragment() {
     private var lastPos: Int = 0
 
     private lateinit var binding: FragmentChatListBinding
+
     private val dialog by lazy {
         LoadingDialog(context!!)
     }
