@@ -24,6 +24,7 @@ import android.widget.TextView
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.example.domain.model.FriendInfo
 import com.example.domain.model.LibraryDataSearchList
 import com.example.domain.model.RoomInfo
 import com.example.pixsocialapplication.R
@@ -35,31 +36,23 @@ import com.example.pixsocialapplication.utils.ImageLoader
 /**
  * Adapter for an [Article] [List].
  */
-class FriendsAdapter(dataSet: ArrayList<RoomInfo>) : RecyclerView.Adapter<FriendsAdapter.ViewHolder>() {
-    private val eventList : ArrayList<RoomInfo> = dataSet
+class FriendsAdapter(dataSet: ArrayList<FriendInfo>) : RecyclerView.Adapter<FriendsAdapter.ViewHolder>() {
+    private val eventList : ArrayList<FriendInfo> = dataSet
 
-    interface RoomItemClickListener{
+    interface FriendItemClickListener{
         fun onItemClick(view: View, position: Int)
     }
 
-    private lateinit var mItemClickListener: RoomItemClickListener
+    private lateinit var mItemClickListener: FriendItemClickListener
 
-    fun setRoomItemClickListener(itemClickListener : RoomItemClickListener){
+    fun setFriendItemClickListener(itemClickListener : FriendItemClickListener){
         mItemClickListener = itemClickListener
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_room_list, parent, false))
 
-    //    override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
-//        (holder.view as? TextView)?.also {
-//            it.text = eventList[position]
-//            it.clipToOutline = true
-//            val backgroundColorResId = if (position % 2 == 0) R.color.black else R.color.purple_700
-//            it.setBackgroundColor(ContextCompat.getColor(it.context, backgroundColorResId))
-//        }
-//    }
-    fun addItem(dataSet: ArrayList<RoomInfo>){
+    fun addItem(dataSet: ArrayList<FriendInfo>){
         eventList.clear()
         eventList.addAll(dataSet)
     }
@@ -73,13 +66,13 @@ class FriendsAdapter(dataSet: ArrayList<RoomInfo>) : RecyclerView.Adapter<Friend
         private val txtName = itemView.findViewById<TextView>(R.id.text_name)
         private val txtId = itemView.findViewById<TextView>(R.id.text_id)
         private val imgRoom = itemView.findViewById<ImageView>(R.id.img_room)
-        fun bind(event: RoomInfo) {
-            txtName.text = event.room_name
-            txtId.text = event.room_title
+        fun bind(event: FriendInfo) {
+            txtName.text = event.name
+            txtId.text = event.email
             imgRoom.setOnClickListener {
                 mItemClickListener.onItemClick(it, absoluteAdapterPosition)
             }
-            ImageLoader(context = itemView.context).imageCircleLoadWithURL(event.room_img.toString(), imgRoom)
+            ImageLoader(context = itemView.context).imageCircleLoadWithURL(event.picture.toString(), imgRoom)
         }
     }
 
@@ -89,6 +82,4 @@ class FriendsAdapter(dataSet: ArrayList<RoomInfo>) : RecyclerView.Adapter<Friend
 
     override fun getItemCount(): Int = eventList.count()
 
-
-//    class ViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 }

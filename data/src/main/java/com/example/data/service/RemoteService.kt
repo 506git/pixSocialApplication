@@ -4,6 +4,7 @@ import com.example.data.dto.FriendsAddDTO
 import com.example.data.dto.FriendsList
 import com.example.data.dto.SendDTO
 import com.example.data.model.TestRes
+import com.example.data.model.UserDTO
 import retrofit2.http.*
 
 interface RemoteService {
@@ -34,6 +35,6 @@ interface RemoteService {
 
     @POST("users/myFriends")
     suspend fun getFriendsList(
-        @Body userId : String // 수정
+        @Body userDTO : UserDTO // 수정
     ) : FriendsList
 }

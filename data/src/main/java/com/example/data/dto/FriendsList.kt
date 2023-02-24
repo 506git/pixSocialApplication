@@ -5,11 +5,10 @@ import com.google.gson.annotations.SerializedName
 
 data class FriendsList (
     @SerializedName("friends")
-    val friends : FriendsRes
-
+    val friends : List<FriendInfo>
 )
 
-data class FriendsRes (
+data class FriendInfo (
     @SerializedName("_id")
     private val id: String? = "",
 

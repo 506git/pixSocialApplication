@@ -2,12 +2,16 @@ package com.example.data.repository
 
 import android.content.Context
 import com.example.data.dto.FriendsAddDTO
+
+import com.example.data.model.UserDTO
 import com.example.data.repository.dataSource.RemoteDataSource
 import com.example.data.service.PushService
 import com.example.domain.core.Result
+import com.example.domain.model.FriendsList
 import com.example.domain.model.User
 import com.example.domain.repository.AppDataRepository
 import com.google.firebase.auth.FirebaseAuth
+import com.google.gson.Gson
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -55,13 +59,15 @@ class AppDataRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getFriendsList(id: String): Flow<Result<Unit>> = callbackFlow{
+    override suspend fun getFriendsList(id: String): Flow<Result<FriendsList>> = callbackFlow{
         send(Result.Loading())
 
         runCatching {
-            TestRemoteSource.getFriendsList(id = id)
-        }.onSuccess { it ->
-            trySend(Result.Success(Unit))
+            return@runCatching TestRemoteSource.getFriendsList(UserDTO(userId = id))
+        }.onSuccess {
+            val json = Gson().toJson(it)
+            val test = Gson().fromJson(json, FriendsList::class.java)
+            trySend(Result.Success(test))
         }.onFailure { e ->
             trySend(Result.Error(Exception(e)))
         }

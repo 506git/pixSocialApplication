@@ -7,9 +7,11 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.domain.model.FriendInfo
 import com.example.domain.model.RoomInfo
 
 import com.example.pixsocialapplication.R;
@@ -29,7 +31,7 @@ class FriendsFragment : Fragment() {
 
     private lateinit var binding: FragmentFriendsBinding
 
-    private var roomArray = arrayListOf<RoomInfo>()
+    private var friendsArray = arrayListOf<FriendInfo>()
     private lateinit var friendsAdapter : FriendsAdapter
 
     private val friendsViewModel : FriendsViewModel by viewModels()
@@ -49,8 +51,12 @@ class FriendsFragment : Fragment() {
 
         binding = FragmentFriendsBinding.inflate(layoutInflater)
 
-        friendsAdapter = FriendsAdapter(roomArray)
-
+        friendsAdapter = FriendsAdapter(friendsArray)
+        friendsAdapter.setFriendItemClickListener(object : FriendsAdapter.FriendItemClickListener {
+            override fun onItemClick(view: View, position: Int) {
+                Toast.makeText(activity,friendsArray[position].name,Toast.LENGTH_LONG).show()
+            }
+        })
         with(binding){
             listFriends.apply {
                 adapter = friendsAdapter
@@ -64,11 +70,11 @@ class FriendsFragment : Fragment() {
         repeatOnStarted {
             friendsViewModel.getRoomList.collect{
                 if (it?.size == 0) {
-                    roomArray = arrayListOf()
+                    friendsArray = arrayListOf()
                 } else
-                roomArray = it as ArrayList<RoomInfo>
+                    friendsArray = it as ArrayList<FriendInfo>
 
-                friendsAdapter.addItem(roomArray)
+                friendsAdapter.addItem(friendsArray)
                 friendsAdapter.notifyDataSetChanged()
             }
         }
@@ -81,7 +87,6 @@ class FriendsFragment : Fragment() {
         }
 
         friendsViewModel.getRoomListRepos()
-        friendsViewModel.getRoomListRepos2()
 
         return binding.root
     }
