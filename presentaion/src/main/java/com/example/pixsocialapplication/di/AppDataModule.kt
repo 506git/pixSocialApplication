@@ -4,11 +4,8 @@ import android.content.Context
 import com.example.data.repository.AppDataRepositoryImpl
 import com.example.data.repository.dataSource.RemoteDataSource
 import com.example.data.service.PushService
-import com.example.domain.appdata_usecase.AddFriend
-import com.example.domain.appdata_usecase.AppDataUseCase
-import com.example.domain.appdata_usecase.GetFriendsList
+import com.example.domain.appdata_usecase.*
 import com.example.domain.repository.AppDataRepository
-import com.example.domain.usecase.*
 import com.google.firebase.auth.FirebaseAuth
 import dagger.Module
 import dagger.Provides
@@ -37,6 +34,8 @@ class AppDataModule {
         repository: AppDataRepository,
     ): AppDataUseCase {
         return AppDataUseCase(
+            googleAutoLogIn = GoogleAutoLogin(repository),
+            signInWithGoogleIdToken = SignInWithGoogleIdToken(repository),
             addFriends = AddFriend(repository),
             getFriends = GetFriendsList(repository)
         )

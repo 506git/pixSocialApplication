@@ -5,6 +5,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.example.data.dto.FriendsAddDTO
 import com.example.data.dto.FriendsList
+import com.example.data.dto.UserInfoDTO
 import com.example.data.model.UserDTO
 import com.example.data.paging.TestPagingSource
 import com.example.data.repository.dataSource.RemoteDataSource
@@ -22,7 +23,7 @@ class RemoteDataSourceImpl @Inject constructor(private val service: RemoteServic
         ).flow
     }
 
-    override suspend fun googleLogin(accessToken: String) {
+    override suspend fun googleLogin(accessToken: String): UserInfoDTO {
         return service.googleLogin(accessToken)
     }
 
@@ -37,6 +38,4 @@ class RemoteDataSourceImpl @Inject constructor(private val service: RemoteServic
     override suspend fun getFriendsList(id: UserDTO): FriendsList {
         return service.getFriendsList(id)
     }
-
-
 }

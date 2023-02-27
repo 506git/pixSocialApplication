@@ -7,6 +7,7 @@ import com.example.domain.appdata_usecase.AppDataUseCase
 import com.example.domain.core.Result
 import com.example.domain.model.FriendInfo
 import com.example.domain.usecase.UseCase
+import com.example.pixsocialapplication.utils.Config
 import com.example.pixsocialapplication.utils.DLog
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -49,9 +50,9 @@ class FriendsViewModel @Inject constructor(
 //        }
 //    }
 
-    fun getRoomListRepos() {
+    fun getFriendsListRepos() {
         viewModelScope.launch(Dispatchers.IO) {
-            appDataUseCase.getFriends("63f7723ecb364cff960958f7").collect() {
+            appDataUseCase.getFriends(getID(Config._ID)).collect() {
                 when (it) {
                     is Result.Error -> {
                         _loadingState.emit(false)
@@ -64,14 +65,18 @@ class FriendsViewModel @Inject constructor(
                         _loadingState.emit(false)
                         DLog().d(it.data.toString())
 
-                        if (it.data?.friends?.isEmpty() == true) {
+                        if (it.data?.result?.content?.isEmpty() == true) {
                             _getRoomList.emit(null)
-                        } else _getRoomList.emit(it.data?.friends)
+                        } else _getRoomList.emit(it.data?.result?.content)
 
                     }
                 }
             }
         }
+    }
+
+    fun getID(key : String): String{
+        return useCase.getStringPreferences(key)
     }
 
 }

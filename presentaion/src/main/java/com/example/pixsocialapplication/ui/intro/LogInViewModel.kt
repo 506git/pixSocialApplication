@@ -10,9 +10,7 @@ import com.example.domain.core.UiEvent
 import com.example.domain.database_usecase.DatabaseUseCase
 import com.example.domain.model.SignInState
 import com.example.domain.usecase.UseCase
-import com.example.pixsocialapplication.utils.Event
-import com.example.pixsocialapplication.utils.MutableEventFlow
-import com.example.pixsocialapplication.utils.asEventFlow
+import com.example.pixsocialapplication.utils.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
@@ -43,19 +41,22 @@ class LogInViewModel @Inject constructor(
 
     fun signInGoogleAutoLogIn() {
         viewModelScope.launch(Dispatchers.IO) {
-            useCase.googleAutoLogIn().collect() {
+            appDataUseCase.googleAutoLogIn().collect() {
                 when (it) {
                     is Result.Error -> {
                         event(Event.OffLine(false))
                         event(Event.ShowToast(it.exception.toString()))
                         _state.emit(SignInState(isGoogleLoading = true, launchGoogleSignIn = true))
-                        initUserInfoUpdateDB()
                     }
                     is Result.Loading -> {
 
                     }
                     is Result.Success -> {
                         _state.emit(SignInState(isGoogleLoading = true, launchGoogleSignIn = true, databaseInit= false))
+                        DLog().d(it.data.toString())
+
+                        setID(Config._ID, it.data!!.result.content._id)
+//                        initUserInfoUpdateLocalDB()
                     }
                 }
             }
@@ -70,14 +71,13 @@ class LogInViewModel @Inject constructor(
 
     fun signInWithGoogleIdToken(idToken: String) {
         viewModelScope.launch(IO) {
-            useCase.signInWithGoogleIdToken(idToken).collect() {
+            appDataUseCase.signInWithGoogleIdToken(idToken).collect() {
                 when (it) {
                     is Result.Error -> {
                         viewModelScope.launch {
                             event(Event.OffLine(false))
                             event(Event.ShowToast(it.exception.toString()))
                             _state.emit(SignInState(isGoogleLoading = true, launchGoogleSignIn = true))
-                            initUserInfoUpdateDB()
                         }
                     }
                     is Result.Loading -> {
@@ -85,25 +85,8 @@ class LogInViewModel @Inject constructor(
                     }
                     is Result.Success -> {
                         _state.emit(SignInState(isGoogleLoading = true, launchGoogleSignIn = true))
-                        initUserInfoUpdateDB()
-                    }
-                }
-            }
-        }
-    }
-
-    fun initUserInfoUpdateDB() {
-        viewModelScope.launch(IO) {
-            useCase.initUserProfileInfo().collect() {
-                when (it) {
-                    is Result.Error -> {
-
-                    }
-                    is Result.Loading -> {
-
-                    }
-                    is Result.Success -> {
-                        initUserInfoUpdateLocalDB()
+                        setID(Config._ID, it.data!!.result.content._id)
+//                        initUserInfoUpdateLocalDB()
                     }
                 }
             }
@@ -128,22 +111,30 @@ class LogInViewModel @Inject constructor(
         }
     }
 
-    fun updateUserProfile(userName: String) {
-        viewModelScope.launch(IO) {
-            useCase.updateUserProfile(userName).collect() {
-                when (it) {
-                    is Result.Error -> {
+//    fun updateUserProfile(userName: String) {
+//        viewModelScope.launch(IO) {
+//            useCase.updateUserProfile(userName).collect() {
+//                when (it) {
+//                    is Result.Error -> {
+//
+//                    }
+//                    is Result.Loading -> {
+//
+//                    }
+//                    is Result.Success -> {
+//
+//                    }
+//
+//                }
+//            }
+//        }
+//    }
 
-                    }
-                    is Result.Loading -> {
+    fun setID(key: String, token: String){
+        useCase.setStringPreferences(key, token)
+    }
 
-                    }
-                    is Result.Success -> {
-
-                    }
-
-                }
-            }
-        }
+    fun getID(key : String): String{
+        return useCase.getStringPreferences(key)
     }
 }

@@ -83,45 +83,8 @@ class SplashActivity : AppCompatActivity() {
                 goToMain()
             }
         }
-
-//        val deniedPermission = checkPermissions()
-//
-//        if (deniedPermission.size > 0) {
-//            ActivityCompat.requestPermissions(
-//                this@SplashActivity, permissionList.toTypedArray(), REQ_PERMISSION_MAIN
-//            )
-//        } else {
-//
-//            CoroutineScope(Dispatchers.Main).async {
-//                delay(500)
-//                goToMain()
-////                goMain.await()
-//            }
-//        }
-
-
-
-//        content.viewTreeObserver.addOnPreDrawListener(
-//            object : ViewTreeObserver.OnPreDrawListener {
-//                override fun onPreDraw(): Boolean {
-//                    return if (start) {
-//                        content.viewTreeObserver.removeOnPreDrawListener(this)
-//                        true
-//                    } else
-//                        false
-//                }
-//            }
-//        )
-
-//        val rootView: View = getWindow().getDecorView().findViewById(android.R.id.content)
-//        Snackbar.make(rootView,"hi", Snackbar.LENGTH_LONG).show()
     }
 
-//    val goMain =  CoroutineScope(Dispatchers.Main).async {
-//        delay(500)
-//
-//
-//    }
 
     fun goToMain(){
         if (userState) {
@@ -132,7 +95,6 @@ class SplashActivity : AppCompatActivity() {
             finish()
         }
     }
-
 
     override fun onRequestPermissionsResult(
         requestCode: Int,

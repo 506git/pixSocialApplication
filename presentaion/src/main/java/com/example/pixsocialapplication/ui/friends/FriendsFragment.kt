@@ -86,7 +86,7 @@ class FriendsFragment : Fragment() {
             }
         }
 
-        friendsViewModel.getRoomListRepos()
+        friendsViewModel.getFriendsListRepos()
 
         return binding.root
     }

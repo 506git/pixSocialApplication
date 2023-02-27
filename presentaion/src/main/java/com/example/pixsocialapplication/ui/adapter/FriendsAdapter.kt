@@ -68,7 +68,7 @@ class FriendsAdapter(dataSet: ArrayList<FriendInfo>) : RecyclerView.Adapter<Frie
         private val imgRoom = itemView.findViewById<ImageView>(R.id.img_room)
         fun bind(event: FriendInfo) {
             txtName.text = event.name
-            txtId.text = event.email
+            txtId.text = event.comment
             imgRoom.setOnClickListener {
                 mItemClickListener.onItemClick(it, absoluteAdapterPosition)
             }

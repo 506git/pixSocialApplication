@@ -2,12 +2,12 @@ package com.example.data.dto
 
 import com.google.gson.annotations.SerializedName
 
-data class FriendsList (
+data class UserInfoDTO (
     @SerializedName("result")
-    private val result: FriendsResultInfo,
+    private val result: ResultInfo,
 )
 
-data class FriendsResultInfo (
+data class ResultInfo (
     @SerializedName("resultCode")
     private val resultCode: String = "",
 
@@ -15,23 +15,31 @@ data class FriendsResultInfo (
     private val resultMessage: String = "",
 
     @SerializedName("content")
-    private val content: List<FriendInfo>,
+    private val content: UserInfo,
 )
 
-data class FriendInfo (
+data class UserInfo (
     @SerializedName("_id")
-    private val id: String? = "",
+    private val _id: String = "",
+
+    @SerializedName("user_id")
+    private val user_id: String = "",
 
     @SerializedName("name")
-    private val name: String? = "",
+    private val name: String,
 
     @SerializedName("email")
-    private val email: String? = null,
+    private val email: String,
 
     @SerializedName("picture")
     private val picture: String? = null,
 
+    @SerializedName("createdAt")
+    private val createdAt: String? = null,
+
+    @SerializedName("updatedAt")
+    private val updatedAt: String? = null,
+
     @SerializedName("comment")
     private val comment: String? = null,
 )
-
