@@ -61,9 +61,9 @@ class ProfileFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        val height = (CommonUtils.getScreenHeight(context!!) * 0.27).toInt()
+        val height = (CommonUtils.getScreenHeight(context!!) * 0.35).toInt()
         binding.viewBottom.apply {
-            layoutParams.height = (CommonUtils.getScreenHeight(context!!) * 0.9).toInt()
+            layoutParams.height = (CommonUtils.getScreenHeight(context!!) * 0.75).toInt()
         }
         val bottomSheet = dialog?.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
         val behavior = BottomSheetBehavior.from<View>(bottomSheet!!)
@@ -88,7 +88,6 @@ class ProfileFragment : BottomSheetDialogFragment() {
             ImageLoader(context!!).imageCircleLoadWithURL(userImage.toString(), imgUserProfile)
             txtUserName.text = userName
             txtUserDesc.text = userEmail
-
         }
 
         return binding.root

@@ -37,7 +37,7 @@ class LogInViewModel @Inject constructor(
     val skipIntro get() = _skipIntro.asSharedFlow()
 
     private val _eventFlow = MutableEventFlow<Event>()
-    val eventFlow get() =  _eventFlow.asEventFlow()
+    val eventFlow get() = _eventFlow.asEventFlow()
 
     fun signInGoogleAutoLogIn() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -52,9 +52,14 @@ class LogInViewModel @Inject constructor(
 
                     }
                     is Result.Success -> {
-                        _state.emit(SignInState(isGoogleLoading = true, launchGoogleSignIn = true, databaseInit= false))
+                        _state.emit(
+                            SignInState(
+                                isGoogleLoading = true,
+                                launchGoogleSignIn = true,
+                                databaseInit = false
+                            )
+                        )
                         DLog().d(it.data.toString())
-
                         setID(Config._ID, it.data!!.result.content._id)
 //                        initUserInfoUpdateLocalDB()
                     }
@@ -74,17 +79,15 @@ class LogInViewModel @Inject constructor(
             appDataUseCase.signInWithGoogleIdToken(idToken).collect() {
                 when (it) {
                     is Result.Error -> {
-                        viewModelScope.launch {
-                            event(Event.OffLine(false))
-                            event(Event.ShowToast(it.exception.toString()))
-                            _state.emit(SignInState(isGoogleLoading = true, launchGoogleSignIn = true))
-                        }
+                        event(Event.OffLine(false))
+                        event(Event.ShowToast(it.exception.toString()))
+                        _state.emit(SignInState(isGoogleLoading = true, launchGoogleSignIn = true, databaseInit = true))
                     }
                     is Result.Loading -> {
 
                     }
                     is Result.Success -> {
-                        _state.emit(SignInState(isGoogleLoading = true, launchGoogleSignIn = true))
+                        _state.emit(SignInState(isGoogleLoading = true, launchGoogleSignIn = true, databaseInit = true))
                         setID(Config._ID, it.data!!.result.content._id)
 //                        initUserInfoUpdateLocalDB()
                     }
@@ -104,7 +107,13 @@ class LogInViewModel @Inject constructor(
 
                     }
                     is Result.Success -> {
-                        _state.emit(SignInState(isGoogleLoading = true, launchGoogleSignIn = true,  databaseInit = true))
+                        _state.emit(
+                            SignInState(
+                                isGoogleLoading = true,
+                                launchGoogleSignIn = true,
+                                databaseInit = true
+                            )
+                        )
                     }
                 }
             }
@@ -130,11 +139,11 @@ class LogInViewModel @Inject constructor(
 //        }
 //    }
 
-    fun setID(key: String, token: String){
+    fun setID(key: String, token: String) {
         useCase.setStringPreferences(key, token)
     }
 
-    fun getID(key : String): String{
+    fun getID(key: String): String {
         return useCase.getStringPreferences(key)
     }
 }

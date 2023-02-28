@@ -30,24 +30,26 @@ class AppDataRepositoryImpl @Inject constructor(
 ) : AppDataRepository {
     override suspend fun googleAutoLogIn(): Flow<Result<UserInfoDTO>> =  callbackFlow {
         send(Result.Loading())
-        val user = auth.currentUser!!
+        val user = auth.currentUser
 
-        user.getIdToken(true).addOnSuccessListener { result ->
-            val token = result.token.toString()
-            CoroutineScope(Dispatchers.IO).launch {
-                runCatching {
-                    return@runCatching TestRemoteSource.googleLogin(token)
-                }.onSuccess {
-                    val json = Gson().toJson(it)
-                    val userInfo = Gson().fromJson(json, UserInfoDTO::class.java)
-                    trySend(Result.Success(userInfo))
-                }.onFailure { e ->
-                    trySend(Result.Error(Exception(e)))
+        user?.run {
+            getIdToken(true).addOnSuccessListener { result ->
+                val token = result.token.toString()
+                CoroutineScope(Dispatchers.IO).launch {
+                    runCatching {
+                        return@runCatching TestRemoteSource.googleLogin(token)
+                    }.onSuccess {
+                        val json = Gson().toJson(it)
+                        val userInfo = Gson().fromJson(json, UserInfoDTO::class.java)
+                        trySend(Result.Success(userInfo))
+                    }.onFailure { e ->
+                        trySend(Result.Error(Exception(e)))
+                    }
                 }
+            }.addOnFailureListener {
+                trySend(Result.Error(it))
             }
-        }.addOnFailureListener {
-            trySend(Result.Error(it))
-        }
+        } ?: trySend(Result.Error(NullPointerException()))
 
         awaitClose {
             channel.close()

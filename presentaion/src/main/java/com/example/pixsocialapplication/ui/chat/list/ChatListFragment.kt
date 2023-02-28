@@ -114,7 +114,7 @@ class ChatListFragment : Fragment() {
             else chatRoomListViewAdapter.itemCount - 1
 
             if(!checkDelete){
-                binding.chatList.smoothScrollToPosition(lastPos)
+                binding.chatList.scrollToPosition(lastPos)
             }
 
         }

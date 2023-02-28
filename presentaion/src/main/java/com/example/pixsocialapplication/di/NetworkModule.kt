@@ -96,7 +96,7 @@ object NetworkModule {
     private const val BASE_URL = "http://limgs.iptime.org:7777"
 //    private const val PUSH_BASE_URL = "http://129.154.203.45:7777"
     private const val PUSH_BASE_URL = "http://140.238.2.67:7777"
-    private const val TIMEOUT = 5L
+    private const val TIMEOUT = 3L
 
 }
 
