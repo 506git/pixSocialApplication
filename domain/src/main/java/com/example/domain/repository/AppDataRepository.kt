@@ -1,9 +1,7 @@
 package com.example.domain.repository
 
 import com.example.domain.core.Result
-import com.example.domain.model.FriendsList
-import com.example.domain.model.User
-import com.example.domain.model.UserInfoDTO
+import com.example.domain.model.*
 import kotlinx.coroutines.flow.Flow
 
 interface AppDataRepository {
@@ -15,4 +13,8 @@ interface AppDataRepository {
     suspend fun getUserInfo(id : String) : Flow<Result<User>>
 
     suspend fun getFriendsList(id : String) : Flow<Result<FriendsList>>
+
+    suspend fun chatRoomStart(members : List<String>) : Flow<Result<RoomInfoDTO>>
+
+    suspend fun getRoomInfo(id : String) : Flow<Result<RoomListInfoDTO>>
 }

@@ -8,5 +8,9 @@ class AppDataUseCase(
 
     val addFriends : AddFriend,
 
-    val getFriends : GetFriendsList
+    val getFriends : GetFriendsList,
+
+    val chatRoomStart : ChatRoomStart,
+
+    val getRoomList : GetRoomList
 )

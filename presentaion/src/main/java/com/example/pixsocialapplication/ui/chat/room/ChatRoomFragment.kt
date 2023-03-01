@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.domain.model.RoomInfo
+import com.example.domain.model.RoomListInfo
 import com.example.pixsocialapplication.R
 import com.example.pixsocialapplication.databinding.FragmentChatRoomBinding
 import com.example.pixsocialapplication.ui.MainViewModel
@@ -46,7 +47,7 @@ class ChatRoomFragment : Fragment() {
     private val chatRoomViewModel : ChatRoomViewModel by viewModels()
     private val mainViewModel: MainViewModel by activityViewModels()
 
-    private var roomArray = arrayListOf<RoomInfo>()
+    private var roomArray = arrayListOf<RoomListInfo>()
 
     private val dialog by lazy {
         LoadingDialog(context!!)
@@ -70,7 +71,7 @@ class ChatRoomFragment : Fragment() {
         chatRoomViewModel.getRoomList.observe(viewLifecycleOwner){
             if (it == null){
                 roomArray = arrayListOf()
-            } else roomArray = it as ArrayList<RoomInfo>
+            } else roomArray = it as ArrayList<RoomListInfo>
 
             userRoomListViewAdapter.addItem(roomArray)
             userRoomListViewAdapter.notifyDataSetChanged()
@@ -99,21 +100,21 @@ class ChatRoomFragment : Fragment() {
             override fun onItemClick(view: View, position: Int) {
                 when (view.id){
                     R.id.img_room -> {
-                        ProfileFragment().apply {
-                            arguments = bundleOf(
-                                "userName" to roomArray[position].room_name,
-                                "userImage" to roomArray[position].room_img,
-                                "userEmail" to roomArray[position].room_title
-                            )
-                        }.show(activity!!.supportFragmentManager,"profile")
+//                        ProfileFragment().apply {
+//                            arguments = bundleOf(
+//                                "userName" to roomArray[position].room_name,
+//                                "userImage" to roomArray[position].room_img,
+//                                "userEmail" to roomArray[position].room_title
+//                            )
+//                        }.show(activity!!.supportFragmentManager,"profile")
                     }
                     else -> {
-                        val bundle = bundleOf(
-                            "roomTitle" to roomArray[position].room_title,
-                            "roomName" to roomArray[position].room_name,
-                            "roomId" to roomArray[position].room_id
-                        )
-                        view.findNavController().navigate(R.id.action_chatRoomFragment_to_chatListFragment, bundle)
+//                        val bundle = bundleOf(
+//                            "roomTitle" to roomArray[position].room_title,
+//                            "roomName" to roomArray[position].room_name,
+//                            "roomId" to roomArray[position].room_id
+//                        )
+//                        view.findNavController().navigate(R.id.action_chatRoomFragment_to_chatListFragment, bundle)
                     }
                 }
             }

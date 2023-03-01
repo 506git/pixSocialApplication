@@ -13,7 +13,7 @@ data class FriendsResultInfo (
 )
 
 data class FriendInfo (
-    val id: String? = "",
+    val _id: String? = "",
 
     val name: String? = "",
 

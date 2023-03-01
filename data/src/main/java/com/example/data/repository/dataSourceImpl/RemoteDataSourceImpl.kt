@@ -3,9 +3,7 @@ package com.example.data.repository.dataSourceImpl
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import com.example.data.dto.FriendsAddDTO
-import com.example.data.dto.FriendsList
-import com.example.data.dto.UserInfoDTO
+import com.example.data.dto.*
 import com.example.data.model.UserDTO
 import com.example.data.paging.TestPagingSource
 import com.example.data.repository.dataSource.RemoteDataSource
@@ -37,5 +35,13 @@ class RemoteDataSourceImpl @Inject constructor(private val service: RemoteServic
 
     override suspend fun getFriendsList(id: UserDTO): FriendsList {
         return service.getFriendsList(id)
+    }
+
+    override suspend fun createRoom(creatRoom: CreateRoomDTO): RoomInfoDTO {
+        return service.createRoom(creatRoom)
+    }
+
+    override suspend fun getRoomList(user: UserDTO): RoomListInfoDTO {
+        return service.getRoomList(user)
     }
 }

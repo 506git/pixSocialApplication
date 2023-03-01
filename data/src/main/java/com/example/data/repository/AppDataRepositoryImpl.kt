@@ -1,15 +1,17 @@
 package com.example.data.repository
 
 import android.content.Context
+import android.content.SharedPreferences
+import android.util.Log
+import com.example.data.dto.CreateRoomDTO
 import com.example.data.dto.FriendsAddDTO
 
 import com.example.data.model.UserDTO
 import com.example.data.repository.dataSource.RemoteDataSource
 import com.example.data.service.PushService
 import com.example.domain.core.Result
-import com.example.domain.model.FriendsList
-import com.example.domain.model.User
-import com.example.domain.model.UserInfoDTO
+import com.example.domain.model.*
+import com.example.domain.preferences.Preferences
 import com.example.domain.repository.AppDataRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
@@ -27,6 +29,7 @@ class AppDataRepositoryImpl @Inject constructor(
     private val TestRemoteSource: RemoteDataSource,
     private val context: Context,
     private val pushService: PushService,
+    private val sharedPreferences: Preferences
 ) : AppDataRepository {
     override suspend fun googleAutoLogIn(): Flow<Result<UserInfoDTO>> =  callbackFlow {
         send(Result.Loading())
@@ -138,5 +141,45 @@ class AppDataRepositoryImpl @Inject constructor(
             channel.close()
         }
     }
+
+    override suspend fun chatRoomStart(members: List<String>): Flow<Result<RoomInfoDTO>> = callbackFlow{
+        send(Result.Loading())
+
+        runCatching {
+            return@runCatching TestRemoteSource.createRoom(CreateRoomDTO(
+                roomName = "",
+                memberIds = members
+            ))
+        }.onSuccess {
+            val json = Gson().toJson(it)
+            val roomInfo = Gson().fromJson(json, RoomInfoDTO::class.java)
+            trySend(Result.Success(roomInfo))
+        }.onFailure { e ->
+            trySend(Result.Error(Exception(e)))
+        }
+
+        awaitClose {
+            channel.close()
+        }
+    }
+
+    override suspend fun getRoomInfo(id: String): Flow<Result<RoomListInfoDTO>> = callbackFlow{
+        send(Result.Loading())
+
+        runCatching {
+            return@runCatching TestRemoteSource.getRoomList(UserDTO(userId = id))
+        }.onSuccess {
+            val json = Gson().toJson(it)
+            val roomListInfo = Gson().fromJson(json, RoomListInfoDTO::class.java)
+            trySend(Result.Success(roomListInfo))
+        }.onFailure { e ->
+            trySend(Result.Error(Exception(e)))
+        }
+
+        awaitClose {
+            channel.close()
+        }
+    }
+
 
 }

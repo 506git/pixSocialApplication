@@ -1,9 +1,7 @@
 package com.example.data.repository.dataSource
 
 import androidx.paging.PagingData
-import com.example.data.dto.FriendsAddDTO
-import com.example.data.dto.FriendsList
-import com.example.data.dto.UserInfoDTO
+import com.example.data.dto.*
 import com.example.data.model.UserDTO
 
 import com.example.domain.model.LibraryDataSearchList
@@ -19,4 +17,8 @@ interface RemoteDataSource {
      suspend fun addFriendsAdd(friendsAddDTO: FriendsAddDTO)
 
      suspend fun getFriendsList(id : UserDTO) : FriendsList
+
+     suspend fun createRoom(id : CreateRoomDTO) : RoomInfoDTO
+
+     suspend fun getRoomList(id : UserDTO) : RoomListInfoDTO
 }

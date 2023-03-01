@@ -7,11 +7,12 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.domain.model.RoomInfo
+import com.example.domain.model.RoomListInfo
 import com.example.pixsocialapplication.R
 import com.example.pixsocialapplication.utils.ImageLoader
 
-class UserRoomListViewAdapter(dataSet: ArrayList<RoomInfo>) : RecyclerView.Adapter<UserRoomListViewAdapter.ViewHolder>() {
-    private val eventList : ArrayList<RoomInfo> = dataSet
+class UserRoomListViewAdapter(dataSet: ArrayList<RoomListInfo>) : RecyclerView.Adapter<UserRoomListViewAdapter.ViewHolder>() {
+    private val eventList : ArrayList<RoomListInfo> = dataSet
 
     interface RoomItemClickListener{
         fun onItemClick(view: View, position: Int)
@@ -34,7 +35,7 @@ class UserRoomListViewAdapter(dataSet: ArrayList<RoomInfo>) : RecyclerView.Adapt
 //            it.setBackgroundColor(ContextCompat.getColor(it.context, backgroundColorResId))
 //        }
 //    }
-    fun addItem(dataSet: ArrayList<RoomInfo>){
+    fun addItem(dataSet: ArrayList<RoomListInfo>){
         eventList.clear()
         eventList.addAll(dataSet)
     }
@@ -48,13 +49,13 @@ class UserRoomListViewAdapter(dataSet: ArrayList<RoomInfo>) : RecyclerView.Adapt
         private val txtName = itemView.findViewById<TextView>(R.id.text_name)
         private val txtId = itemView.findViewById<TextView>(R.id.text_id)
         private val imgRoom = itemView.findViewById<ImageView>(R.id.img_room)
-        fun bind(event: RoomInfo) {
+        fun bind(event: RoomListInfo) {
             txtName.text = event.room_name
-            txtId.text = event.room_title
+            txtId.text = event._id
             imgRoom.setOnClickListener {
                 mItemClickListener.onItemClick(it, absoluteAdapterPosition)
             }
-            ImageLoader(context = itemView.context).imageCircleLoadWithURL(event.room_img.toString(), imgRoom)
+            ImageLoader(context = itemView.context).imageCircleLoadWithURL(event.room_image.toString(), imgRoom)
         }
     }
 

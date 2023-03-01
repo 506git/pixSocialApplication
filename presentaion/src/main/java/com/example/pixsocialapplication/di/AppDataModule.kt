@@ -5,6 +5,7 @@ import com.example.data.repository.AppDataRepositoryImpl
 import com.example.data.repository.dataSource.RemoteDataSource
 import com.example.data.service.PushService
 import com.example.domain.appdata_usecase.*
+import com.example.domain.preferences.Preferences
 import com.example.domain.repository.AppDataRepository
 import com.google.firebase.auth.FirebaseAuth
 import dagger.Module
@@ -25,8 +26,9 @@ class AppDataModule {
         testRemoteSource: RemoteDataSource,
         @ApplicationContext appContext : Context,
         pushService: PushService,
+        preferences: Preferences,
     ): AppDataRepository {
-        return AppDataRepositoryImpl(auth, testRemoteSource, appContext, pushService)
+        return AppDataRepositoryImpl(auth, testRemoteSource, appContext, pushService, preferences)
     }
 
     @Provides
@@ -37,7 +39,9 @@ class AppDataModule {
             googleAutoLogIn = GoogleAutoLogin(repository),
             signInWithGoogleIdToken = SignInWithGoogleIdToken(repository),
             addFriends = AddFriend(repository),
-            getFriends = GetFriendsList(repository)
+            getFriends = GetFriendsList(repository),
+            chatRoomStart = ChatRoomStart(repository),
+            getRoomList = GetRoomList(repository)
         )
     }
 

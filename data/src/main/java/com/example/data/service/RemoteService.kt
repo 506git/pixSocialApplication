@@ -1,9 +1,6 @@
 package com.example.data.service
 
-import com.example.data.dto.FriendsAddDTO
-import com.example.data.dto.FriendsList
-import com.example.data.dto.SendDTO
-import com.example.data.dto.UserInfoDTO
+import com.example.data.dto.*
 import com.example.data.model.TestRes
 import com.example.data.model.UserDTO
 import retrofit2.http.*
@@ -38,4 +35,14 @@ interface RemoteService {
     suspend fun getFriendsList(
         @Body userDTO : UserDTO // 수정
     ) : FriendsList
+
+    @POST("rooms/create")
+    suspend fun createRoom(
+        @Body createRoomDTO : CreateRoomDTO
+    ) : RoomInfoDTO
+
+    @POST("rooms/findMyChatRooms")
+    suspend fun getRoomList(
+        @Body userDTO : UserDTO // 수정
+    ) : RoomListInfoDTO
 }

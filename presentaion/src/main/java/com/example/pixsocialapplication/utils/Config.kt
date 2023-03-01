@@ -1,5 +1,5 @@
 package com.example.pixsocialapplication.utils
 
 object Config {
-    val _ID = "USER_ID"
+    const val _ID = "USER_ID"
 }

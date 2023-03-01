@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,6 +22,7 @@ import com.example.pixsocialapplication.ui.adapter.FriendsAdapter
 import com.example.pixsocialapplication.ui.adapter.UserRoomListViewAdapter
 import com.example.pixsocialapplication.ui.chat.room.ChatRoomViewModel
 import com.example.pixsocialapplication.ui.common.LoadingDialog
+import com.example.pixsocialapplication.ui.profile.ProfileFragment
 import com.example.pixsocialapplication.utils.repeatOnStarted
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
@@ -54,7 +56,14 @@ class FriendsFragment : Fragment() {
         friendsAdapter = FriendsAdapter(friendsArray)
         friendsAdapter.setFriendItemClickListener(object : FriendsAdapter.FriendItemClickListener {
             override fun onItemClick(view: View, position: Int) {
-                Toast.makeText(activity,friendsArray[position].name,Toast.LENGTH_LONG).show()
+                ProfileFragment().apply {
+                    arguments = bundleOf(
+                        "userId" to friendsArray[position]._id,
+                        "userName" to friendsArray[position].name,
+                        "userImage" to friendsArray[position].picture,
+                        "userEmail" to friendsArray[position].email
+                    )
+                }.show(activity!!.supportFragmentManager,"profile")
             }
         })
         with(binding){
