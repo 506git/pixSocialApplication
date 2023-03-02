@@ -109,12 +109,12 @@ class ChatRoomFragment : Fragment() {
 //                        }.show(activity!!.supportFragmentManager,"profile")
                     }
                     else -> {
-//                        val bundle = bundleOf(
-//                            "roomTitle" to roomArray[position].room_title,
-//                            "roomName" to roomArray[position].room_name,
-//                            "roomId" to roomArray[position].room_id
-//                        )
-//                        view.findNavController().navigate(R.id.action_chatRoomFragment_to_chatListFragment, bundle)
+                        val bundle = bundleOf(
+                            "roomTitle" to roomArray[position].room_name,
+                            "roomName" to roomArray[position].room_name,
+                            "roomId" to roomArray[position]._id
+                        )
+                        view.findNavController().navigate(R.id.action_chatRoomFragment_to_chatListFragment, bundle)
                     }
                 }
             }

@@ -50,6 +50,9 @@ object Versions {
 
     // Room
     const val ROOM_VERSION = "2.5.0"
+
+    // Socket
+    const val SOCKET = "2.0.1"
 }
 
 object Kotlin {
@@ -111,4 +114,6 @@ object Libs {
 
     const val ROOM = "androidx.room:room-runtime:${Versions.ROOM_VERSION}"
     const val ROOM_COMPILE = "androidx.room:room-compiler:${Versions.ROOM_VERSION}"
+
+    const val SOCKET = "io.socket:socket.io-client:${Versions.SOCKET}"
 }

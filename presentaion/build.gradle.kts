@@ -133,6 +133,10 @@ dependencies {
     //room
     implementation(Libs.ROOM)
     kapt(Libs.ROOM_COMPILE)
+
+    implementation(Libs.SOCKET) {
+        exclude(group = "org.json", module = "json")
+    }
 }
 
 

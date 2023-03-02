@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.speech.tts.TextToSpeech
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,6 +29,10 @@ import com.example.pixsocialapplication.utils.DLog
 import com.example.pixsocialapplication.utils.setSafeOnClickListener
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import io.socket.client.IO
+import io.socket.client.Socket
+import io.socket.emitter.Emitter
+import org.json.JSONObject
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -48,6 +53,8 @@ class ChatListFragment : Fragment() {
     private var lastPos: Int = 0
 
     private lateinit var binding: FragmentChatListBinding
+
+    private var mSocket: Socket? = null
 
     private val dialog by lazy {
         LoadingDialog(context!!)
@@ -83,6 +90,24 @@ class ChatListFragment : Fragment() {
             addAction("gallery")
         }
 
+        mSocket = IO.socket("http://limgs.iptime.org:8086").connect()
+        mSocket?.emit("ClientToServer", "hi")
+        mSocket?.on(Socket.EVENT_CONNECT) {
+            Log.d("socket", "connect ")
+        }?.on(Socket.EVENT_DISCONNECT) { args ->
+            Log.d("socket", "disconnect main " + args[0])
+        }?.on(Socket.EVENT_CONNECT_ERROR) { args ->
+            Log.d("socket", "err " + args[0])
+        }
+        val data = JSONObject().apply {
+            put("room", roomId)
+            put("client", "63f7723ecb364cff960958f7")
+        }
+        mSocket?.emit("joinRoom", data)
+
+        mSocket?.on("receiveMessage", Emitter.Listener {
+            DLog().d("sendMessage", it.toString())
+        })
         chatViewModel.getRoomChatList(roomId.toString())
 
         chatViewModel.loadingState.observe(viewLifecycleOwner) {
@@ -93,7 +118,8 @@ class ChatListFragment : Fragment() {
         binding.btnPlay.setSafeOnClickListener {
             val text = binding.editSendChat.text.toString()
             if(text.isNotEmpty()){
-                chatViewModel.sendMessage(binding.editSendChat.text.toString(), roomId.toString())
+//                chatViewModel.sendMessage(binding.editSendChat.text.toString(), roomId.toString())
+                mSocket?.emit("sendMessage", binding.editSendChat.text.toString())
                 binding.editSendChat.setText("")
             } else CommonUtils.snackBar(activity!!, "글자가 아무것도 없어요", Snackbar.LENGTH_INDEFINITE)
         }
@@ -120,7 +146,6 @@ class ChatListFragment : Fragment() {
         }
 
         chatRoomListViewAdapter = ChatRoomListViewAdapter(chatListArray)
-
 
         chatRoomListViewAdapter.setChatItemClickListener(object :
             ChatRoomListViewAdapter.ChatItemClickListener {
@@ -251,6 +276,9 @@ class ChatListFragment : Fragment() {
         mBroadCastReceiver = null
         tts.stop()
         tts.shutdown()
+        mSocket?.run {
+            emit("leaveRoom",roomId)
+        }
     }
 
     companion object {
