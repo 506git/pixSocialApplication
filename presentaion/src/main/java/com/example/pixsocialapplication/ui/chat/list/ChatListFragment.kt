@@ -40,9 +40,11 @@ import kotlin.collections.ArrayList
 @AndroidEntryPoint
 class ChatListFragment : Fragment() {
 
-    private var email: String? = null
+    private var userId: String? = null
     private var name: String? = null
     private var roomId: String? = null
+
+    private var data = JSONObject()
 
     private val chatViewModel: ChatViewModel by activityViewModels()
     private val mainViewModel: MainViewModel by activityViewModels()
@@ -75,7 +77,7 @@ class ChatListFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        email = arguments?.getString("roomTitle").toString()
+        userId = arguments?.getString("userId").toString()
         name = arguments?.getString("roomName").toString()
         roomId = arguments?.getString("roomId").toString()
     }
@@ -90,24 +92,29 @@ class ChatListFragment : Fragment() {
             addAction("gallery")
         }
 
-        mSocket = IO.socket("http://limgs.iptime.org:8086").connect()
-        mSocket?.emit("ClientToServer", "hi")
-        mSocket?.on(Socket.EVENT_CONNECT) {
-            Log.d("socket", "connect ")
-        }?.on(Socket.EVENT_DISCONNECT) { args ->
-            Log.d("socket", "disconnect main " + args[0])
-        }?.on(Socket.EVENT_CONNECT_ERROR) { args ->
-            Log.d("socket", "err " + args[0])
+//        mSocket = IO.socket("http://limgs.iptime.org:8086").connect()
+//        mSocket?.emit("ClientToServer", "hi")
+//        mSocket?.on(Socket.EVENT_CONNECT) {
+//            Log.d("socket", "connect ")
+//        }?.on(Socket.EVENT_DISCONNECT) { args ->
+//            Log.d("socket", "disconnect main " + args[0])
+//        }?.on(Socket.EVENT_CONNECT_ERROR) { args ->
+//            Log.d("socket", "err " + args[0])
+//        }
+        data = JSONObject().apply {
+            put("roomId", roomId)
+            put("userId", userId)
         }
-        val data = JSONObject().apply {
-            put("room", roomId)
-            put("client", "63f7723ecb364cff960958f7")
-        }
-        mSocket?.emit("joinRoom", data)
 
-        mSocket?.on("receiveMessage", Emitter.Listener {
-            DLog().d("sendMessage", it.toString())
-        })
+        chatViewModel.joinRoom(data)
+//        joinRoom.
+
+//        mSocket?.emit("joinRoom", data)
+
+//        mSocket?.on("receiveMessage", Emitter.Listener { it ->
+////            DLog().d(it[0].toString())
+//        })
+
         chatViewModel.getRoomChatList(roomId.toString())
 
         chatViewModel.loadingState.observe(viewLifecycleOwner) {
@@ -118,8 +125,14 @@ class ChatListFragment : Fragment() {
         binding.btnPlay.setSafeOnClickListener {
             val text = binding.editSendChat.text.toString()
             if(text.isNotEmpty()){
+                val messageData = JSONObject().apply {
+                    put("roomId", roomId)
+                    put("userId", userId)
+                    put("messageBody", binding.editSendChat.text.toString())
+                    put("messageType", "text")
+                }
 //                chatViewModel.sendMessage(binding.editSendChat.text.toString(), roomId.toString())
-                mSocket?.emit("sendMessage", binding.editSendChat.text.toString())
+                mSocket?.emit("sendMessage", messageData )
                 binding.editSendChat.setText("")
             } else CommonUtils.snackBar(activity!!, "글자가 아무것도 없어요", Snackbar.LENGTH_INDEFINITE)
         }
@@ -265,20 +278,21 @@ class ChatListFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-
-        mainViewModel.setAppbarTitle(name.toString(), email.toString())
+        mainViewModel.setAppbarTitle(name.toString(), "")
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        mSocket?.run{
+            emit("leaveRoom", data)
+        } ?: DLog().d("msocket Null")
+
         mainViewModel.setAppbarTitle("대화목록", "")
         activity?.unregisterReceiver(mBroadCastReceiver)
         mBroadCastReceiver = null
         tts.stop()
         tts.shutdown()
-        mSocket?.run {
-            emit("leaveRoom",roomId)
-        }
+
     }
 
     companion object {

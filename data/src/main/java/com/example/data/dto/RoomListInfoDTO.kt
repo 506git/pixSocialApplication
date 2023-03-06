@@ -29,7 +29,7 @@ data class RoomListInfo (
     private val members: List<String>,
 
     @SerializedName("chats")
-    private val chats: List<String?> = emptyList(),
+    private val chats: List<ChatInfo?> = emptyList(),
 
     @SerializedName("createdAt")
     private val createdAt: String? = null,

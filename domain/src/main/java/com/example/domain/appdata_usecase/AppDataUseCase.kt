@@ -12,5 +12,7 @@ class AppDataUseCase(
 
     val chatRoomStart : ChatRoomStart,
 
-    val getRoomList : GetRoomList
+    val getRoomList : GetRoomList,
+
+    val joinRoom : JoinRoom
 )

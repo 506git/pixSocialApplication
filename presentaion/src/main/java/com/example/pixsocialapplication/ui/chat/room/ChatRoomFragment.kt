@@ -110,7 +110,8 @@ class ChatRoomFragment : Fragment() {
                     }
                     else -> {
                         val bundle = bundleOf(
-                            "roomTitle" to roomArray[position].room_name,
+//                            "roomTitle" to roomArray[position].room_name,
+                            "userId" to chatRoomViewModel.getID(),
                             "roomName" to roomArray[position].room_name,
                             "roomId" to roomArray[position]._id
                         )

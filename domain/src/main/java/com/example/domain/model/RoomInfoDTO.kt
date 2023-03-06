@@ -19,12 +19,20 @@ data class RoomInfo2 (
 
         val members: List<String>,
 
-        val chats: List<String>,
+        val chats: List<ChatInfo?> = emptyList(),
 
         val createdAt: String? = null,
 
         val updatedAt: String? = null,
 
         val memberCount: Int? = null,
+)
+
+data class ChatInfo (
+        val user_id: String? = "",
+
+        val messageBody: String? = "",
+
+        val messageType: String? = "",
 )
 

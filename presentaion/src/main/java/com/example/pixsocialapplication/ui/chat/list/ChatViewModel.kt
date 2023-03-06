@@ -7,21 +7,28 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.example.domain.appdata_usecase.AppDataUseCase
 import com.example.domain.core.Result
 import com.example.domain.usecase.UseCase
 import com.example.domain.model.RoomChat
 import com.example.pixsocialapplication.ui.chat.list.testData.ArticleRepository
+import com.example.pixsocialapplication.utils.DLog
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.json.JSONObject
 import javax.inject.Inject
 
 private const val ITEMS_PER_PAGE = 50
 
 @HiltViewModel
-class ChatViewModel @Inject constructor(private val useCase: UseCase) : ViewModel() {
+class ChatViewModel @Inject constructor(
+    private val useCase: UseCase,
+    private val appDataUseCase: AppDataUseCase
+) : ViewModel() {
 
     //    val pagingData = useCase.fetchImageList.cachedIn(viewModelScope)
     private var repository = ArticleRepository()
@@ -70,6 +77,28 @@ class ChatViewModel @Inject constructor(private val useCase: UseCase) : ViewMode
 //            }
 //        }
 //    }
+
+    fun joinRoom(data : JSONObject) {
+        viewModelScope.launch(Dispatchers.IO) {
+            appDataUseCase.joinRoom(data).collect() {
+                when (it) {
+                    is Result.Error -> {
+                        DLog().d("error","test")
+                    }
+                    is Result.Loading -> {
+
+                    }
+                    is Result.Success -> {
+                        DLog().d("susceess","test")
+                    }
+                }
+            }
+        }
+    }
+
+    fun leaveRoom(data : JSONObject) {
+
+    }
 
     fun removeChat(messageId: String, roomId: String) {
         viewModelScope.launch(Dispatchers.IO) {

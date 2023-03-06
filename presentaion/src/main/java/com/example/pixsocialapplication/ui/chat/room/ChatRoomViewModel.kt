@@ -94,7 +94,7 @@ class ChatRoomViewModel @Inject constructor(
         }
     }
 
-    private fun getID(): String {
+    fun getID(): String {
         return useCase.getStringPreferences(Config._ID)
     }
 

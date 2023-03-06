@@ -29,7 +29,7 @@ data class RoomInfo2 (
         private val members: List<String>,
 
         @SerializedName("chats")
-        private val chats: List<String?> = emptyList(),
+        private val chats: List<ChatInfo?> = emptyList(),
 
         @SerializedName("createdAt")
         private val createdAt: String? = null,
@@ -39,5 +39,16 @@ data class RoomInfo2 (
 
         @SerializedName("memberCount")
         private val memberCount: Int? = null,
+)
+
+data class ChatInfo (
+        @SerializedName("user_id")
+        val userId: String? = "",
+
+        @SerializedName("message_body")
+        val messageBody: String? = "",
+
+        @SerializedName("message_type")
+        val messageType: String? = "",
 )
 

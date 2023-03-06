@@ -13,6 +13,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import io.socket.client.Socket
 import javax.inject.Singleton
 
 @Module
@@ -27,8 +28,9 @@ class AppDataModule {
         @ApplicationContext appContext : Context,
         pushService: PushService,
         preferences: Preferences,
+        socket: Socket
     ): AppDataRepository {
-        return AppDataRepositoryImpl(auth, testRemoteSource, appContext, pushService, preferences)
+        return AppDataRepositoryImpl(auth, testRemoteSource, appContext, pushService, preferences, socket)
     }
 
     @Provides
@@ -41,7 +43,8 @@ class AppDataModule {
             addFriends = AddFriend(repository),
             getFriends = GetFriendsList(repository),
             chatRoomStart = ChatRoomStart(repository),
-            getRoomList = GetRoomList(repository)
+            getRoomList = GetRoomList(repository),
+            joinRoom = JoinRoom(repository)
         )
     }
 

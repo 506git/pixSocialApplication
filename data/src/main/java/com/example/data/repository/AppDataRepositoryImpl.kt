@@ -1,7 +1,6 @@
 package com.example.data.repository
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.util.Log
 import com.example.data.dto.CreateRoomDTO
 import com.example.data.dto.FriendsAddDTO
@@ -16,12 +15,16 @@ import com.example.domain.repository.AppDataRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.gson.Gson
+import io.socket.client.IO
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.launch
+import io.socket.client.Socket
+import org.json.JSONObject
+
 import javax.inject.Inject
 
 class AppDataRepositoryImpl @Inject constructor(
@@ -29,7 +32,8 @@ class AppDataRepositoryImpl @Inject constructor(
     private val TestRemoteSource: RemoteDataSource,
     private val context: Context,
     private val pushService: PushService,
-    private val sharedPreferences: Preferences
+    private val sharedPreferences: Preferences,
+    private val socket: Socket
 ) : AppDataRepository {
     override suspend fun googleAutoLogIn(): Flow<Result<UserInfoDTO>> =  callbackFlow {
         send(Result.Loading())
@@ -174,6 +178,32 @@ class AppDataRepositoryImpl @Inject constructor(
             trySend(Result.Success(roomListInfo))
         }.onFailure { e ->
             trySend(Result.Error(Exception(e)))
+        }
+
+        awaitClose {
+            channel.close()
+        }
+    }
+
+    override suspend fun joinRoom(data: JSONObject): Flow<Result<Unit>> = callbackFlow{
+        send(Result.Loading())
+
+        socket.connect()
+
+        socket.on(Socket.EVENT_CONNECT) {
+
+
+        }?.on(Socket.EVENT_DISCONNECT) { args ->
+            trySend(Result.Error(Exception(args[0].toString())))
+        }?.on(Socket.EVENT_CONNECT_ERROR) { args ->
+            trySend(Result.Error(Exception(args[0].toString())))
+        }
+
+        try {
+            socket.emit("joinRoom", data)
+            trySend(Result.Success(Unit))
+        } catch (e: Exception){
+            trySend(Result.Error(e))
         }
 
         awaitClose {
