@@ -13,6 +13,7 @@
         android:layout_height="wrap_content">
 
         <ImageView
+            android:visibility="invisible"
             android:id="@+id/img_room"
             android:layout_width="45dp"
             android:layout_height="45dp"
@@ -22,7 +23,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:visibility="gone"
+            android:visibility="visible"
             android:maxWidth="200dp"
             android:id="@+id/text_message"
             android:layout_width="wrap_content"
@@ -34,15 +35,15 @@
             android:text="title"
             android:textSize="12sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/img_room"
-            app:layout_constraintRight_toLeftOf="@+id/img_room"
-            app:layout_constraintTop_toTopOf="@+id/img_room" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:clipToOutline="true"
             android:background="@drawable/chat_border_radius"
             android:layout_marginEnd="5dp"
-            android:visibility="visible"
+            android:visibility="gone"
             android:id="@+id/img_message"
             android:layout_width="100dp"
             android:layout_height="100dp"
@@ -52,6 +53,7 @@
             />
 
         <TextView
+            android:visibility="invisible"
             android:id="@+id/text_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

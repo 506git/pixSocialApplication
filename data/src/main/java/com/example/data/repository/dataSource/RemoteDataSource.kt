@@ -14,6 +14,8 @@ interface RemoteDataSource {
 
      suspend fun getUserInfo(uid : String)
 
+     suspend fun updatePushToken(userId:String, token : String) : ApiResponse<Unit>
+
      suspend fun addFriendsAdd(friendsAddDTO: FriendsAddDTO)
 
      suspend fun getFriendsList(id : UserDTO) : FriendsList

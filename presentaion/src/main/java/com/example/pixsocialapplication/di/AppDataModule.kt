@@ -41,6 +41,7 @@ class AppDataModule {
         return AppDataUseCase(
             googleAutoLogIn = GoogleAutoLogin(repository),
             signInWithGoogleIdToken = SignInWithGoogleIdToken(repository),
+            updatePushToken = UpdatePushToken(repository),
             addFriends = AddFriend(repository),
             getFriends = GetFriendsList(repository),
             chatRoomStart = ChatRoomStart(repository),

@@ -46,6 +46,7 @@ class ChatListFragment : Fragment() {
     private var userId: String? = null
     private var name: String? = null
     private var roomId: String? = null
+    private var roomImage : String? = null
 
     private var data = JSONObject()
 
@@ -78,6 +79,7 @@ class ChatListFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        roomImage = arguments?.getString("roomImage").toString()
         userId = arguments?.getString("userId").toString()
         name = arguments?.getString("roomName").toString()
         roomId = arguments?.getString("roomId").toString()
@@ -98,6 +100,8 @@ class ChatListFragment : Fragment() {
             put("userId", userId)
         }
 
+        chatRoomListViewAdapter = ChatRoomListViewAdapter(chatListArray)
+
         chatViewModel.joinRoom(data)
 
         chatViewModel.getRoomChatList(roomId.toString())
@@ -106,19 +110,8 @@ class ChatListFragment : Fragment() {
             if (it) dialog.show()
             else if (!it) dialog.dismiss()
         }
-
-        binding.btnPlay.setSafeOnClickListener {
-            val text = binding.editSendChat.text.toString()
-            if(text.isNotEmpty()){
-                val messageData = JSONObject().apply {
-                    put("roomId", roomId)
-                    put("userId", userId)
-                    put("messageBody", binding.editSendChat.text.toString())
-                    put("messageType", "text")
-                }
-                chatViewModel.sendMessage(messageData)
-                binding.editSendChat.setText("")
-            } else CommonUtils.snackBar(activity!!, "글자가 아무것도 없어요", Snackbar.LENGTH_INDEFINITE)
+        repeatOnStarted {
+            chatViewModel.receiveMessage()
         }
 
         repeatOnStarted {
@@ -134,14 +127,58 @@ class ChatListFragment : Fragment() {
             }
         }
 
-        chatViewModel.receiveMessage()
+        with(binding){
+            btnPlay.setSafeOnClickListener {
+                val text = binding.editSendChat.text.toString()
+                if(text.isNotEmpty()){
+                    val messageData = JSONObject().apply {
+                        put("roomId", roomId)
+                        put("userId", userId)
+                        put("messageBody", binding.editSendChat.text.toString())
+                        put("messageType", "text")
+                    }
+                    chatViewModel.sendMessage(messageData)
+                    binding.editSendChat.setText("")
+                } else CommonUtils.snackBar(activity!!, "글자가 아무것도 없어요", Snackbar.LENGTH_INDEFINITE)
+            }
 
-        activity?.registerReceiver(mBroadCastReceiver, filter)
+            btnGallery.setSafeOnClickListener {
+                startActivity(Intent(context, GalleryActivity::class.java))
+            }
+
+            chatList.apply {
+                    adapter = chatRoomListViewAdapter
+                    layoutManager = LinearLayoutManager(context).apply {
+                        orientation = LinearLayoutManager.VERTICAL
+//                reverseLayout = true
+//                stackFromEnd = true //역순
+                    }
+                    setHasFixedSize(true)
+//            addOnLayoutChangeListener { view, i, i2, i3, bottom, i5, i6, i7, oldBottom ->
+//                if (bottom < oldBottom) {
+//                    view.postDelayed(Runnable {
+//                        this.smoothScrollToPosition(lastPos)
+//                    }, 50)
+//                }
+//            }
+            }
+        }
+
+        lastPos = (binding.chatList.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
+        bottomPos  = lastPos == chatRoomListViewAdapter.itemCount -1
 
         chatViewModel.getRoomChatList.observe(viewLifecycleOwner) {
             if (it == null) {
                 chatListArray = arrayListOf()
-            } else chatListArray = it as ArrayList<ChatListVO>
+            } else {
+                it.forEachIndexed { index, chatListVO ->
+                    if (chatListVO.message_sender == "you"){
+                        chatListVO.message_profile = roomImage.toString()
+                        chatListVO.message_name = name.toString()
+                    }
+                }
+                chatListArray = it as ArrayList<ChatListVO>
+            }
 
             val checkDelete = chatRoomListViewAdapter.itemCount >= chatListArray.size
 
@@ -157,7 +194,6 @@ class ChatListFragment : Fragment() {
 
         }
 
-        chatRoomListViewAdapter = ChatRoomListViewAdapter(chatListArray)
 
         chatRoomListViewAdapter.setChatItemClickListener(object :
             ChatRoomListViewAdapter.ChatItemClickListener {
@@ -223,30 +259,6 @@ class ChatListFragment : Fragment() {
 
             }
         })
-        binding.chatList.apply {
-            adapter = chatRoomListViewAdapter
-            layoutManager = LinearLayoutManager(context).apply {
-                orientation = LinearLayoutManager.VERTICAL
-//                reverseLayout = true
-//                stackFromEnd = true //역순
-            }
-            setHasFixedSize(true)
-//            addOnLayoutChangeListener { view, i, i2, i3, bottom, i5, i6, i7, oldBottom ->
-//                if (bottom < oldBottom) {
-//                    view.postDelayed(Runnable {
-//                        this.smoothScrollToPosition(lastPos)
-//                    }, 50)
-//                }
-//            }
-        }
-        val lastPos = (binding.chatList.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
-        bottomPos  = lastPos == chatRoomListViewAdapter.itemCount -1
-//        binding.editSendChat.setOnKeyListener { view, keyCode, keyEvent ->
-//            if (keyCode == KeyEvent.KEYCODE_ENTER && keyEvent.action == KeyEvent.ACTION_UP) {
-//
-//            }
-//            return@setOnKeyListener false
-//        }
 
         tts = TextToSpeech(context, TextToSpeech.OnInitListener { status ->
             if (status == TextToSpeech.SUCCESS) {
@@ -261,9 +273,8 @@ class ChatListFragment : Fragment() {
             setSpeechRate(1.25f)
         }
 
-        binding.btnGallery.setSafeOnClickListener {
-            startActivity(Intent(context, GalleryActivity::class.java))
-        }
+
+        activity?.registerReceiver(mBroadCastReceiver, filter)
 
         return binding.root
     }
@@ -282,7 +293,7 @@ class ChatListFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         chatViewModel.leaveRoom(data)
-
+        chatListArray.clear()
         mainViewModel.setAppbarTitle("대화목록", "")
         activity?.unregisterReceiver(mBroadCastReceiver)
         mBroadCastReceiver = null

@@ -80,9 +80,10 @@ class MainActivity : AppCompatActivity() {
                 return@addOnCompleteListener
             }
             mainViewModel.setToken(getString(R.string.fcm_user_token), task.result)
+            DLog().d(task.result)
             mainViewModel.updateUserFcmToken(task.result)
         }
-
+        mainViewModel.setUserId()
         val navView : BottomNavigationView = binding.bottomNavigation
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_main_fragment) as NavHostFragment
         val navController = navHostFragment.navController

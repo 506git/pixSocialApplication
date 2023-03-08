@@ -13,6 +13,7 @@ import com.example.domain.model.RoomInfo
 import com.example.domain.vo.ChatListVO
 import com.example.pixsocialapplication.R
 import com.example.pixsocialapplication.utils.CommonUtils
+import com.example.pixsocialapplication.utils.DLog
 import com.example.pixsocialapplication.utils.ImageLoader
 
 import timber.log.Timber
@@ -74,7 +75,7 @@ class ChatRoomListViewAdapter(dataSet: ArrayList<ChatListVO>) :
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (eventList[position].message_type == "me") VIEW_TYPE_ME else VIEW_TYPE_YOU
+        return if (eventList[position].message_sender == "me") VIEW_TYPE_ME else VIEW_TYPE_YOU
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -113,11 +114,14 @@ class ChatRoomListViewAdapter(dataSet: ArrayList<ChatListVO>) :
                     return@setOnLongClickListener false
                 }
             }
-            txtName.text = "test"
-//            ImageLoader(context = itemView.context).imageCircleLoadWithURL(
-//                event.messageSenderImage.toString(),
-//                imgRoom
-//            )
+            if(event.message_sender != "me") {
+                txtName.text = event.message_name
+                ImageLoader(context = itemView.context).imageCircleLoadWithURL(
+                    event.message_profile,
+                    imgRoom
+                )
+            }
+
         }
     }
 

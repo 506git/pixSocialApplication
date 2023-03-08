@@ -128,6 +128,25 @@ class AppDataRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun updatePushToken(userId : String, token: String): Flow<Result<Unit>> = callbackFlow{
+        send(Result.Loading())
+
+        runCatching {
+            Log.d("TESTPUSH", "START")
+            TestRemoteSource.updatePushToken(userId, token)
+        }.onSuccess { it ->
+            Log.d("TESTPUSH", "Succ")
+            trySend(Result.Success(Unit))
+        }.onFailure { e ->
+            Log.d("TESTPUSH", "$e")
+            trySend(Result.Error(Exception(e)))
+        }
+
+        awaitClose {
+            channel.close()
+        }
+    }
+
     override suspend fun getFriendsList(id: String): Flow<Result<FriendsList>> = callbackFlow{
         send(Result.Loading())
 
@@ -193,6 +212,7 @@ class AppDataRepositoryImpl @Inject constructor(
         }.mapCatching {
             it.result.content?.map { it ->
                 ChatListVO(
+                    chat_id = it._id,
                     user_id = it.user_id,
                     message_body = it.message_body,
                     message_type = it.message_type,
@@ -273,6 +293,7 @@ class AppDataRepositoryImpl @Inject constructor(
             socket.on("receiveMessage", Emitter.Listener {
                 kotlin.runCatching {
                     val data = it[0] as JSONObject
+                    Log.d("TEST", data.toString())
                     return@runCatching Gson().fromJson(data.toString(), MessageVO::class.java)
                 }.onSuccess {it ->
                     trySend(Result.Success(it))

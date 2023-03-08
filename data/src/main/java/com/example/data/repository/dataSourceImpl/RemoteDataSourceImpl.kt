@@ -30,6 +30,10 @@ class RemoteDataSourceImpl @Inject constructor(private val service: RemoteServic
         return service.getUserInfo(uid)
     }
 
+    override suspend fun updatePushToken(userId : String, token: String) : ApiResponse<Unit>{
+        return service.updatePushToken(UserPushDTO(userId = userId, fcmToken = token))
+    }
+
     override suspend fun addFriendsAdd(friendsAddDTO: FriendsAddDTO) {
         return service.addFriend(friendsAddDTO)
     }

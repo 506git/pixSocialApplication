@@ -27,6 +27,11 @@ interface RemoteService {
         @Header("authorization") accessToken: String
     )
 
+    @POST("users/updateFcmToken")
+    suspend fun updatePushToken(
+        @Body userPushDTO: UserPushDTO
+    ) : ApiResponse<Unit>
+
     @POST("users/addFriend")
     suspend fun addFriend(
         @Body friendsAddDTO: FriendsAddDTO

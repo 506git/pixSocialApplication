@@ -9,12 +9,14 @@ import com.example.domain.core.Result
 import com.example.domain.model.RoomInfo
 import com.example.domain.usecase.UseCase
 import com.example.pixsocialapplication.R
+import com.example.pixsocialapplication.utils.Config
 import com.example.pixsocialapplication.utils.DLog
 import com.example.pixsocialapplication.utils.NetworkConnection
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -104,11 +106,22 @@ class MainViewModel @Inject constructor(
         useCase.setStringPreferences(key, token)
     }
 
-    fun getToken(key : String): String{
+    fun getID(key : String): String{
         return useCase.getStringPreferences(key)
     }
 
-    fun updateUserFcmToken(token : String){
+    fun updateUserFcmToken(token: String){
+        viewModelScope.launch(Dispatchers.IO) {
+            appDataUseCase.updatePushToken(getID(Config._ID), token).collect()
+        }
+    }
+
+    fun setUserId(){
+        Config.userId = getID(Config._ID)
+        DLog().d("user id ===> ${Config.userId}")
+    }
+
+    fun updateUserFcmToken2(token : String){
         useCase.updateUserFcmToken(token)
     }
 }

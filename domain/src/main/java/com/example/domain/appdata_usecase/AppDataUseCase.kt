@@ -6,6 +6,8 @@ class AppDataUseCase(
 
     val signInWithGoogleIdToken: SignInWithGoogleIdToken,
 
+    val updatePushToken : UpdatePushToken,
+
     val addFriends : AddFriend,
 
     val getFriends : GetFriendsList,

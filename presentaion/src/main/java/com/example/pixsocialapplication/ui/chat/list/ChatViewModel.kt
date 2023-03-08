@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Config
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.domain.appdata_usecase.AppDataUseCase
@@ -13,6 +14,7 @@ import com.example.domain.usecase.UseCase
 import com.example.domain.model.RoomChat
 import com.example.domain.vo.ChatListVO
 import com.example.pixsocialapplication.ui.chat.list.testData.ArticleRepository
+import com.example.pixsocialapplication.utils.Config
 import com.example.pixsocialapplication.utils.DLog
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -37,7 +39,7 @@ class ChatViewModel @Inject constructor(
     private var repository = ArticleRepository()
 
     private val _getRoomChatList = MutableLiveData<List<ChatListVO>?>()
-    val getRoomChatList: LiveData<List<ChatListVO>?> get () = _getRoomChatList
+    val getRoomChatList: LiveData<List<ChatListVO>?> get() = _getRoomChatList
 
     private val _getGalleryList = MutableLiveData<List<Uri>?>()
     val getGalleryList: LiveData<List<Uri>?> get() = _getGalleryList
@@ -46,13 +48,13 @@ class ChatViewModel @Inject constructor(
     val loadingState: LiveData<Boolean> get() = _loadingState
 
     private val _itemSelectedPos = MutableLiveData<String>()
-    val itemSelectedPos : LiveData<String> get() = _itemSelectedPos
+    val itemSelectedPos: LiveData<String> get() = _itemSelectedPos
 
     private val _chat = MutableSharedFlow<ChatListVO>()
     val chat get() = _chat.asSharedFlow()
 
 
-    fun setItemSelected(uri: String){
+    fun setItemSelected(uri: String) {
         _itemSelectedPos.value = uri.toString()
     }
 
@@ -85,18 +87,18 @@ class ChatViewModel @Inject constructor(
 //        }
 //    }
 
-    fun joinRoom(data : JSONObject) {
+    fun joinRoom(data: JSONObject) {
         viewModelScope.launch(Dispatchers.IO) {
             appDataUseCase.joinRoom(data).collect() {
                 when (it) {
                     is Result.Error -> {
-                        DLog().d("error","test")
+                        DLog().d("error", "test")
                     }
                     is Result.Loading -> {
 
                     }
                     is Result.Success -> {
-                        DLog().d("susceess","test")
+                        DLog().d("susceess", "test")
                     }
                 }
             }
@@ -104,36 +106,36 @@ class ChatViewModel @Inject constructor(
     }
 
 
-    fun leaveRoom(data : JSONObject) {
+    fun leaveRoom(data: JSONObject) {
         viewModelScope.launch(Dispatchers.IO) {
             appDataUseCase.leaveRoom(data).collect() {
                 when (it) {
                     is Result.Error -> {
-                        DLog().d("error","test")
+                        DLog().d("error", "test")
                     }
                     is Result.Loading -> {
 
                     }
                     is Result.Success -> {
-                        DLog().d("susceess","test")
+                        DLog().d("susceess", "test")
                     }
                 }
             }
         }
     }
 
-    fun sendMessage(data : JSONObject) {
+    fun sendMessage(data: JSONObject) {
         viewModelScope.launch(Dispatchers.IO) {
             appDataUseCase.sendMessage(data).collect() {
                 when (it) {
                     is Result.Error -> {
-                        DLog().d("error",it.exception.toString())
+                        DLog().d("error", it.exception.toString())
                     }
                     is Result.Loading -> {
 
                     }
                     is Result.Success -> {
-                        DLog().d("susceess","test")
+                        DLog().d("susceess", "test")
                     }
                 }
             }
@@ -145,7 +147,7 @@ class ChatViewModel @Inject constructor(
             appDataUseCase.receiveMessage().collect() {
                 when (it) {
                     is Result.Error -> {
-                        DLog().d("error",it.exception.toString())
+                        DLog().d("error", it.exception.toString())
                     }
                     is Result.Loading -> {
 
@@ -153,12 +155,13 @@ class ChatViewModel @Inject constructor(
                     is Result.Success -> {
                         _chat.emit(
                             ChatListVO(
-                            user_id = it.data?.userId.toString(),
-                            message_type = it.data?.messageType.toString(),
-                            message_body = it.data?.messageBody.toString()
+                                user_id = it.data?.userId.toString(),
+                                message_type = it.data?.messageType.toString(),
+                                message_body = it.data?.messageBody.toString(),
+                                message_sender = if (it.data?.userId.toString() == Config.userId) "me" else "you"
+                            )
                         )
-                        )
-                        DLog().d("susceess",it.data.toString())
+                        DLog().d("susceess", it.data.toString())
                     }
                 }
             }
@@ -235,10 +238,18 @@ class ChatViewModel @Inject constructor(
                     is Result.Success -> {
                         withContext(Dispatchers.Main) {
                             _loadingState.value = false
-                            DLog().d(it.data.toString())
-                            if(it.data?.isEmpty() == true){
+
+                            if (it.data?.isEmpty() == true) {
                                 _getRoomChatList.value = null
-                            } else _getRoomChatList.value = it.data
+                            } else {
+
+                                DLog().d(Config.userId)
+                                _getRoomChatList.value = it.data?.map {
+                                    it.copy(
+                                        message_sender = if (it.user_id == Config.userId) "me" else "you"
+                                    )
+                                }
+                            }
                         }
                     }
 
@@ -247,7 +258,7 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    fun sendMessage(message: String, roomId : String) {
+    fun sendMessage(message: String, roomId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             useCase.sendChat(message, roomId).collect() {
                 when (it) {
@@ -271,7 +282,7 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    fun sendImageMessage(message: String, roomId : String) {
+    fun sendImageMessage(message: String, roomId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             useCase.sendImage(message, roomId).collect() {
                 when (it) {
@@ -312,7 +323,7 @@ class ChatViewModel @Inject constructor(
                     is Result.Success -> {
                         withContext(Dispatchers.Main) {
                             _loadingState.value = false
-                            if(it.data!!.isEmpty()){
+                            if (it.data!!.isEmpty()) {
                                 _getGalleryList.value = null
                             } else _getGalleryList.value = it.data
                         }

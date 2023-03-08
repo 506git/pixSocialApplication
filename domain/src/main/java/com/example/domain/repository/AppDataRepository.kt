@@ -15,6 +15,8 @@ interface AppDataRepository {
 
     suspend fun getUserInfo(id : String) : Flow<Result<User>>
 
+    suspend fun updatePushToken(userId : String, token: String) : Flow<Result<Unit>>
+
     suspend fun getFriendsList(id : String) : Flow<Result<FriendsList>>
 
     suspend fun chatRoomStart(members : List<String>) : Flow<Result<RoomInfoDTO>>
