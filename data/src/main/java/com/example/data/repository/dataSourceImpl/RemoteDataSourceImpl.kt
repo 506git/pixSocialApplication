@@ -4,6 +4,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.example.data.dto.*
+import com.example.data.model.RoomIdDTO
 import com.example.data.model.UserDTO
 import com.example.data.paging.TestPagingSource
 import com.example.data.repository.dataSource.RemoteDataSource
@@ -43,5 +44,9 @@ class RemoteDataSourceImpl @Inject constructor(private val service: RemoteServic
 
     override suspend fun getRoomList(user: UserDTO): RoomListInfoDTO {
         return service.getRoomList(user)
+    }
+
+    override suspend fun getChatList(roomId: String): ApiResponse<List<ChatListDTO>> {
+        return service.getChatList(RoomIdDTO(roomId = roomId))
     }
 }

@@ -21,11 +21,14 @@
             android:layout_height="0dp"
             android:layout_marginBottom="5dp"
             android:background="@color/main_background_color"
-            android:stackFromBottom="true"
+            android:stackFromBottom="false"
+            app:reverseLayout="false"
             app:layout_constraintBottom_toTopOf="@+id/edit_send_chat"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:reverseLayout="true" />
+            android:focusableInTouchMode="true"
+            android:descendantFocusability="beforeDescendants"
+            />
 
         <EditText
             android:theme="@style/EditTextTheme"

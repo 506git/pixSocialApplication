@@ -1,6 +1,5 @@
 package com.example.pixsocialapplication.service
 
-import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.*
 import android.content.Context

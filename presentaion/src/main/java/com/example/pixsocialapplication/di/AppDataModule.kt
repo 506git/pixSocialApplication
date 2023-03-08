@@ -7,6 +7,7 @@ import com.example.data.service.PushService
 import com.example.domain.appdata_usecase.*
 import com.example.domain.preferences.Preferences
 import com.example.domain.repository.AppDataRepository
+import com.example.domain.socket.AppSocket
 import com.google.firebase.auth.FirebaseAuth
 import dagger.Module
 import dagger.Provides
@@ -28,7 +29,7 @@ class AppDataModule {
         @ApplicationContext appContext : Context,
         pushService: PushService,
         preferences: Preferences,
-        socket: Socket
+        socket: AppSocket
     ): AppDataRepository {
         return AppDataRepositoryImpl(auth, testRemoteSource, appContext, pushService, preferences, socket)
     }
@@ -44,8 +45,11 @@ class AppDataModule {
             getFriends = GetFriendsList(repository),
             chatRoomStart = ChatRoomStart(repository),
             getRoomList = GetRoomList(repository),
-            joinRoom = JoinRoom(repository)
+            getChatList = GetChatList(repository),
+            joinRoom = JoinRoom(repository),
+            leaveRoom = LeaveRoom(repository),
+            sendMessage = SendMessage(repository),
+            receiveMessage = ReceiveMessage(repository)
         )
     }
-
 }

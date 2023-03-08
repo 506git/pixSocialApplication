@@ -1,6 +1,7 @@
 package com.example.data.service
 
 import com.example.data.dto.*
+import com.example.data.model.RoomIdDTO
 import com.example.data.model.TestRes
 import com.example.data.model.UserDTO
 import retrofit2.http.*
@@ -45,4 +46,9 @@ interface RemoteService {
     suspend fun getRoomList(
         @Body userDTO : UserDTO // 수정
     ) : RoomListInfoDTO
+
+    @POST("chats/findMyChats")
+    suspend fun getChatList(
+        @Body roomIdDTO: RoomIdDTO
+    ) : ApiResponse<List<ChatListDTO>>
 }

@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.example.domain.model.RoomChat
+import com.example.domain.vo.ChatListVO
 import com.example.pixsocialapplication.databinding.CustomDialogBinding
 import com.example.pixsocialapplication.databinding.FragmentChatListBinding
 import com.example.pixsocialapplication.service.PixPushService
@@ -26,12 +27,14 @@ import com.example.pixsocialapplication.ui.common.LoadingDialog
 import com.example.pixsocialapplication.ui.gallery.GalleryActivity
 import com.example.pixsocialapplication.utils.CommonUtils
 import com.example.pixsocialapplication.utils.DLog
+import com.example.pixsocialapplication.utils.repeatOnStarted
 import com.example.pixsocialapplication.utils.setSafeOnClickListener
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import io.socket.client.IO
 import io.socket.client.Socket
 import io.socket.emitter.Emitter
+import kotlinx.coroutines.flow.collect
 import org.json.JSONObject
 import java.util.*
 import kotlin.collections.ArrayList
@@ -50,13 +53,11 @@ class ChatListFragment : Fragment() {
     private val mainViewModel: MainViewModel by activityViewModels()
 
     private lateinit var chatRoomListViewAdapter: ChatRoomListViewAdapter
-    private var chatListArray = arrayListOf<RoomChat>()
+    private var chatListArray = arrayListOf<ChatListVO>()
 
     private var lastPos: Int = 0
 
     private lateinit var binding: FragmentChatListBinding
-
-    private var mSocket: Socket? = null
 
     private val dialog by lazy {
         LoadingDialog(context!!)
@@ -64,7 +65,7 @@ class ChatListFragment : Fragment() {
 
     private lateinit var tts: TextToSpeech
 
-    private var listPosition = 0
+    var bottomPos = false
 
     private var longClick = false
     private var mBroadCastReceiver: BroadcastReceiver? = object : BroadcastReceiver() {
@@ -92,28 +93,12 @@ class ChatListFragment : Fragment() {
             addAction("gallery")
         }
 
-//        mSocket = IO.socket("http://limgs.iptime.org:8086").connect()
-//        mSocket?.emit("ClientToServer", "hi")
-//        mSocket?.on(Socket.EVENT_CONNECT) {
-//            Log.d("socket", "connect ")
-//        }?.on(Socket.EVENT_DISCONNECT) { args ->
-//            Log.d("socket", "disconnect main " + args[0])
-//        }?.on(Socket.EVENT_CONNECT_ERROR) { args ->
-//            Log.d("socket", "err " + args[0])
-//        }
         data = JSONObject().apply {
             put("roomId", roomId)
             put("userId", userId)
         }
 
         chatViewModel.joinRoom(data)
-//        joinRoom.
-
-//        mSocket?.emit("joinRoom", data)
-
-//        mSocket?.on("receiveMessage", Emitter.Listener { it ->
-////            DLog().d(it[0].toString())
-//        })
 
         chatViewModel.getRoomChatList(roomId.toString())
 
@@ -131,22 +116,36 @@ class ChatListFragment : Fragment() {
                     put("messageBody", binding.editSendChat.text.toString())
                     put("messageType", "text")
                 }
-//                chatViewModel.sendMessage(binding.editSendChat.text.toString(), roomId.toString())
-                mSocket?.emit("sendMessage", messageData )
+                chatViewModel.sendMessage(messageData)
                 binding.editSendChat.setText("")
             } else CommonUtils.snackBar(activity!!, "글자가 아무것도 없어요", Snackbar.LENGTH_INDEFINITE)
         }
+
+        repeatOnStarted {
+            chatViewModel.chat.collect {
+                chatListArray.add(it)
+                chatRoomListViewAdapter.addItem(it)
+                chatRoomListViewAdapter.notifyDataSetChanged()
+                if (bottomPos){
+                    binding.chatList.smoothScrollToPosition(chatRoomListViewAdapter.itemCount - 1)
+                }
+//                chatRoomListViewAdapter.addAllItem(chatListArray)
+//                chatRoomListViewAdapter.notifyDataSetChanged()
+            }
+        }
+
+        chatViewModel.receiveMessage()
 
         activity?.registerReceiver(mBroadCastReceiver, filter)
 
         chatViewModel.getRoomChatList.observe(viewLifecycleOwner) {
             if (it == null) {
                 chatListArray = arrayListOf()
-            } else chatListArray = it as ArrayList<RoomChat>
+            } else chatListArray = it as ArrayList<ChatListVO>
 
             val checkDelete = chatRoomListViewAdapter.itemCount >= chatListArray.size
 
-            chatRoomListViewAdapter.addItem(chatListArray)
+            chatRoomListViewAdapter.addAllItem(chatListArray)
             chatRoomListViewAdapter.notifyDataSetChanged()
 
             lastPos = if (chatRoomListViewAdapter.itemCount == 0) 0
@@ -165,18 +164,18 @@ class ChatListFragment : Fragment() {
             override fun onItemClick(position: Int) {
                 if (!longClick) {
                     val chatSelected = chatListArray[position]
-                    if (chatSelected.messageType == "speak")
-                        tts.speak(
-                            chatListArray[position].message.toString(),
-                            TextToSpeech.QUEUE_FLUSH,
-                            null,
-                            "uid"
-                        )
-                    else if (chatSelected.messageType == "photo")
-                        startActivity(Intent(context, ImageDatailActivity::class.java).apply {
-                            putExtra("name", chatSelected.messageSenderName)
-                            putExtra("imageUri", chatSelected.message)
-                        })
+//                    if (chatSelected.messageType == "speak")
+//                        tts.speak(
+//                            chatListArray[position].message.toString(),
+//                            TextToSpeech.QUEUE_FLUSH,
+//                            null,
+//                            "uid"
+//                        )
+//                    else if (chatSelected.messageType == "photo")
+//                        startActivity(Intent(context, ImageDatailActivity::class.java).apply {
+//                            putExtra("name", chatSelected.messageSenderName)
+//                            putExtra("imageUri", chatSelected.message)
+//                        })
                 } else longClick = false
 
             }
@@ -190,36 +189,35 @@ class ChatListFragment : Fragment() {
                 val dialogBinding = CustomDialogBinding.inflate(layoutInflater)
                 val dialog = CommonUtils.customDialog(dialogBinding.root, context!!, true)
                 with(dialogBinding) {
-                    if (chatSelected.messageType == "photo") {
-                        btnPlay.setOnClickListener {
-                            dialog.dismiss()
-                            if (Settings.canDrawOverlays(context)) {
-                                val intent = Intent(context, PixPushService::class.java).apply {
-                                    putExtra("imageUri", chatSelected.message)
-                                }
-                                if (Build.VERSION.SDK_INT >= 26) {
-                                    context?.startForegroundService(intent)
-                                } else {
-                                    context?.startService(intent)
-                                }
-                                activity?.finish()
-                            } else {
-                                startActivity(
-                                    Intent(
-                                        Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                                        Uri.parse("package:${activity?.packageName}")
-                                    )
-                                )
-                            }
-                        }
-                    } else {
-                        btnPlay.visibility = View.GONE
-                    }
-                    btnDelete.setOnClickListener {
-                        dialog.dismiss()
-                        chatViewModel.removeChat(chatSelected.messageKey, roomId.toString())
-
-                    }
+//                    if (chatSelected.messageType == "photo") {
+//                        btnPlay.setOnClickListener {
+//                            dialog.dismiss()
+//                            if (Settings.canDrawOverlays(context)) {
+//                                val intent = Intent(context, PixPushService::class.java).apply {
+//                                    putExtra("imageUri", chatSelected.message)
+//                                }
+//                                if (Build.VERSION.SDK_INT >= 26) {
+//                                    context?.startForegroundService(intent)
+//                                } else {
+//                                    context?.startService(intent)
+//                                }
+//                                activity?.finish()
+//                            } else {
+//                                startActivity(
+//                                    Intent(
+//                                        Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+//                                        Uri.parse("package:${activity?.packageName}")
+//                                    )
+//                                )
+//                            }
+//                        }
+//                    } else {
+//                        btnPlay.visibility = View.GONE
+//                    }
+//                    btnDelete.setOnClickListener {
+//                        dialog.dismiss()
+//                        chatViewModel.removeChat(chatSelected.messageKey, roomId.toString())
+//                    }
                 }
                 dialog.show()
 
@@ -233,16 +231,16 @@ class ChatListFragment : Fragment() {
 //                stackFromEnd = true //역순
             }
             setHasFixedSize(true)
-            addOnLayoutChangeListener { view, i, i2, i3, bottom, i5, i6, i7, oldBottom ->
-                if (bottom < oldBottom) {
-                    view.postDelayed(Runnable {
-                        this.smoothScrollToPosition(lastPos)
-                    }, 50)
-
-                }
-            }
+//            addOnLayoutChangeListener { view, i, i2, i3, bottom, i5, i6, i7, oldBottom ->
+//                if (bottom < oldBottom) {
+//                    view.postDelayed(Runnable {
+//                        this.smoothScrollToPosition(lastPos)
+//                    }, 50)
+//                }
+//            }
         }
-
+        val lastPos = (binding.chatList.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
+        bottomPos  = lastPos == chatRoomListViewAdapter.itemCount -1
 //        binding.editSendChat.setOnKeyListener { view, keyCode, keyEvent ->
 //            if (keyCode == KeyEvent.KEYCODE_ENTER && keyEvent.action == KeyEvent.ACTION_UP) {
 //
@@ -283,9 +281,7 @@ class ChatListFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        mSocket?.run{
-            emit("leaveRoom", data)
-        } ?: DLog().d("msocket Null")
+        chatViewModel.leaveRoom(data)
 
         mainViewModel.setAppbarTitle("대화목록", "")
         activity?.unregisterReceiver(mBroadCastReceiver)

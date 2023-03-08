@@ -11,11 +11,14 @@ import com.example.domain.appdata_usecase.AppDataUseCase
 import com.example.domain.core.Result
 import com.example.domain.usecase.UseCase
 import com.example.domain.model.RoomChat
+import com.example.domain.vo.ChatListVO
 import com.example.pixsocialapplication.ui.chat.list.testData.ArticleRepository
 import com.example.pixsocialapplication.utils.DLog
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -33,8 +36,8 @@ class ChatViewModel @Inject constructor(
     //    val pagingData = useCase.fetchImageList.cachedIn(viewModelScope)
     private var repository = ArticleRepository()
 
-    private val _getRoomChatList = MutableLiveData<List<RoomChat>?>()
-    val getRoomChatList: LiveData<List<RoomChat>?> get () = _getRoomChatList
+    private val _getRoomChatList = MutableLiveData<List<ChatListVO>?>()
+    val getRoomChatList: LiveData<List<ChatListVO>?> get () = _getRoomChatList
 
     private val _getGalleryList = MutableLiveData<List<Uri>?>()
     val getGalleryList: LiveData<List<Uri>?> get() = _getGalleryList
@@ -44,6 +47,10 @@ class ChatViewModel @Inject constructor(
 
     private val _itemSelectedPos = MutableLiveData<String>()
     val itemSelectedPos : LiveData<String> get() = _itemSelectedPos
+
+    private val _chat = MutableSharedFlow<ChatListVO>()
+    val chat get() = _chat.asSharedFlow()
+
 
     fun setItemSelected(uri: String){
         _itemSelectedPos.value = uri.toString()
@@ -96,8 +103,66 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    fun leaveRoom(data : JSONObject) {
 
+    fun leaveRoom(data : JSONObject) {
+        viewModelScope.launch(Dispatchers.IO) {
+            appDataUseCase.leaveRoom(data).collect() {
+                when (it) {
+                    is Result.Error -> {
+                        DLog().d("error","test")
+                    }
+                    is Result.Loading -> {
+
+                    }
+                    is Result.Success -> {
+                        DLog().d("susceess","test")
+                    }
+                }
+            }
+        }
+    }
+
+    fun sendMessage(data : JSONObject) {
+        viewModelScope.launch(Dispatchers.IO) {
+            appDataUseCase.sendMessage(data).collect() {
+                when (it) {
+                    is Result.Error -> {
+                        DLog().d("error",it.exception.toString())
+                    }
+                    is Result.Loading -> {
+
+                    }
+                    is Result.Success -> {
+                        DLog().d("susceess","test")
+                    }
+                }
+            }
+        }
+    }
+
+    fun receiveMessage() {
+        viewModelScope.launch(Dispatchers.IO) {
+            appDataUseCase.receiveMessage().collect() {
+                when (it) {
+                    is Result.Error -> {
+                        DLog().d("error",it.exception.toString())
+                    }
+                    is Result.Loading -> {
+
+                    }
+                    is Result.Success -> {
+                        _chat.emit(
+                            ChatListVO(
+                            user_id = it.data?.userId.toString(),
+                            message_type = it.data?.messageType.toString(),
+                            message_body = it.data?.messageBody.toString()
+                        )
+                        )
+                        DLog().d("susceess",it.data.toString())
+                    }
+                }
+            }
+        }
     }
 
     fun removeChat(messageId: String, roomId: String) {
@@ -125,9 +190,37 @@ class ChatViewModel @Inject constructor(
         }
     }
 
+//    fun getRoomChatList2(roomId: String) {
+//        viewModelScope.launch(Dispatchers.IO) {
+//            useCase.getRoomChat(roomId).collect() {
+//                when (it) {
+//                    is Result.Error -> {
+//                        withContext(Dispatchers.Main) {
+//                            _loadingState.value = false
+//                        }
+//                    }
+//                    is Result.Loading -> {
+//                        withContext(Dispatchers.Main) {
+//                            _loadingState.value = true
+//                        }
+//                    }
+//                    is Result.Success -> {
+//                        withContext(Dispatchers.Main) {
+//                            _loadingState.value = false
+//                            if(it.data?.isEmpty() == true){
+//                                _getRoomChatList.value = null
+//                            } else _getRoomChatList.value = it.data
+//                        }
+//                    }
+//
+//                }
+//            }
+//        }
+//    }
+
     fun getRoomChatList(roomId: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            useCase.getRoomChat(roomId).collect() {
+            appDataUseCase.getChatList(roomId).collect() {
                 when (it) {
                     is Result.Error -> {
                         withContext(Dispatchers.Main) {
@@ -142,6 +235,7 @@ class ChatViewModel @Inject constructor(
                     is Result.Success -> {
                         withContext(Dispatchers.Main) {
                             _loadingState.value = false
+                            DLog().d(it.data.toString())
                             if(it.data?.isEmpty() == true){
                                 _getRoomChatList.value = null
                             } else _getRoomChatList.value = it.data

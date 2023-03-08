@@ -2,9 +2,9 @@ package com.example.data.repository
 
 import android.content.Context
 import android.util.Log
+import com.example.domain.vo.ChatListVO
 import com.example.data.dto.CreateRoomDTO
 import com.example.data.dto.FriendsAddDTO
-
 import com.example.data.model.UserDTO
 import com.example.data.repository.dataSource.RemoteDataSource
 import com.example.data.service.PushService
@@ -12,19 +12,19 @@ import com.example.domain.core.Result
 import com.example.domain.model.*
 import com.example.domain.preferences.Preferences
 import com.example.domain.repository.AppDataRepository
+import com.example.domain.socket.AppSocket
+import com.example.domain.vo.MessageVO
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.gson.Gson
-import io.socket.client.IO
+import io.socket.emitter.Emitter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.launch
-import io.socket.client.Socket
 import org.json.JSONObject
-
 import javax.inject.Inject
 
 class AppDataRepositoryImpl @Inject constructor(
@@ -33,7 +33,7 @@ class AppDataRepositoryImpl @Inject constructor(
     private val context: Context,
     private val pushService: PushService,
     private val sharedPreferences: Preferences,
-    private val socket: Socket
+    private val socket: AppSocket
 ) : AppDataRepository {
     override suspend fun googleAutoLogIn(): Flow<Result<UserInfoDTO>> =  callbackFlow {
         send(Result.Loading())
@@ -185,22 +185,39 @@ class AppDataRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getChatList(roomId: String): Flow<Result<List<ChatListVO>?>> = callbackFlow {
+        send(Result.Loading())
+
+        runCatching {
+            return@runCatching TestRemoteSource.getChatList(roomId)
+        }.mapCatching {
+            it.result.content?.map { it ->
+                ChatListVO(
+                    user_id = it.user_id,
+                    message_body = it.message_body,
+                    message_type = it.message_type,
+                    createdAt = it.createdAt
+                )
+            }
+        }.onSuccess { it ->
+            trySend(Result.Success(it))
+        }.onFailure { e ->
+            trySend(Result.Error(Exception(e)))
+        }
+
+        awaitClose {
+            channel.close()
+        }
+    }
+
     override suspend fun joinRoom(data: JSONObject): Flow<Result<Unit>> = callbackFlow{
         send(Result.Loading())
 
-        socket.connect()
-
-        socket.on(Socket.EVENT_CONNECT) {
-
-
-        }?.on(Socket.EVENT_DISCONNECT) { args ->
-            trySend(Result.Error(Exception(args[0].toString())))
-        }?.on(Socket.EVENT_CONNECT_ERROR) { args ->
-            trySend(Result.Error(Exception(args[0].toString())))
-        }
-
         try {
+            socket.connect()
+
             socket.emit("joinRoom", data)
+
             trySend(Result.Success(Unit))
         } catch (e: Exception){
             trySend(Result.Error(e))
@@ -211,5 +228,66 @@ class AppDataRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun leaveRoom(data: JSONObject): Flow<Result<Unit>> = callbackFlow {
+        send(Result.Loading())
+
+        try {
+            socket.connect()
+
+            socket.emit("leaveRoom", data)
+
+            trySend(Result.Success(Unit))
+        } catch (e: Exception){
+            trySend(Result.Error(e))
+        }
+
+        awaitClose {
+            channel.close()
+        }
+    }
+
+    override suspend fun sendMessage(data: JSONObject): Flow<Result<Unit>> = callbackFlow{
+        send(Result.Loading())
+
+        try {
+            socket.connect()
+
+            socket.emit("sendMessage", data)
+
+            trySend(Result.Success(Unit))
+        } catch (e: Exception){
+            trySend(Result.Error(e))
+        }
+
+        awaitClose {
+            channel.close()
+        }
+    }
+
+    override suspend fun receiveMessage(): Flow<Result<MessageVO>> = callbackFlow{
+        send(Result.Loading())
+
+        try {
+            socket.connect()
+
+            socket.on("receiveMessage", Emitter.Listener {
+                kotlin.runCatching {
+                    val data = it[0] as JSONObject
+                    return@runCatching Gson().fromJson(data.toString(), MessageVO::class.java)
+                }.onSuccess {it ->
+                    trySend(Result.Success(it))
+                }.onFailure {  it ->
+                    trySend(Result.Error(Exception(it)))
+                }
+            })
+
+        } catch (e: Exception){
+            trySend(Result.Error(e))
+        }
+
+        awaitClose {
+            channel.close()
+        }
+    }
 
 }

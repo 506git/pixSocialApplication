@@ -10,15 +10,16 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.domain.model.RoomChat
 import com.example.domain.model.RoomInfo
+import com.example.domain.vo.ChatListVO
 import com.example.pixsocialapplication.R
 import com.example.pixsocialapplication.utils.CommonUtils
 import com.example.pixsocialapplication.utils.ImageLoader
 
 import timber.log.Timber
 
-class ChatRoomListViewAdapter(dataSet: ArrayList<RoomChat>) :
+class ChatRoomListViewAdapter(dataSet: ArrayList<ChatListVO>) :
     RecyclerView.Adapter<ChatRoomListViewAdapter.ViewHolder>() {
-    private val eventList: ArrayList<RoomChat> = dataSet
+    private val eventList: ArrayList<ChatListVO> = dataSet
 
     interface ChatItemClickListener {
         fun onItemClick(position: Int)
@@ -62,13 +63,18 @@ class ChatRoomListViewAdapter(dataSet: ArrayList<RoomChat>) :
 //            it.setBackgroundColor(ContextCompat.getColor(it.context, backgroundColorResId))
 //        }
 //    }
-    fun addItem(dataSet: ArrayList<RoomChat>) {
+    fun addAllItem(dataSet: ArrayList<ChatListVO>) {
         eventList.clear()
         eventList.addAll(dataSet)
     }
 
+    fun addItem(dataSet: ChatListVO) {
+//        eventList.clear()
+        eventList.add(dataSet)
+    }
+
     override fun getItemViewType(position: Int): Int {
-        return if (eventList[position].messageSender == "me") VIEW_TYPE_ME else VIEW_TYPE_YOU
+        return if (eventList[position].message_type == "me") VIEW_TYPE_ME else VIEW_TYPE_YOU
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -86,32 +92,32 @@ class ChatRoomListViewAdapter(dataSet: ArrayList<RoomChat>) :
         private val txtName = itemView.findViewById<TextView>(R.id.text_name)
         private val imgRoom = itemView.findViewById<ImageView>(R.id.img_room)
         private val imgMessage = itemView.findViewById<ImageView>(R.id.img_message)
-        fun bind(event: RoomChat) {
-            if (event.messageType == "photo"){
+        fun bind(event: ChatListVO) {
+            if (event.message_type == "photo"){
                 txtMessage.visibility = View.GONE
                 imgMessage.visibility = View.VISIBLE
-                ImageLoader(context = itemView.context).imageLoadWithURL(
-                    event.message.toString(),
-                    imgMessage
-                )
+//                ImageLoader(context = itemView.context).imageLoadWithURL(
+//                    event.message.toString(),
+//                    imgMessage
+//                )
                 imgMessage.setOnLongClickListener {
                     mItemLongClickListener.onItemLongClick(absoluteAdapterPosition)
                     return@setOnLongClickListener false
                 }
             } else {
                 txtMessage.visibility = View.VISIBLE
-                txtMessage.text = event.message?.trim()
+                txtMessage.text = event.message_body?.trim()
                 imgMessage.visibility = View.GONE
                 txtMessage.setOnLongClickListener {
                     mItemLongClickListener.onItemLongClick(absoluteAdapterPosition)
                     return@setOnLongClickListener false
                 }
             }
-            txtName.text = event.messageSenderName
-            ImageLoader(context = itemView.context).imageCircleLoadWithURL(
-                event.messageSenderImage.toString(),
-                imgRoom
-            )
+            txtName.text = "test"
+//            ImageLoader(context = itemView.context).imageCircleLoadWithURL(
+//                event.messageSenderImage.toString(),
+//                imgRoom
+//            )
         }
     }
 

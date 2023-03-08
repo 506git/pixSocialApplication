@@ -21,4 +21,6 @@ interface RemoteDataSource {
      suspend fun createRoom(id : CreateRoomDTO) : RoomInfoDTO
 
      suspend fun getRoomList(id : UserDTO) : RoomListInfoDTO
+
+     suspend fun getChatList(roomId : String) : ApiResponse<List<ChatListDTO>>
 }

@@ -1,13 +1,8 @@
 package com.example.pixsocialapplication.service
 
-import android.app.Activity
-import android.app.ActivityManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.widget.Toast
-import androidx.core.app.ActivityCompat.finishAffinity
-import androidx.core.app.ActivityCompat.getSystemService
 import com.example.pixsocialapplication.utils.CommonUtils
 
 class ExitReceiver : BroadcastReceiver() {
