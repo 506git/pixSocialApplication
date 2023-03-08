@@ -252,10 +252,9 @@ class AppDataRepositoryImpl @Inject constructor(
         send(Result.Loading())
 
         try {
-            socket.connect()
-
             socket.emit("leaveRoom", data)
 
+            socket.disconnect()
             trySend(Result.Success(Unit))
         } catch (e: Exception){
             trySend(Result.Error(e))
@@ -270,8 +269,6 @@ class AppDataRepositoryImpl @Inject constructor(
         send(Result.Loading())
 
         try {
-            socket.connect()
-
             socket.emit("sendMessage", data)
 
             trySend(Result.Success(Unit))
@@ -288,8 +285,6 @@ class AppDataRepositoryImpl @Inject constructor(
         send(Result.Loading())
 
         try {
-            socket.connect()
-
             socket.on("receiveMessage", Emitter.Listener {
                 kotlin.runCatching {
                     val data = it[0] as JSONObject

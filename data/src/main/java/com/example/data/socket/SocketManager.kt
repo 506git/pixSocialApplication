@@ -2,6 +2,7 @@ package com.example.data.socket
 
 import com.example.domain.core.Result
 import com.example.domain.socket.AppSocket
+import io.socket.client.IO
 import io.socket.client.Socket
 import io.socket.emitter.Emitter
 import kotlinx.coroutines.flow.callbackFlow
@@ -26,7 +27,10 @@ class SocketManager(private val mSocket: Socket) : AppSocket {
     }
 
     override fun disconnect() {
-        mSocket.close()
+        mSocket.off("sendMessage")
+        mSocket.off("receiveMessage")
+        mSocket.disconnect()
+//        mSocket.close()
     }
 
     fun on(name: String, listener: Emitter.Listener) = callbackFlow<Unit> {
