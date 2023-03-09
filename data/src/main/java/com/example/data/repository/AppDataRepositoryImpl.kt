@@ -1,6 +1,7 @@
 package com.example.data.repository
 
 import android.content.Context
+import android.text.TextUtils
 import android.util.Log
 import com.example.domain.vo.ChatListVO
 import com.example.data.dto.CreateRoomDTO
@@ -35,7 +36,7 @@ class AppDataRepositoryImpl @Inject constructor(
     private val sharedPreferences: Preferences,
     private val socket: AppSocket
 ) : AppDataRepository {
-    override suspend fun googleAutoLogIn(): Flow<Result<UserInfoDTO>> =  callbackFlow {
+    override suspend fun googleAutoLogIn(): Flow<Result<UserInfoVO>> =  callbackFlow {
         send(Result.Loading())
         val user = auth.currentUser
 
@@ -44,11 +45,22 @@ class AppDataRepositoryImpl @Inject constructor(
                 val token = result.token.toString()
                 CoroutineScope(Dispatchers.IO).launch {
                     runCatching {
-                        return@runCatching TestRemoteSource.googleLogin(token)
+                        return@runCatching TestRemoteSource.googleLogin(token).result.content!!
+                    }.mapCatching {
+                        UserInfoVO(
+                            _id = it._id,
+                            user_id = it.user_id,
+                            name = it.name,
+                            email = it.email,
+                            picture = it.picture,
+                            createdAt = it.createdAt,
+                            updatedAt = it.updatedAt,
+                            comment = it.comment
+                        )
                     }.onSuccess {
-                        val json = Gson().toJson(it)
-                        val userInfo = Gson().fromJson(json, UserInfoDTO::class.java)
-                        trySend(Result.Success(userInfo))
+//                        val json = Gson().toJson(it)
+//                        val userInfo = Gson().fromJson(json, UserInfoDTO::class.java)
+                        trySend(Result.Success(it))
                     }.onFailure { e ->
                         trySend(Result.Error(Exception(e)))
                     }
@@ -63,7 +75,7 @@ class AppDataRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun signInWithCredential(idToken : String): Flow<Result<UserInfoDTO>> =  callbackFlow {
+    override suspend fun signInWithCredential(idToken : String): Flow<Result<UserInfoVO>> =  callbackFlow {
         send(Result.Loading())
 
         val firebaseCredential = GoogleAuthProvider.getCredential(idToken, null)
@@ -76,7 +88,7 @@ class AppDataRepositoryImpl @Inject constructor(
                             return@runCatching TestRemoteSource.googleLogin(token)
                         }.onSuccess {
                             val json = Gson().toJson(it)
-                            val userInfo = Gson().fromJson(json, UserInfoDTO::class.java)
+                            val userInfo = Gson().fromJson(json, UserInfoVO::class.java)
                             trySend(Result.Success(userInfo))
                         }.onFailure { e ->
                             trySend(Result.Error(Exception(e)))
@@ -210,7 +222,9 @@ class AppDataRepositoryImpl @Inject constructor(
         runCatching {
             return@runCatching TestRemoteSource.getChatList(roomId)
         }.mapCatching {
-            it.result.content?.map { it ->
+            it.result.content?.filter { it ->
+                !it.user_id.isNullOrEmpty()
+            }?.map { it ->
                 ChatListVO(
                     chat_id = it._id,
                     user_id = it.user_id,

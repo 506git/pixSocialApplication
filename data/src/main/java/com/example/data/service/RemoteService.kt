@@ -20,7 +20,7 @@ interface RemoteService {
     @POST("users/google-login")
     suspend fun googleLogin(
         @Header("authorization") accessToken: String
-    ) : UserInfoDTO
+    ) : ApiResponse<UserInfoDTO>
 
     @GET("users/one")
     suspend fun getUserInfo(

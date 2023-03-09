@@ -64,5 +64,17 @@
             app:layout_constraintLeft_toLeftOf="@+id/img_room"
             app:layout_constraintRight_toRightOf="@+id/img_room"
             app:layout_constraintTop_toBottomOf="@+id/img_room" />
+
+        <TextView
+            android:id="@+id/text_date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="7dp"
+            android:gravity="center"
+            android:textColor="@color/color_gray"
+            android:text="libce"
+            android:textSize="8sp"
+            app:layout_constraintRight_toLeftOf="@+id/text_message"
+            app:layout_constraintBottom_toBottomOf="@+id/text_message"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

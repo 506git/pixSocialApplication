@@ -22,7 +22,7 @@ class RemoteDataSourceImpl @Inject constructor(private val service: RemoteServic
         ).flow
     }
 
-    override suspend fun googleLogin(accessToken: String): UserInfoDTO {
+    override suspend fun googleLogin(accessToken: String): ApiResponse<UserInfoDTO> {
         return service.googleLogin(accessToken)
     }
 

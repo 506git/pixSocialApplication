@@ -171,10 +171,10 @@ class ChatListFragment : Fragment() {
             if (it == null) {
                 chatListArray = arrayListOf()
             } else {
-                it.forEachIndexed { index, chatListVO ->
-                    if (chatListVO.message_sender == "you"){
-                        chatListVO.message_profile = roomImage.toString()
-                        chatListVO.message_name = name.toString()
+                it.forEach {it ->
+                    if (it.message_sender == "you"){
+                        it.message_profile = roomImage.toString()
+                        it.message_name = name.toString()
                     }
                 }
                 chatListArray = it as ArrayList<ChatListVO>
@@ -191,7 +191,6 @@ class ChatListFragment : Fragment() {
             if(!checkDelete){
                 binding.chatList.scrollToPosition(lastPos)
             }
-
         }
 
 

@@ -8,9 +8,9 @@ import kotlinx.coroutines.flow.Flow
 import org.json.JSONObject
 
 interface AppDataRepository {
-    suspend fun googleAutoLogIn() : Flow<Result<UserInfoDTO>>
+    suspend fun googleAutoLogIn() : Flow<Result<UserInfoVO>>
 
-    suspend fun signInWithCredential(token: String) : Flow<Result<UserInfoDTO>>
+    suspend fun signInWithCredential(token: String) : Flow<Result<UserInfoVO>>
     suspend fun addFriends(friendsEmail: String) : Flow<Result<Unit>>
 
     suspend fun getUserInfo(id : String) : Flow<Result<User>>

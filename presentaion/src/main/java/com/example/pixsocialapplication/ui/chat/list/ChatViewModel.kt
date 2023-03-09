@@ -16,6 +16,8 @@ import com.example.domain.vo.ChatListVO
 import com.example.pixsocialapplication.ui.chat.list.testData.ArticleRepository
 import com.example.pixsocialapplication.utils.Config
 import com.example.pixsocialapplication.utils.DLog
+import com.example.pixsocialapplication.utils.DateUtils
+import com.google.android.gms.common.util.DataUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -229,6 +231,7 @@ class ChatViewModel @Inject constructor(
                         withContext(Dispatchers.Main) {
                             _loadingState.value = false
                         }
+                        DLog().d("error chat list -> ${it.exception.toString()}")
                     }
                     is Result.Loading -> {
                         withContext(Dispatchers.Main) {
@@ -244,8 +247,9 @@ class ChatViewModel @Inject constructor(
                             } else {
 
                                 DLog().d(Config.userId)
-                                _getRoomChatList.value = it.data?.map {
+                                _getRoomChatList.value = it.data?.map { it ->
                                     it.copy(
+                                        createdAt = DateUtils.convertDate(it.createdAt),
                                         message_sender = if (it.user_id == Config.userId) "me" else "you"
                                     )
                                 }

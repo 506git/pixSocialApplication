@@ -93,6 +93,7 @@ class ChatRoomListViewAdapter(dataSet: ArrayList<ChatListVO>) :
         private val txtName = itemView.findViewById<TextView>(R.id.text_name)
         private val imgRoom = itemView.findViewById<ImageView>(R.id.img_room)
         private val imgMessage = itemView.findViewById<ImageView>(R.id.img_message)
+        private val txtDate = itemView.findViewById<TextView>(R.id.text_date)
         fun bind(event: ChatListVO) {
             if (event.message_type == "photo"){
                 txtMessage.visibility = View.GONE
@@ -121,6 +122,7 @@ class ChatRoomListViewAdapter(dataSet: ArrayList<ChatListVO>) :
                     imgRoom
                 )
             }
+            txtDate.text = event.createdAt
 
         }
     }

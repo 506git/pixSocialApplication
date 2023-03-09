@@ -31,15 +31,19 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:text="픿"
-            android:textSize="100sp"
+            android:textSize="36sp"
             android:textStyle="bold"
+            android:autoSizeTextType="uniform"
+            android:autoSizeMinTextSize="12sp"
+            android:autoSizeMaxTextSize="100sp"
+            android:autoSizeStepGranularity="2sp"
             android:gravity="center"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintHeight_percent="0.35"
             app:layout_constraintLeft_toLeftOf="@+id/line2"
             app:layout_constraintRight_toRightOf="@+id/line1"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,18 +1,18 @@
 package com.example.domain.model
 
-data class UserInfoDTO (
-    val result: ResultInfo,
-)
+//data class UserInfoDTO (
+//    val result: ResultInfo,
+//)
+//
+//data class ResultInfo (
+//    val resultCode: String = "",
+//
+//    val resultMessage: String = "",
+//
+//    val content: UserInfo,
+//)
 
-data class ResultInfo (
-    val resultCode: String = "",
-
-    val resultMessage: String = "",
-
-    val content: UserInfo,
-)
-
-data class UserInfo (
+data class UserInfoVO (
     val _id: String = "",
 
     val user_id: String = "",
