@@ -30,7 +30,6 @@ class SocketManager(private val mSocket: Socket) : AppSocket {
         mSocket.off("sendMessage")
         mSocket.off("receiveMessage")
         mSocket.disconnect()
-//        mSocket.close()
     }
 
     fun on(name: String, listener: Emitter.Listener) = callbackFlow<Unit> {

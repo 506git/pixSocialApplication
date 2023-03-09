@@ -85,11 +85,23 @@ class AppDataRepositoryImpl @Inject constructor(
                     val token = result.token.toString()
                     CoroutineScope(Dispatchers.IO).launch {
                         runCatching {
-                            return@runCatching TestRemoteSource.googleLogin(token)
+                            return@runCatching TestRemoteSource.googleLogin(token).result.content!!
+                        }.mapCatching { it ->
+                            UserInfoVO(
+                                _id = it._id,
+                                user_id = it.user_id,
+                                name = it.name,
+                                email = it.email,
+                                picture = it.picture,
+                                createdAt = it.createdAt,
+                                updatedAt = it.updatedAt,
+                                comment = it.comment
+                            )
                         }.onSuccess {
-                            val json = Gson().toJson(it)
-                            val userInfo = Gson().fromJson(json, UserInfoVO::class.java)
-                            trySend(Result.Success(userInfo))
+//                            val json = Gson().toJson(it)
+//                            val userInfo = Gson().fromJson(json, UserInfoVO::class.java)
+//                            trySend(Result.Success(userInfo))
+                            trySend(Result.Success(it))
                         }.onFailure { e ->
                             trySend(Result.Error(Exception(e)))
                         }

@@ -33,7 +33,7 @@ class SplashActivity : AppCompatActivity() {
 
     private val permissionList = listOf<String>(
         android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-        android.Manifest.permission.READ_MEDIA_IMAGES,
+//        android.Manifest.permission.READ_MEDIA_IMAGES,
     )
 
     private val permissionList_s = listOf<String>(
@@ -138,18 +138,14 @@ class SplashActivity : AppCompatActivity() {
         val deniedPermissionList = mutableListOf<String>()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             permissionList_s.forEach {
-                if (ContextCompat.checkSelfPermission(this, it) ==
-                    PackageManager.PERMISSION_DENIED
-                ) {
+                if (ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_DENIED) {
                     // 거부된 권한
                     deniedPermissionList.add(it)
                 }
             }
         } else {
             permissionList.forEach {
-                if (ContextCompat.checkSelfPermission(this, it) ==
-                    PackageManager.PERMISSION_DENIED
-                ) {
+                if (ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_DENIED) {
                     // 거부된 권한
                     deniedPermissionList.add(it)
                 }

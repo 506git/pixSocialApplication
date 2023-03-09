@@ -1,12 +1,11 @@
 package com.example.pixsocialapplication.ui.chat.list
 
-import android.content.*
-import android.net.Uri
-import android.os.Build
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
-import android.provider.Settings
 import android.speech.tts.TextToSpeech
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,11 +15,9 @@ import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
-import com.example.domain.model.RoomChat
 import com.example.domain.vo.ChatListVO
 import com.example.pixsocialapplication.databinding.CustomDialogBinding
 import com.example.pixsocialapplication.databinding.FragmentChatListBinding
-import com.example.pixsocialapplication.service.PixPushService
 import com.example.pixsocialapplication.ui.MainViewModel
 import com.example.pixsocialapplication.ui.adapter.ChatRoomListViewAdapter
 import com.example.pixsocialapplication.ui.common.LoadingDialog
@@ -31,13 +28,8 @@ import com.example.pixsocialapplication.utils.repeatOnStarted
 import com.example.pixsocialapplication.utils.setSafeOnClickListener
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import io.socket.client.IO
-import io.socket.client.Socket
-import io.socket.emitter.Emitter
-import kotlinx.coroutines.flow.collect
 import org.json.JSONObject
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 @AndroidEntryPoint
@@ -272,16 +264,9 @@ class ChatListFragment : Fragment() {
             setSpeechRate(1.25f)
         }
 
-
         activity?.registerReceiver(mBroadCastReceiver, filter)
 
         return binding.root
-    }
-
-    val smoothScroller: RecyclerView.SmoothScroller by lazy {
-        object : LinearSmoothScroller(context) {
-            override fun getVerticalSnapPreference() = SNAP_TO_END
-        }
     }
 
     override fun onResume() {
@@ -299,15 +284,6 @@ class ChatListFragment : Fragment() {
         tts.stop()
         tts.shutdown()
 
-    }
-
-    companion object {
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ChatListFragment().apply {
-                arguments = Bundle().apply {
-                }
-            }
     }
 }
 

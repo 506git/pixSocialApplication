@@ -1,26 +1,16 @@
 package com.example.pixsocialapplication.ui.intro
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.appdata_usecase.AppDataUseCase
 import com.example.domain.core.Result
-import com.example.domain.core.UiEvent
 import com.example.domain.database_usecase.DatabaseUseCase
-import com.example.domain.model.SignInState
 import com.example.domain.usecase.UseCase
 import com.example.pixsocialapplication.utils.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -56,10 +46,8 @@ class LogInViewModel @Inject constructor(
         }
     }
 
-    private fun event(event: Event) {
-        viewModelScope.launch {
+    private suspend fun event(event: Event) {
             _eventFlow.emit(event)
-        }
     }
 
     fun signInWithGoogleIdToken(idToken: String) {
@@ -75,7 +63,7 @@ class LogInViewModel @Inject constructor(
                     }
                     is Result.Success -> {
                         event(Event.GoMain(true))
-                        setID(Config._ID, it.data!!._id)
+                        setID(Config._ID, it.data?._id!!)
 //                        initUserInfoUpdateLocalDB()
                     }
                 }
