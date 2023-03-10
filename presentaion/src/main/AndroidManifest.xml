@@ -88,7 +88,7 @@
             android:exported="false"
             android:theme="@style/Base.Theme.MyApplication" />
         <activity
-            android:name=".ui.chat.list.ImageDatailActivity"
+            android:name=".ui.chat.list.ImageDetailActivity"
             android:exported="false" />
         <activity
             android:name=".ui.gallery.GalleryActivity"

@@ -1,6 +1,7 @@
 package com.example.data.repository
 
 import android.content.Context
+import android.net.Uri
 import android.text.TextUtils
 import android.util.Log
 import com.example.domain.vo.ChatListVO
@@ -17,6 +18,7 @@ import com.example.domain.socket.AppSocket
 import com.example.domain.vo.MessageVO
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.storage.FirebaseStorage
 import com.google.gson.Gson
 import io.socket.emitter.Emitter
 import kotlinx.coroutines.CoroutineScope
@@ -26,11 +28,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.launch
 import org.json.JSONObject
+import java.util.*
 import javax.inject.Inject
 
 class AppDataRepositoryImpl @Inject constructor(
     private val auth: FirebaseAuth,
     private val TestRemoteSource: RemoteDataSource,
+    private val firebaseStorage: FirebaseStorage,
     private val context: Context,
     private val pushService: PushService,
     private val sharedPreferences: Preferences,
@@ -325,6 +329,27 @@ class AppDataRepositoryImpl @Inject constructor(
 
         } catch (e: Exception){
             trySend(Result.Error(e))
+        }
+
+        awaitClose {
+            channel.close()
+        }
+    }
+
+    override fun uploadImage(path: String, userId: String): Flow<Result<String>> = callbackFlow {
+        send(Result.Loading())
+
+        val imageName = "$userId/${UUID.randomUUID()}.jpg"
+        val storageRef = firebaseStorage.reference.child(imageName)
+
+        storageRef.putFile(Uri.parse(path)).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                storageRef.downloadUrl.addOnSuccessListener {
+                    trySend(Result.Success(it.toString()))
+                }
+            } else {
+                trySend(Result.Error(task.exception))
+            }
         }
 
         awaitClose {

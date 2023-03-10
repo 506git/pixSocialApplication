@@ -6,8 +6,8 @@ import com.example.domain.appdata_usecase.AppDataUseCase
 import com.example.domain.core.Result
 import com.example.domain.model.FriendInfo
 import com.example.pixsocialapplication.utils.Config
-import com.example.pixsocialapplication.utils.MutableEventFlow
-import com.example.pixsocialapplication.utils.asEventFlow
+import com.example.pixsocialapplication.utils.flowLib.MutableEventFlow
+import com.example.pixsocialapplication.utils.flowLib.asEventFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow

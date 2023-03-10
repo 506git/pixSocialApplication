@@ -10,11 +10,13 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.domain.model.FriendInfo
 import com.example.pixsocialapplication.databinding.FragmentFriendsBinding
+import com.example.pixsocialapplication.ui.MainActivity
 import com.example.pixsocialapplication.ui.adapter.FriendsAdapter
+import com.example.pixsocialapplication.ui.common.CommonActivity
 import com.example.pixsocialapplication.ui.common.LoadingDialog
 import com.example.pixsocialapplication.ui.profile.ProfileFragment
 import com.example.pixsocialapplication.utils.CommonUtils
-import com.example.pixsocialapplication.utils.repeatOnStarted
+import com.example.pixsocialapplication.utils.flowLib.repeatOnStarted
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -83,6 +85,6 @@ class FriendsFragment : Fragment() {
     private fun handleEvent(event: FriendsViewModel.Event) = when (event) {
         is FriendsViewModel.Event.ShowToast -> CommonUtils.snackBar(activity!!, event.text, Snackbar.LENGTH_SHORT)
         is FriendsViewModel.Event.OffLine -> CommonUtils.networkState = event.state
-        is FriendsViewModel.Event.Loading -> if (event.visible) dialog.show() else dialog.dismiss()
+        is FriendsViewModel.Event.Loading -> if (event.visible) CommonUtils.showDialog(activity!!) else   CommonUtils.dismissDialog(activity!!)
     }
 }

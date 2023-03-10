@@ -5,8 +5,12 @@ import androidx.lifecycle.viewModelScope
 import com.example.domain.appdata_usecase.AppDataUseCase
 import com.example.domain.core.Result
 import com.example.domain.database_usecase.DatabaseUseCase
+import com.example.domain.model.UserInfoVO
 import com.example.domain.usecase.UseCase
-import com.example.pixsocialapplication.utils.*
+import com.example.pixsocialapplication.utils.CommonEvent
+import com.example.pixsocialapplication.utils.Config
+import com.example.pixsocialapplication.utils.flowLib.MutableEventFlow
+import com.example.pixsocialapplication.utils.flowLib.asEventFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
@@ -20,7 +24,7 @@ class LogInViewModel @Inject constructor(
     private val databaseUseCase: DatabaseUseCase
 ) : ViewModel() {
 
-    private val _eventFlow = MutableEventFlow<Event>()
+    private val _eventFlow = MutableEventFlow<CommonEvent>()
     val eventFlow get() = _eventFlow.asEventFlow()
 
     fun signInGoogleAutoLogIn() {
@@ -28,26 +32,28 @@ class LogInViewModel @Inject constructor(
             appDataUseCase.googleAutoLogIn().collect() {
                 when (it) {
                     is Result.Error -> {
-                        event(Event.OffLine(false))
-                        event(Event.ShowToast(it.exception.toString()))
-                        event(Event.GoMain(false))
+                        event(CommonEvent.Loading(false))
+                        event(CommonEvent.OffLine(false))
+                        event(CommonEvent.ShowToast(it.exception.toString()))
+                        event(CommonEvent.GoMain(false))
                     }
                     is Result.Loading -> {
-
+                        event(CommonEvent.Loading(true))
                     }
                     is Result.Success -> {
-                        DLog().d(it.data.toString())
-                        setID(Config._ID, it.data!!._id)
-                        event(Event.GoMain(true))
-//                        initUserInfoUpdateLocalDB()
+                        event(CommonEvent.Loading(true))
+                        setID(it.data!!)
+                        initUserInfoUpdateLocalDB()
+                        event(CommonEvent.GoMain(true))
+
                     }
                 }
             }
         }
     }
 
-    private suspend fun event(event: Event) {
-            _eventFlow.emit(event)
+    private suspend fun event(event: CommonEvent) {
+        _eventFlow.emit(event)
     }
 
     fun signInWithGoogleIdToken(idToken: String) {
@@ -55,16 +61,18 @@ class LogInViewModel @Inject constructor(
             appDataUseCase.signInWithGoogleIdToken(idToken).collect() {
                 when (it) {
                     is Result.Error -> {
-                        event(Event.OffLine(false))
-                        event(Event.ShowToast(it.exception.toString()))
+                        event(CommonEvent.Loading(false))
+                        event(CommonEvent.OffLine(false))
+                        event(CommonEvent.ShowToast(it.exception.toString()))
                     }
                     is Result.Loading -> {
-
+                        event(CommonEvent.Loading(true))
                     }
                     is Result.Success -> {
-                        event(Event.GoMain(true))
-                        setID(Config._ID, it.data?._id!!)
-//                        initUserInfoUpdateLocalDB()
+                        event(CommonEvent.Loading(false))
+                        setID(it.data!!)
+                        initUserInfoUpdateLocalDB()
+                        event(CommonEvent.GoMain(true))
                     }
                 }
             }
@@ -82,20 +90,26 @@ class LogInViewModel @Inject constructor(
 
                     }
                     is Result.Success -> {
-//
+
                     }
                 }
             }
         }
     }
 
-    private fun setID(key: String, token: String) {
-        useCase.setStringPreferences(key, token)
+    private fun setID(data: UserInfoVO) {
+        useCase.setStringPreferences(Config._ID, data._id)
+        setName(data.name)
+        settingId()
     }
 
-    sealed class Event {
-        data class ShowToast(val text: String) : Event()
-        data class OffLine(val state : Boolean) : Event()
-        data class GoMain(val state : Boolean) : Event()
+    private fun setName(userName : String){
+        Config.userName = userName
     }
+
+    private fun settingId(){
+        Config.userId = useCase.getStringPreferences(Config._ID)
+    }
+
+
 }

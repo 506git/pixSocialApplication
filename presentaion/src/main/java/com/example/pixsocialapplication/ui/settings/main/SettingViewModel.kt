@@ -45,7 +45,7 @@ class SettingViewModel @Inject constructor(private val useCase: UseCase, private
         try {
             context.cacheDir.deleteRecursively()
         } catch (e: Exception) {
-            DLog().d(e.toString())
+            DLog.d(e.toString())
         }
     }
 

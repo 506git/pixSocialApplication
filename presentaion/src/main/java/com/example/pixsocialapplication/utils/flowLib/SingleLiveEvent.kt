@@ -1,4 +1,4 @@
-package com.example.pixsocialapplication.utils
+package com.example.pixsocialapplication.utils.flowLib
 
 import androidx.annotation.MainThread
 import androidx.lifecycle.LifecycleOwner

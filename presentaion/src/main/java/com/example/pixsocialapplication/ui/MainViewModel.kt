@@ -2,126 +2,82 @@ package com.example.pixsocialapplication.ui
 
 import android.app.Application
 import android.view.View
-import androidx.core.content.res.TypedArrayUtils.getString
 import androidx.lifecycle.*
 import com.example.domain.appdata_usecase.AppDataUseCase
 import com.example.domain.core.Result
-import com.example.domain.model.RoomInfo
 import com.example.domain.usecase.UseCase
-import com.example.pixsocialapplication.R
-import com.example.pixsocialapplication.utils.Config
-import com.example.pixsocialapplication.utils.DLog
-import com.example.pixsocialapplication.utils.NetworkConnection
+import com.example.pixsocialapplication.utils.*
+import com.example.pixsocialapplication.utils.flowLib.MutableEventFlow
+import com.example.pixsocialapplication.utils.flowLib.asEventFlow
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val application: Application,
     private val useCase: UseCase,
     private val appDataUseCase: AppDataUseCase
-    ) : ViewModel() {
+) : ViewModel() {
 
-    private val _appbarTitle = MutableSharedFlow<String>()
-    val appbarTitle get() = _appbarTitle.asLiveData()
+    private val _eventFlow = MutableEventFlow<MainEvent>()
+    val eventFlow get() = _eventFlow.asEventFlow()
 
-    private val _appbarDesc = MutableSharedFlow<String>()
-    val appbarDesc get() = _appbarDesc.asLiveData()
-
-    private val _fabVisible = MutableSharedFlow<Int>(View.VISIBLE)
-    val fabVisible get() = _fabVisible.asLiveData()
-
-    private val _bottomVisible = MutableSharedFlow<Int>()
-    val bottomVisible get() = _bottomVisible.asLiveData()
-
-    val network = NetworkConnection(application)
-
-//    fun findChatUser(userId: String){
-//        viewModelScope.launch(Dispatchers.IO) {
-//            useCase.findUserId(userId).collect(){
-//                when (it){
-//                    is Result.Error -> {
-//                        _bottomVisible.emit(BottomSheetBehavior.STATE_HIDDEN)
-//                    }
-//                    is Result.Loading -> {
-//
-//                    }
-//                    is Result.Success -> {
-//                        _bottomVisible.emit(BottomSheetBehavior.STATE_HIDDEN)
-//                    }
-//                }
-//            }
-//        }
-//    }
-
-    fun findChatUser(userId: String){
+    fun findChatUser(userId: String) {
         viewModelScope.launch(Dispatchers.IO) {
-//            if (network.value == true) {
-                appDataUseCase.addFriends(userId).collect(){
-                    when (it){
-                        is Result.Error -> {
-                            DLog().d(it.exception.toString())
-                            _bottomVisible.emit(BottomSheetBehavior.STATE_HIDDEN)
-                        }
-                        is Result.Loading -> {
+            appDataUseCase.addFriends(userId).collect() {
+                when (it) {
+                    is Result.Error -> {
+                        event(MainEvent.ShowToast(it.exception.toString()))
+                        event(MainEvent.BottomBehavior(BottomSheetBehavior.STATE_HIDDEN))
+                    }
+                    is Result.Loading -> {
 
-                        }
-                        is Result.Success -> {
-                            _bottomVisible.emit(BottomSheetBehavior.STATE_HIDDEN)
-                        }
+                    }
+                    is Result.Success -> {
+                        event(MainEvent.BottomBehavior(BottomSheetBehavior.STATE_HIDDEN))
                     }
                 }
-//            } else {
-//
-//            }
+            }
         }
     }
 
-    fun setAppbarTitle(title : String, desc : String){
+    fun setAppbarTitle(title: String, desc: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            _appbarTitle.emit(title)
-            _appbarDesc.emit(desc)
+            event(MainEvent.AppbarTitle(title.toString()))
         }
     }
 
-    fun navAppbarTitle(title : String){
+    fun navAppbarTitle(title: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            _appbarTitle.emit(title)
+            event(MainEvent.AppbarTitle(title.toString()))
         }
     }
 
-    fun setBottomVisible(visible : Int){
-        viewModelScope.launch(Dispatchers.IO){
-            _bottomVisible.emit(visible)
+    fun setBottomVisible(visible: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            event(MainEvent.BottomBehavior(visible))
         }
     }
 
-    fun setToken(key: String, token: String){
+    fun setToken(key: String, token: String) {
         useCase.setStringPreferences(key, token)
     }
 
-    fun getID(key : String): String{
+    fun getToken(key: String): String {
         return useCase.getStringPreferences(key)
     }
 
-    fun updateUserFcmToken(token: String){
+    fun updateUserFcmToken(token: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            appDataUseCase.updatePushToken(getID(Config._ID), token).collect()
+            appDataUseCase.updatePushToken(Config.userId, token).collect()
         }
     }
 
-    fun setUserId(){
-        Config.userId = getID(Config._ID)
-        DLog().d("user id ===> ${Config.userId}")
-    }
-
-    fun updateUserFcmToken2(token : String){
-        useCase.updateUserFcmToken(token)
+    private suspend fun event(event: MainEvent) {
+        _eventFlow.emit(event)
     }
 }

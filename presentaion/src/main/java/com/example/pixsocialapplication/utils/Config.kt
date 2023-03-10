@@ -6,4 +6,5 @@ object Config {
     const val REQ_PERMISSION_MAIN = 1001
 
     var userId = ""
+    var userName = ""
 }

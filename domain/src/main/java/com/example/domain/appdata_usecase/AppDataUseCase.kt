@@ -24,5 +24,7 @@ class AppDataUseCase(
 
     val receiveMessage: ReceiveMessage,
 
-    val leaveRoom: LeaveRoom
+    val leaveRoom: LeaveRoom,
+
+    val uploadImage: UploadImage
 )

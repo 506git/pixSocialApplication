@@ -6,7 +6,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -14,9 +13,10 @@ import androidx.core.content.ContextCompat
 import com.example.pixsocialapplication.R
 import com.example.pixsocialapplication.databinding.ActivitySplashBinding
 import com.example.pixsocialapplication.ui.MainActivity
+import com.example.pixsocialapplication.utils.CommonEvent
 import com.example.pixsocialapplication.utils.CommonUtils
 import com.example.pixsocialapplication.utils.Config
-import com.example.pixsocialapplication.utils.repeatOnStarted
+import com.example.pixsocialapplication.utils.flowLib.repeatOnStarted
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -154,14 +154,15 @@ class SplashActivity : AppCompatActivity() {
         return deniedPermissionList
     }
 
-    private fun handleEvent(event: LogInViewModel.Event) = when (event) {
-        is LogInViewModel.Event.ShowToast -> CommonUtils.snackBar(
+    private fun handleEvent(event: CommonEvent) = when (event) {
+        is CommonEvent.ShowToast -> CommonUtils.snackBar(
             this,
             event.text,
             Snackbar.LENGTH_SHORT
         )
-        is LogInViewModel.Event.OffLine -> CommonUtils.networkState = event.state
-        is LogInViewModel.Event.GoMain -> goToMain(event.state)
+        is CommonEvent.OffLine -> CommonUtils.networkState = event.state
+        is CommonEvent.GoMain -> goToMain(event.state)
 
+        else -> {}
     }
 }

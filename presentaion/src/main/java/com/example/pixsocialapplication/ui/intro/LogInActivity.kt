@@ -6,16 +6,18 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.pixsocialapplication.databinding.ActivityLogInBinding
 import com.example.pixsocialapplication.ui.MainActivity
-import com.example.pixsocialapplication.utils.AuthResultContract
+import com.example.pixsocialapplication.ui.common.CommonActivity
+import com.example.pixsocialapplication.utils.CommonEvent
+import com.example.pixsocialapplication.utils.google.AuthResultContract
 import com.example.pixsocialapplication.utils.CommonUtils
-import com.example.pixsocialapplication.utils.repeatOnStarted
+import com.example.pixsocialapplication.utils.flowLib.repeatOnStarted
 import com.example.pixsocialapplication.utils.setSafeOnClickListener
 import com.google.android.gms.common.api.ApiException
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class LogInActivity : AppCompatActivity() {
+class LogInActivity : CommonActivity() {
 
     private val logInViewModel : LogInViewModel by viewModels()
     private lateinit var binding : ActivityLogInBinding
@@ -45,9 +47,11 @@ class LogInActivity : AppCompatActivity() {
         }
     }
 
-    private fun handleEvent(event: LogInViewModel.Event) = when (event) {
-        is LogInViewModel.Event.ShowToast -> CommonUtils.snackBar(this, event.text, Snackbar.LENGTH_SHORT)
-        is LogInViewModel.Event.OffLine -> CommonUtils.networkState = event.state
-        is LogInViewModel.Event.GoMain -> startActivity(Intent(baseContext, MainActivity::class.java)).apply { finish() }
+    private fun handleEvent(event: CommonEvent) = when (event) {
+        is CommonEvent.ShowToast -> CommonUtils.snackBar(this, event.text, Snackbar.LENGTH_SHORT)
+        is CommonEvent.OffLine -> CommonUtils.networkState = event.state
+        is CommonEvent.GoMain -> startActivity(Intent(baseContext, MainActivity::class.java)).apply { finish() }
+        is CommonEvent.Loading -> if (event.visible) show() else hide()
+        else -> {}
     }
 }

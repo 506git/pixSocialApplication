@@ -188,7 +188,7 @@ class PixPushService : Service() {
             }
             true
         }
-        DLog().d("test : $imageUrl")
+        DLog.d("test : $imageUrl")
         ImageLoader(applicationContext).imageLoadWithURL(imageUrl, imagePic)
         windowManager?.addView(mView, params)
 

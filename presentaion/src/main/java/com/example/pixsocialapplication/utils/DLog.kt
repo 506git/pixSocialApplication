@@ -2,8 +2,7 @@ package com.example.pixsocialapplication.utils
 
 import timber.log.Timber
 
-class DLog {
-
+object DLog {
     fun d(message: String?, type: String? = "") {
         Timber.tag(TAG).d(START_LINE)
         Timber.tag(TAG).d("$type")
@@ -25,11 +24,7 @@ class DLog {
         Timber.tag(TAG).e(END_LINE)
     }
 
-
-    companion object {
-        private const val TAG: String = "*LOGGING===>"
-        private const val START_LINE: String = "================start================\n"
-        private const val END_LINE: String = "\n================finish================"
-    }
-
+    private const val TAG: String = "*LOGGING===>"
+    private const val START_LINE: String = "================start================\n"
+    private const val END_LINE: String = "\n================finish================"
 }

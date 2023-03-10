@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -14,12 +13,14 @@ import androidx.recyclerview.widget.LinearSnapHelper
 import com.example.domain.model.RoomListInfo
 import com.example.pixsocialapplication.R
 import com.example.pixsocialapplication.databinding.FragmentChatRoomBinding
+import com.example.pixsocialapplication.model.RoomUserInfoModel
 import com.example.pixsocialapplication.ui.MainViewModel
 import com.example.pixsocialapplication.ui.adapter.UserRoomListViewAdapter
 import com.example.pixsocialapplication.ui.common.LoadingDialog
+import com.example.pixsocialapplication.utils.CommonEvent
 import com.example.pixsocialapplication.utils.CommonUtils
 import com.example.pixsocialapplication.utils.Config
-import com.example.pixsocialapplication.utils.repeatOnStarted
+import com.example.pixsocialapplication.utils.flowLib.repeatOnStarted
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -47,12 +48,14 @@ class ChatRoomFragment : Fragment() {
         userRoomListViewAdapter = UserRoomListViewAdapter(roomArray).apply {
             setRoomItemClickListener(object : UserRoomListViewAdapter.RoomItemClickListener {
                 override fun onItemClick(view: View, position: Int) {
-                    val bundle = bundleOf(
-                        "roomImage" to roomArray[position].room_image,
-                        "userId" to Config.userId,
-                        "roomName" to roomArray[position].room_name,
-                        "roomId" to roomArray[position]._id
-                    )
+                    val bundle = Bundle().apply {
+                        putParcelable("roomInfo", RoomUserInfoModel(
+                            roomId = roomArray[position]._id,
+                            userId = Config.userId,
+                            roomImage = roomArray[position].room_image,
+                            name = roomArray[position].room_name
+                        ))
+                    }
                     view.findNavController().navigate(R.id.action_chatRoomFragment_to_chatListFragment, bundle)
                 }
             })
@@ -105,9 +108,10 @@ class ChatRoomFragment : Fragment() {
         mainViewModel.setBottomVisible(BottomSheetBehavior.STATE_HIDDEN)
     }
 
-    private fun handleEvent(event: ChatRoomViewModel.Event) = when (event) {
-        is ChatRoomViewModel.Event.ShowToast -> CommonUtils.snackBar(activity!!, event.text, Snackbar.LENGTH_SHORT)
-        is ChatRoomViewModel.Event.OffLine -> CommonUtils.networkState = event.state
-        is ChatRoomViewModel.Event.Loading -> if (event.visible) dialog.show() else dialog.dismiss()
+    private fun handleEvent(event: CommonEvent) = when (event) {
+        is CommonEvent.ShowToast -> CommonUtils.snackBar(activity!!, event.text, Snackbar.LENGTH_SHORT)
+        is CommonEvent.OffLine -> CommonUtils.networkState = event.state
+        is CommonEvent.Loading -> if (event.visible) CommonUtils.showDialog(activity!!) else CommonUtils.dismissDialog(activity!!)
+        else -> {}
     }
 }

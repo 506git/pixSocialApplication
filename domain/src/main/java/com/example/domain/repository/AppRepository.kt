@@ -30,6 +30,6 @@ interface AppRepository {
 
     fun galleryList() : Flow<PagingData<Uri>>
 
-    suspend fun removeChat(messageId: String, roomId : String) : Flow<Result<Unit>>
+    suspend fun removeChat(path: String, roomId : String) : Flow<Result<Unit>>
 //    suspend fun fetchImageList() : Flow<PagingData<LawMaker>>
 }

@@ -6,6 +6,7 @@ import android.net.Network
 import android.net.NetworkInfo
 import android.net.NetworkRequest
 import android.os.Build
+import com.example.pixsocialapplication.utils.flowLib.SingleLiveEvent
 
 class NetworkConnection(private val context: Context) : SingleLiveEvent<Boolean>() {
 

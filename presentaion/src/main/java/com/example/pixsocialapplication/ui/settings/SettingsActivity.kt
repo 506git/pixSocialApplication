@@ -6,6 +6,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.navigation.findNavController
 import com.example.pixsocialapplication.R
 import com.example.pixsocialapplication.databinding.ActivitySettingsBinding
+import com.example.pixsocialapplication.ui.common.CommonActivity
 import com.example.pixsocialapplication.utils.CommonUtils
 import com.example.pixsocialapplication.utils.setSafeOnClickListener
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -14,7 +15,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 
 @AndroidEntryPoint
-class SettingsActivity : AppCompatActivity() {
+class SettingsActivity : CommonActivity() {
 
     private lateinit var binding: ActivitySettingsBinding
 

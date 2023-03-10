@@ -18,8 +18,7 @@ import com.example.pixsocialapplication.utils.ImageLoader
 
 import timber.log.Timber
 
-class ChatRoomListViewAdapter(dataSet: ArrayList<ChatListVO>) :
-    RecyclerView.Adapter<ChatRoomListViewAdapter.ViewHolder>() {
+class ChatRoomListViewAdapter(dataSet: ArrayList<ChatListVO>) : RecyclerView.Adapter<ChatRoomListViewAdapter.ViewHolder>() {
     private val eventList: ArrayList<ChatListVO> = dataSet
 
     interface ChatItemClickListener {
@@ -79,15 +78,7 @@ class ChatRoomListViewAdapter(dataSet: ArrayList<ChatListVO>) :
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        init {
-            itemView.setOnClickListener {
-                mItemClickListener.onItemClick(absoluteAdapterPosition)
-            }
-//            itemView.setOnLongClickListener {
-//                mItemLongClickListener.onItemLongClick(absoluteAdapterPosition)
-//                return@setOnLongClickListener false
-//            }
-        }
+        init { }
 
         private val txtMessage = itemView.findViewById<TextView>(R.id.text_message)
         private val txtName = itemView.findViewById<TextView>(R.id.text_name)
@@ -95,13 +86,16 @@ class ChatRoomListViewAdapter(dataSet: ArrayList<ChatListVO>) :
         private val imgMessage = itemView.findViewById<ImageView>(R.id.img_message)
         private val txtDate = itemView.findViewById<TextView>(R.id.text_date)
         fun bind(event: ChatListVO) {
-            if (event.message_type == "photo"){
+            if (event.message_type == "image"){
                 txtMessage.visibility = View.GONE
                 imgMessage.visibility = View.VISIBLE
-//                ImageLoader(context = itemView.context).imageLoadWithURL(
-//                    event.message.toString(),
-//                    imgMessage
-//                )
+                ImageLoader(context = itemView.context).imageLoadWithURL(
+                    event.message_body.toString(),
+                    imgMessage
+                )
+                imgMessage.setOnClickListener {
+                    mItemClickListener.onItemClick(absoluteAdapterPosition)
+                }
                 imgMessage.setOnLongClickListener {
                     mItemLongClickListener.onItemLongClick(absoluteAdapterPosition)
                     return@setOnLongClickListener false
@@ -136,5 +130,6 @@ class ChatRoomListViewAdapter(dataSet: ArrayList<ChatListVO>) :
     companion object {
         private const val VIEW_TYPE_ME = 1
         private const val VIEW_TYPE_YOU = 2
+        private const val VIEW_TYPE_NOTICE = 3
     }
 }

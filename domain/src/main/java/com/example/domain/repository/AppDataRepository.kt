@@ -32,4 +32,6 @@ interface AppDataRepository {
     suspend fun sendMessage(data : JSONObject) : Flow<Result<Unit>>
 
     suspend fun receiveMessage() : Flow<Result<MessageVO>>
+
+    fun uploadImage(message: String, userId : String) : Flow<Result<String>>
 }

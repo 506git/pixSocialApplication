@@ -7,32 +7,35 @@ import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
-import android.graphics.Typeface
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
-import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
-import androidx.core.content.res.ResourcesCompat
-import com.example.pixsocialapplication.R
-import com.example.pixsocialapplication.utils.pixel.Pixelate.fromBitmap
-import com.example.pixsocialapplication.utils.pixel.PixelateLayer
+import com.example.pixsocialapplication.ui.common.CommonActivity
+import com.example.pixsocialapplication.ui.common.LoadingDialog
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.*
 import java.net.URL
 import kotlin.system.exitProcess
 
 object CommonUtils {
+
     fun appFinish(activity: Activity = Activity()) {
         ActivityCompat.finishAffinity(activity)
         System.runFinalization()
         exitProcess(0)
+    }
+
+    fun showDialog(activity: Activity){
+        (activity as CommonActivity).show()
+    }
+
+    fun dismissDialog(activity: Activity){
+        (activity as CommonActivity).hide()
     }
 
     fun snackBar(activity: Activity, message: String, duration: Int) {
@@ -90,62 +93,6 @@ object CommonUtils {
     }
 
     var networkState = true
-
-
-
-
-    //------------------------------------------------
-    //------------------------------------------------
-    //------------------------------------------------
-    //------------------------------------------------
-    //------------------------------------------------
-
-
-    fun convertPixelArt(
-        resources: Resources,
-        resId: Int,
-        width: Int = 100,
-        height: Int = 100
-    ): Bitmap {
-        val bitmap = decodeBitmapFromResource(resources, resId, width, height)
-
-        val pixelate = PixelateLayer.Builder(PixelateLayer.Shape.Square)
-            .setResolution(20f)
-            .setSize(15f)
-            .setOffset(10f)
-            .build()
-
-        return fromBitmap(bitmap, pixelate, pixelate)
-    }
-
-    suspend fun convertPixelArtUrl( resources: Resources, url: String, width: Int = 100,
-                                    height: Int = 100): Bitmap? {
-        val job = CoroutineScope(Dispatchers.IO).async {
-            try {
-                var bitmap: Bitmap? = null
-                // 화면 크기에 가장 근접하는 이미지의 리스케일 사이즈를 구한다.
-                withContext(Dispatchers.IO) {
-                    bitmap = decodeBitmapFromResource(resources, url, width, height)
-//                    bitmap = BitmapFactory.decodeStream(URL(url).openStream())
-//                    bitmap = Bitmap.createScaledBitmap(bitmap!!,200,200,true);
-                }
-
-                val pixelate = PixelateLayer.Builder(PixelateLayer.Shape.Square)
-                    .setResolution(15f)
-                    .setSize(10f)
-                    .setOffset(10f)
-                    .build()
-
-                Log.d("TEST_bitmap", bitmap.toString())
-                return@async fromBitmap(bitmap!!, pixelate, pixelate)
-            } catch (e: Exception) {
-                DLog().d(e.toString())
-                return@async null
-            }
-        }
-
-        return job.await()
-    }
 
     fun decodeBitmapFromResource(
         res: Resources,

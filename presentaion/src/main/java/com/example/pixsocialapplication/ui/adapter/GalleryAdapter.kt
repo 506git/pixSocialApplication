@@ -57,7 +57,7 @@ class GalleryAdapter : PagingDataAdapter<Uri, GalleryAdapter.ViewHolder>(
         )
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        DLog().d("test adapter : ")
+        DLog.d("test adapter : ")
         val testList = getItem(position)
         if (testList != null) {
             holder.bind(testList)
@@ -67,7 +67,7 @@ class GalleryAdapter : PagingDataAdapter<Uri, GalleryAdapter.ViewHolder>(
     companion object {
         private val ARTICLE_DIFF_CALLBACK = object : DiffUtil.ItemCallback<Uri>() {
             override fun areItemsTheSame(oldItem: Uri, newItem: Uri): Boolean {
-                DLog().d("test adapter : ")
+                DLog.d("test adapter : ")
                 return oldItem.toString() == newItem.toString()
             }
 

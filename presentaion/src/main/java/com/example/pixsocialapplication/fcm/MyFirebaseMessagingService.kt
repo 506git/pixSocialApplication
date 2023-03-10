@@ -24,7 +24,7 @@ import com.google.firebase.messaging.RemoteMessage
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
-        DLog().d("${remoteMessage.data}, notification : ${remoteMessage.notification}")
+        DLog.d("${remoteMessage.data}, notification : ${remoteMessage.notification}")
         if (remoteMessage.data.isNotEmpty()) {
             sendNotification(remoteMessage.data)
 //            sendNotify(remoteMessage.data)
@@ -55,7 +55,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     private fun sendRegistrationToServer(token: String?) {
         // TODO: Implement this method to send token to your app server.
-        DLog().d(message = "token = $token")
+        DLog.d(message = "token = $token")
     }
 
     private fun sendNotification(messageBody: RemoteMessage.Notification) {
@@ -99,7 +99,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                         resource: Bitmap,
                         transition: Transition<in Bitmap>?
                     ) {
-                        DLog().d("test start")
+                        DLog.d("test start")
                         notificationCompat.setLargeIcon(resource)
                         notificationCompat.setStyle(
                             NotificationCompat.BigPictureStyle().bigPicture(resource)

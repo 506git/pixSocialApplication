@@ -9,6 +9,7 @@ import com.example.domain.preferences.Preferences
 import com.example.domain.repository.AppDataRepository
 import com.example.domain.socket.AppSocket
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.storage.FirebaseStorage
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,12 +27,13 @@ class AppDataModule {
     fun provideRepository(
         auth: FirebaseAuth,
         testRemoteSource: RemoteDataSource,
+        firebaseStorage: FirebaseStorage,
         @ApplicationContext appContext : Context,
         pushService: PushService,
         preferences: Preferences,
         socket: AppSocket
     ): AppDataRepository {
-        return AppDataRepositoryImpl(auth, testRemoteSource, appContext, pushService, preferences, socket)
+        return AppDataRepositoryImpl(auth, testRemoteSource, firebaseStorage, appContext, pushService, preferences, socket)
     }
 
     @Provides
@@ -50,7 +52,8 @@ class AppDataModule {
             joinRoom = JoinRoom(repository),
             leaveRoom = LeaveRoom(repository),
             sendMessage = SendMessage(repository),
-            receiveMessage = ReceiveMessage(repository)
+            receiveMessage = ReceiveMessage(repository),
+            uploadImage = UploadImage(repository)
         )
     }
 }

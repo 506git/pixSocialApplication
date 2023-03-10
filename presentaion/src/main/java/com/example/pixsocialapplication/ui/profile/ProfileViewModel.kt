@@ -24,13 +24,13 @@ class ProfileViewModel @Inject constructor(
             appDataUseCase.chatRoomStart(members).collect() {
                 when (it) {
                     is Result.Error -> {
-                        DLog().d(it.exception.toString())
+                        DLog.d(it.exception.toString())
                     }
                     is Result.Loading -> {
 
                     }
                     is Result.Success -> {
-                        DLog().d(it.data.toString())
+                        DLog.d(it.data.toString())
                     }
                 }
             }
@@ -38,7 +38,7 @@ class ProfileViewModel @Inject constructor(
     }
 
 
-    fun getID(key: String): String {
+    private fun getID(key: String): String {
         return useCase.getStringPreferences(key)
     }
 }

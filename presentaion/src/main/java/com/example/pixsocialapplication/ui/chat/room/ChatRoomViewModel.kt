@@ -5,9 +5,10 @@ import androidx.lifecycle.viewModelScope
 import com.example.domain.appdata_usecase.AppDataUseCase
 import com.example.domain.core.Result
 import com.example.domain.model.RoomListInfo
+import com.example.pixsocialapplication.utils.CommonEvent
 import com.example.pixsocialapplication.utils.Config
-import com.example.pixsocialapplication.utils.MutableEventFlow
-import com.example.pixsocialapplication.utils.asEventFlow
+import com.example.pixsocialapplication.utils.flowLib.MutableEventFlow
+import com.example.pixsocialapplication.utils.flowLib.asEventFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -25,7 +26,7 @@ class ChatRoomViewModel @Inject constructor(
     private val _getRoomList = MutableSharedFlow<List<RoomListInfo>?>()
     val getRoomList get() = _getRoomList.asSharedFlow()
 
-    private val _eventFlow = MutableEventFlow<Event>()
+    private val _eventFlow = MutableEventFlow<CommonEvent>()
     val eventFlow get() = _eventFlow.asEventFlow()
 
     fun getRoomListRepos() {
@@ -33,14 +34,14 @@ class ChatRoomViewModel @Inject constructor(
             appDataUseCase.getRoomList(Config.userId).collect() {
                 when (it) {
                     is Result.Error -> {
-                        event(Event.ShowToast(it.exception.toString()))
-                        event(Event.Loading(false))
+                        event(CommonEvent.ShowToast(it.exception.toString()))
+                        event(CommonEvent.Loading(false))
                     }
                     is Result.Loading -> {
-                        event(Event.Loading(true))
+                        event(CommonEvent.Loading(true))
                     }
                     is Result.Success -> {
-                        event(Event.Loading(false))
+                        event(CommonEvent.Loading(false))
                         _getRoomList.emit(it.data?.result?.content ?: null)
                     }
                 }
@@ -48,14 +49,8 @@ class ChatRoomViewModel @Inject constructor(
         }
     }
 
-    private suspend fun event(event: Event) {
+    private suspend fun event(event: CommonEvent) {
         _eventFlow.emit(event)
-    }
-
-    sealed class Event {
-        data class ShowToast(val text: String) : Event()
-        data class OffLine(val state : Boolean) : Event()
-        data class Loading(val visible : Boolean) : Event()
     }
 
 /*
