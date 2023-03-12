@@ -66,7 +66,8 @@ class ChatListFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        roomUserInfoModel = arguments?.getParcelable("roomInfo", RoomUserInfoModel::class.java)!!
+//        roomUserInfoModel = arguments?.getParcelable("roomInfo", RoomUserInfoModel::class.java)!!
+        roomUserInfoModel = arguments?.getParcelable<RoomUserInfoModel>("roomInfo")!!
     }
 
     override fun onCreateView(

@@ -41,17 +41,41 @@ class ChatRoomListViewAdapter(dataSet: ArrayList<ChatListVO>) : RecyclerView.Ada
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-
-        if (viewType == VIEW_TYPE_ME)
-            return ViewHolder(
-                LayoutInflater.from(parent.context)
-                    .inflate(R.layout.item_room_chat_me, parent, false)
-            )
-        else
-            return ViewHolder(
-                LayoutInflater.from(parent.context)
-                    .inflate(R.layout.item_room_chat_you, parent, false)
-            )
+        return when(viewType){
+            VIEW_TYPE_TEXT_MESSAGE_RECEIVED -> {
+                return ViewHolder(
+                    LayoutInflater.from(parent.context)
+                        .inflate(R.layout.item_room_chat_you, parent, false)
+                )
+            }
+            VIEW_TYPE_TEXT_MESSAGE_SENT -> {
+                return ViewHolder(
+                    LayoutInflater.from(parent.context)
+                        .inflate(R.layout.item_room_chat_me, parent, false)
+                )
+            }
+            VIEW_TYPE_IMAGE_MESSAGE_RECEIVED -> {
+                return ViewHolder(
+                    LayoutInflater.from(parent.context)
+                        .inflate(R.layout.item_room_chat_you, parent, false)
+                )
+            }
+            VIEW_TYPE_IMAGE_MESSAGE_SENT -> {
+                return ViewHolder(
+                    LayoutInflater.from(parent.context)
+                        .inflate(R.layout.item_room_chat_me, parent, false)
+                )
+            }
+            VIEW_TYPE_NOTICE_MESSAGE -> {
+                return ViewHolder(
+                    LayoutInflater.from(parent.context)
+                        .inflate(R.layout.item_room_chat_you, parent, false)
+                )
+            }
+            else -> {
+                throw IllegalArgumentException("Invalid view type")
+            }
+        }
     }
 
 
@@ -74,7 +98,20 @@ class ChatRoomListViewAdapter(dataSet: ArrayList<ChatListVO>) : RecyclerView.Ada
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (eventList[position].message_sender == "me") VIEW_TYPE_ME else VIEW_TYPE_YOU
+        val message = eventList[position]
+        return if (message.message_sender == "me") {
+            if (message.message_type == "image"){
+                VIEW_TYPE_TEXT_MESSAGE_SENT
+            } else {
+                VIEW_TYPE_IMAGE_MESSAGE_SENT
+            }
+        } else {
+            if (message.message_type == "image"){
+                VIEW_TYPE_TEXT_MESSAGE_RECEIVED
+            } else {
+                VIEW_TYPE_IMAGE_MESSAGE_RECEIVED
+            }
+        }
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -128,8 +165,10 @@ class ChatRoomListViewAdapter(dataSet: ArrayList<ChatListVO>) : RecyclerView.Ada
     override fun getItemCount(): Int = eventList.count()
 
     companion object {
-        private const val VIEW_TYPE_ME = 1
-        private const val VIEW_TYPE_YOU = 2
-        private const val VIEW_TYPE_NOTICE = 3
+        const val VIEW_TYPE_TEXT_MESSAGE_RECEIVED = 1
+        const val VIEW_TYPE_TEXT_MESSAGE_SENT = 2
+        const val VIEW_TYPE_IMAGE_MESSAGE_RECEIVED = 3
+        const val VIEW_TYPE_IMAGE_MESSAGE_SENT = 4
+        const val VIEW_TYPE_NOTICE_MESSAGE = 5
     }
 }

@@ -14,4 +14,6 @@ data class MessageDTO (
 
     @SerializedName("messageType")
     private val messageType: String? = "",
+
+    private val createAt : String? = ""
 )

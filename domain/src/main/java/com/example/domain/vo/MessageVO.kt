@@ -10,4 +10,7 @@ data class MessageVO(
     val messageBody: String? = "",
 
     val messageType: String? = "",
+
+    val createAt : String? = ""
+
 )
