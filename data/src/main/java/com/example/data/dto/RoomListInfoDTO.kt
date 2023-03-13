@@ -1,45 +1,19 @@
 package com.example.data.dto
 
-import com.google.gson.annotations.SerializedName
-
 data class RoomListInfoDTO (
-    @SerializedName("result")
-    private val result: RoomListResultInfo,
-)
+    val _id: String? = "",
 
-data class RoomListResultInfo (
-    @SerializedName("resultCode")
-    private val resultCode: String = "",
+    val room_name: String? = "",
 
-    @SerializedName("resultMessage")
-    private val resultMessage: String = "",
+    val members: List<String>,
 
-    @SerializedName("content")
-    private val content: List<RoomListInfo>,
-)
+    val chats: List<ChatInfo?> = emptyList(),
 
-data class RoomListInfo (
-    @SerializedName("_id")
-    private val id: String? = "",
+    val createdAt: String? = null,
 
-    @SerializedName("room_name")
-    private val name: String? = "",
+    val updatedAt: String? = null,
 
-    @SerializedName("members")
-    private val members: List<String>,
+    val member_count: Int? = null,
 
-    @SerializedName("chats")
-    private val chats: List<ChatInfo?> = emptyList(),
-
-    @SerializedName("createdAt")
-    private val createdAt: String? = null,
-
-    @SerializedName("updatedAt")
-    private val updatedAt: String? = null,
-
-    @SerializedName("member_count")
-    private val memberCount: Int? = null,
-
-    @SerializedName("room_image")
-    private val roomImage: String? = null,
+    val room_image: String? = null,
 )

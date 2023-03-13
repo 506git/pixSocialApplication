@@ -103,7 +103,7 @@
         <activity
             android:name=".ui.settings.SettingsActivity"
             android:exported="false"
-            android:theme="@style/Base.Theme.MyApplication"
+            android:theme="@style/Base.Theme.SettingApplication"
             />
         <activity
             android:name=".ui.chat.list.ImageDetailActivity"

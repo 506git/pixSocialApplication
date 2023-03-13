@@ -34,4 +34,13 @@
         <item name="colorControlActivated">@color/main_background_color</item>
         <item name="colorControlHighlight">@color/main_background_color</item>
     </style>
+
+    <style name="Base.Theme.SettingApplication" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:statusBarColor" tools:targetApi="l">@color/white</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:fontFamily">@font/main_line_font</item>
+        <item name="bottomSheetDialogTheme">@style/CustomBottomSheetDialog</item>
+        <item name="bottomSheetStyle">@style/CustomBottomSheetDialog</item>
+    </style>
 </resources>

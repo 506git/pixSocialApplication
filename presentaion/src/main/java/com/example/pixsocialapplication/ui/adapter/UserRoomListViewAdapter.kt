@@ -8,11 +8,12 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.domain.model.RoomInfo
 import com.example.domain.model.RoomListInfo
+import com.example.domain.vo.RoomListInfoVO
 import com.example.pixsocialapplication.R
 import com.example.pixsocialapplication.utils.ImageLoader
 
-class UserRoomListViewAdapter(dataSet: ArrayList<RoomListInfo>) : RecyclerView.Adapter<UserRoomListViewAdapter.ViewHolder>() {
-    private val eventList : ArrayList<RoomListInfo> = dataSet
+class UserRoomListViewAdapter(dataSet: ArrayList<RoomListInfoVO>) : RecyclerView.Adapter<UserRoomListViewAdapter.ViewHolder>() {
+    private val eventList : ArrayList<RoomListInfoVO> = dataSet
 
     interface RoomItemClickListener{
         fun onItemClick(view: View, position: Int)
@@ -35,7 +36,7 @@ class UserRoomListViewAdapter(dataSet: ArrayList<RoomListInfo>) : RecyclerView.A
 //            it.setBackgroundColor(ContextCompat.getColor(it.context, backgroundColorResId))
 //        }
 //    }
-    fun addItem(dataSet: ArrayList<RoomListInfo>){
+    fun addItem(dataSet: ArrayList<RoomListInfoVO>){
         eventList.clear()
         eventList.addAll(dataSet)
     }
@@ -49,13 +50,13 @@ class UserRoomListViewAdapter(dataSet: ArrayList<RoomListInfo>) : RecyclerView.A
         private val txtName = itemView.findViewById<TextView>(R.id.text_name)
         private val txtId = itemView.findViewById<TextView>(R.id.text_id)
         private val imgRoom = itemView.findViewById<ImageView>(R.id.img_room)
-        fun bind(event: RoomListInfo) {
-            txtName.text = event.room_name
-            txtId.text = event._id
+        fun bind(event: RoomListInfoVO) {
+            txtName.text = event.roomName
+            txtId.text = event.id
             imgRoom.setOnClickListener {
                 mItemClickListener.onItemClick(it, absoluteAdapterPosition)
             }
-            ImageLoader(context = itemView.context).imageCircleLoadWithURL(event.room_image.toString(), imgRoom)
+            ImageLoader(context = itemView.context).imageCircleLoadWithURL(event.roomImage.toString(), imgRoom)
         }
     }
 

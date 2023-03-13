@@ -38,15 +38,15 @@ class RemoteDataSourceImpl @Inject constructor(private val service: RemoteServic
         return service.addFriend(friendsAddDTO)
     }
 
-    override suspend fun getFriendsList(id: UserDTO): FriendsList {
+    override suspend fun getFriendsList(id: UserDTO): ApiResponse<List<FriendInfoDTO>> {
         return service.getFriendsList(id)
     }
 
-    override suspend fun createRoom(creatRoom: CreateRoomDTO): RoomInfoDTO {
-        return service.createRoom(creatRoom)
+    override suspend fun createRoom(createRoom: CreateRoomDTO): ApiResponse<RoomListInfoDTO> {
+        return service.createRoom(createRoom)
     }
 
-    override suspend fun getRoomList(user: UserDTO): RoomListInfoDTO {
+    override suspend fun getRoomList(user: UserDTO): ApiResponse<List<RoomListInfoDTO>> {
         return service.getRoomList(user)
     }
 

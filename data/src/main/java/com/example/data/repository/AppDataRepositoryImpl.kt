@@ -7,6 +7,7 @@ import android.util.Log
 import com.example.domain.vo.ChatListVO
 import com.example.data.dto.CreateRoomDTO
 import com.example.data.dto.FriendsAddDTO
+import com.example.data.dto.RoomListInfoDTO
 import com.example.data.model.UserDTO
 import com.example.data.repository.dataSource.RemoteDataSource
 import com.example.data.service.PushService
@@ -15,7 +16,9 @@ import com.example.domain.model.*
 import com.example.domain.preferences.Preferences
 import com.example.domain.repository.AppDataRepository
 import com.example.domain.socket.AppSocket
+import com.example.domain.vo.FriendsInfoVO
 import com.example.domain.vo.MessageVO
+import com.example.domain.vo.RoomListInfoVO
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.storage.FirebaseStorage
@@ -172,15 +175,24 @@ class AppDataRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getFriendsList(id: String): Flow<Result<FriendsList>> = callbackFlow{
+    override suspend fun getFriendsList(id: String): Flow<Result<List<FriendsInfoVO>?>> = callbackFlow{
         send(Result.Loading())
 
         runCatching {
-            return@runCatching TestRemoteSource.getFriendsList(UserDTO(userId = id))
+            return@runCatching TestRemoteSource.getFriendsList(UserDTO(userId = id)).result.content
+        }.map {
+            it?.map { it ->
+                FriendsInfoVO(
+                    _id = it._id,
+                    name = it.name,
+                    email = it.email,
+                    picture = it.picture,
+                    comment = it.comment
+                )
+            }
+
         }.onSuccess {
-            val json = Gson().toJson(it)
-            val friendsList = Gson().fromJson(json, FriendsList::class.java)
-            trySend(Result.Success(friendsList))
+            trySend(Result.Success(it))
         }.onFailure { e ->
             trySend(Result.Error(Exception(e)))
         }
@@ -190,18 +202,23 @@ class AppDataRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun chatRoomStart(members: List<String>): Flow<Result<RoomInfoDTO>> = callbackFlow{
+    override suspend fun chatRoomStart(members: List<String>): Flow<Result<RoomListInfoVO>> = callbackFlow{
         send(Result.Loading())
 
         runCatching {
-            return@runCatching TestRemoteSource.createRoom(CreateRoomDTO(
-                roomName = "",
-                memberIds = members
-            ))
+            return@runCatching TestRemoteSource.createRoom(CreateRoomDTO(roomName = "", memberIds = members)).result.content
+        }.map { it ->
+            RoomListInfoVO(
+                id= it?._id,
+                roomName = it?.room_name,
+                members = it?.members!!,
+                createdAt = it.createdAt,
+                updatedAt = it.updatedAt,
+                memberCount = it.member_count,
+                roomImage = it.room_image
+            )
         }.onSuccess {
-            val json = Gson().toJson(it)
-            val roomInfo = Gson().fromJson(json, RoomInfoDTO::class.java)
-            trySend(Result.Success(roomInfo))
+            trySend(Result.Success(it))
         }.onFailure { e ->
             trySend(Result.Error(Exception(e)))
         }
@@ -211,15 +228,25 @@ class AppDataRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getRoomInfo(id: String): Flow<Result<RoomListInfoDTO>> = callbackFlow{
+    override suspend fun getRoomInfo(id: String): Flow<Result<List<RoomListInfoVO>?>> = callbackFlow{
         send(Result.Loading())
 
         runCatching {
-            return@runCatching TestRemoteSource.getRoomList(UserDTO(userId = id))
-        }.onSuccess {
-            val json = Gson().toJson(it)
-            val roomListInfo = Gson().fromJson(json, RoomListInfoDTO::class.java)
-            trySend(Result.Success(roomListInfo))
+            return@runCatching TestRemoteSource.getRoomList(UserDTO(userId = id)).result.content
+        }.mapCatching {
+            it?.map { it ->
+                RoomListInfoVO(
+                    id= it._id,
+                    roomName = it.room_name,
+                    members = it.members,
+                    createdAt = it.createdAt,
+                    updatedAt = it.updatedAt,
+                    memberCount = it.member_count,
+                    roomImage = it.room_image
+                )
+            }
+        }.onSuccess { it ->
+            trySend(Result.Success(it))
         }.onFailure { e ->
             trySend(Result.Error(Exception(e)))
         }

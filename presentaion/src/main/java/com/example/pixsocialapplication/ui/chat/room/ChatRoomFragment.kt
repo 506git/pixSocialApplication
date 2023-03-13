@@ -11,6 +11,7 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import com.example.domain.model.RoomListInfo
+import com.example.domain.vo.RoomListInfoVO
 import com.example.pixsocialapplication.R
 import com.example.pixsocialapplication.databinding.FragmentChatRoomBinding
 import com.example.pixsocialapplication.model.RoomUserInfoModel
@@ -33,7 +34,7 @@ class ChatRoomFragment : Fragment() {
     private val chatRoomViewModel: ChatRoomViewModel by viewModels()
     private val mainViewModel: MainViewModel by activityViewModels()
 
-    private var roomArray = arrayListOf<RoomListInfo>()
+    private var roomArray = arrayListOf<RoomListInfoVO>()
 
     private val dialog by lazy {
         LoadingDialog(context!!)
@@ -50,10 +51,10 @@ class ChatRoomFragment : Fragment() {
                 override fun onItemClick(view: View, position: Int) {
                     val bundle = Bundle().apply {
                         putParcelable("roomInfo", RoomUserInfoModel(
-                            roomId = roomArray[position]._id,
+                            roomId = roomArray[position].id,
                             userId = Config.userId,
-                            roomImage = roomArray[position].room_image,
-                            name = roomArray[position].room_name
+                            roomImage = roomArray[position].roomImage,
+                            name = roomArray[position].roomName
                         ))
                     }
                     view.findNavController().navigate(R.id.action_chatRoomFragment_to_chatListFragment, bundle)
@@ -82,7 +83,7 @@ class ChatRoomFragment : Fragment() {
 
         repeatOnStarted {
             chatRoomViewModel.getRoomList.collect {
-                roomArray = if (it == null) arrayListOf() else it as ArrayList<RoomListInfo>
+                roomArray = if (it == null) arrayListOf() else it as ArrayList<RoomListInfoVO>
 
                 userRoomListViewAdapter.addItem(roomArray)
                 userRoomListViewAdapter.notifyDataSetChanged()

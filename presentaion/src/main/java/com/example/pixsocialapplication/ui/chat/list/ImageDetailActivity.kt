@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import com.example.pixsocialapplication.databinding.ActivityImageDatailBinding
 import com.example.pixsocialapplication.model.ImageDetailModel
+import com.example.pixsocialapplication.model.RoomUserInfoModel
 import com.example.pixsocialapplication.ui.common.CommonActivity
 import com.example.pixsocialapplication.utils.DLog
 import com.example.pixsocialapplication.utils.DateUtils
@@ -13,13 +14,14 @@ import com.example.pixsocialapplication.utils.setSafeOnClickListener
 class ImageDetailActivity : CommonActivity() {
 
     private lateinit var binding : ActivityImageDatailBinding
-    private var visible : Boolean = true
+    private var visible = true
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityImageDatailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val imageInfo = intent.getParcelableExtra("imageInfo", ImageDetailModel::class.java)
+//        val imageInfo = intent.getParcelableExtra("imageInfo", ImageDetailModel::class.java)
+        val imageInfo = intent?.getParcelableExtra<ImageDetailModel>("imageInfo")
 
         with(binding){
             appbarTitle.text = imageInfo?.userName

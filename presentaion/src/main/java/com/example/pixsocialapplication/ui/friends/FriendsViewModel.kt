@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.appdata_usecase.AppDataUseCase
 import com.example.domain.core.Result
-import com.example.domain.model.FriendInfo
+import com.example.domain.vo.FriendsInfoVO
 import com.example.pixsocialapplication.utils.Config
 import com.example.pixsocialapplication.utils.flowLib.MutableEventFlow
 import com.example.pixsocialapplication.utils.flowLib.asEventFlow
@@ -18,7 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class FriendsViewModel @Inject constructor( private val appDataUseCase: AppDataUseCase ) : ViewModel() {
 
-    private val _getFriendList = MutableSharedFlow<List<FriendInfo>?>()
+    private val _getFriendList = MutableSharedFlow<List<FriendsInfoVO>?>()
     val getFriendList get() = _getFriendList.asSharedFlow()
 
     private val _eventFlow = MutableEventFlow<Event>()
@@ -38,9 +38,9 @@ class FriendsViewModel @Inject constructor( private val appDataUseCase: AppDataU
                     is Result.Success -> {
                         event(Event.Loading(false))
 
-                        if (it.data?.result?.content?.isEmpty() == true) {
+                        if (it.data?.isEmpty() == true) {
                             _getFriendList.emit(null)
-                        } else _getFriendList.emit(it.data?.result?.content)
+                        } else _getFriendList.emit(it.data)
 
                     }
                 }

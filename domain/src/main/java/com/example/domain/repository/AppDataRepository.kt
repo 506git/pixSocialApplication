@@ -3,7 +3,9 @@ package com.example.domain.repository
 import com.example.domain.core.Result
 import com.example.domain.model.*
 import com.example.domain.vo.ChatListVO
+import com.example.domain.vo.FriendsInfoVO
 import com.example.domain.vo.MessageVO
+import com.example.domain.vo.RoomListInfoVO
 import kotlinx.coroutines.flow.Flow
 import org.json.JSONObject
 
@@ -17,11 +19,11 @@ interface AppDataRepository {
 
     suspend fun updatePushToken(userId : String, token: String) : Flow<Result<Unit>>
 
-    suspend fun getFriendsList(id : String) : Flow<Result<FriendsList>>
+    suspend fun getFriendsList(id : String) : Flow<Result<List<FriendsInfoVO>?>>
 
-    suspend fun chatRoomStart(members : List<String>) : Flow<Result<RoomInfoDTO>>
+    suspend fun chatRoomStart(members : List<String>) :  Flow<Result<RoomListInfoVO>>
 
-    suspend fun getRoomInfo(id : String) : Flow<Result<RoomListInfoDTO>>
+    suspend fun getRoomInfo(id : String) :Flow<Result<List<RoomListInfoVO>?>>
 
     suspend fun getChatList(roomId : String) : Flow<Result<List<ChatListVO>?>>
 

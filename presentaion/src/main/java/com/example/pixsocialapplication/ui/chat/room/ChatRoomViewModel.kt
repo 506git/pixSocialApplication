@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.appdata_usecase.AppDataUseCase
 import com.example.domain.core.Result
-import com.example.domain.model.RoomListInfo
+import com.example.domain.vo.RoomListInfoVO
 import com.example.pixsocialapplication.utils.CommonEvent
 import com.example.pixsocialapplication.utils.Config
 import com.example.pixsocialapplication.utils.DLog
@@ -24,7 +24,7 @@ class ChatRoomViewModel @Inject constructor(
     private val appDataUseCase: AppDataUseCase
 ) : ViewModel() {
 
-    private val _getRoomList = MutableSharedFlow<List<RoomListInfo>?>()
+    private val _getRoomList = MutableSharedFlow<List<RoomListInfoVO>?>()
     val getRoomList get() = _getRoomList.asSharedFlow()
 
     private val _eventFlow = MutableEventFlow<CommonEvent>()
@@ -43,8 +43,8 @@ class ChatRoomViewModel @Inject constructor(
                     }
                     is Result.Success -> {
                         event(CommonEvent.Loading(false))
-                        DLog.d(it.data?.result?.content.toString())
-                        _getRoomList.emit(it.data?.result?.content ?: null)
+                        DLog.d(it.data?.toString())
+                        _getRoomList.emit(it.data ?: null)
                     }
                 }
             }

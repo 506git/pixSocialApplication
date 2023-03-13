@@ -18,11 +18,11 @@ interface RemoteDataSource {
 
      suspend fun addFriendsAdd(friendsAddDTO: FriendsAddDTO)
 
-     suspend fun getFriendsList(id : UserDTO) : FriendsList
+     suspend fun getFriendsList(id : UserDTO) : ApiResponse<List<FriendInfoDTO>>
 
-     suspend fun createRoom(id : CreateRoomDTO) : RoomInfoDTO
+     suspend fun createRoom(createRoom : CreateRoomDTO) : ApiResponse<RoomListInfoDTO>
 
-     suspend fun getRoomList(id : UserDTO) : RoomListInfoDTO
+     suspend fun getRoomList(id : UserDTO) : ApiResponse<List<RoomListInfoDTO>>
 
      suspend fun getChatList(roomId : String) : ApiResponse<List<ChatListDTO>>
 }

@@ -11,8 +11,6 @@ android {
     defaultConfig {
         minSdk = Apps.minSdk
     }
-
-
 }
 subprojects {
     apply{

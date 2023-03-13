@@ -40,17 +40,17 @@ interface RemoteService {
     @POST("users/myFriends")
     suspend fun getFriendsList(
         @Body userDTO : UserDTO // 수정
-    ) : FriendsList
+    ) : ApiResponse<List<FriendInfoDTO>>
 
     @POST("rooms/create")
     suspend fun createRoom(
         @Body createRoomDTO : CreateRoomDTO
-    ) : RoomInfoDTO
+    ) : ApiResponse<RoomListInfoDTO>
 
     @POST("rooms/findMyChatRooms")
     suspend fun getRoomList(
         @Body userDTO : UserDTO // 수정
-    ) : RoomListInfoDTO
+    ) : ApiResponse<List<RoomListInfoDTO>>
 
     @POST("chats/findMyChats")
     suspend fun getChatList(

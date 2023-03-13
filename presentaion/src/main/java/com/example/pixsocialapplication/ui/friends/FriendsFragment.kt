@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.domain.model.FriendInfo
+import com.example.domain.vo.FriendsInfoVO
 import com.example.pixsocialapplication.databinding.FragmentFriendsBinding
 import com.example.pixsocialapplication.ui.MainActivity
 import com.example.pixsocialapplication.ui.adapter.FriendsAdapter
@@ -25,7 +26,7 @@ class FriendsFragment : Fragment() {
 
     private lateinit var binding: FragmentFriendsBinding
 
-    private var friendsArray = arrayListOf<FriendInfo>()
+    private var friendsArray = arrayListOf<FriendsInfoVO>()
     private lateinit var friendsAdapter : FriendsAdapter
 
     private val friendsViewModel : FriendsViewModel by viewModels()
@@ -71,7 +72,7 @@ class FriendsFragment : Fragment() {
 
         repeatOnStarted {
             friendsViewModel.getFriendList.collect{
-                friendsArray = if (it == null) arrayListOf() else it as ArrayList<FriendInfo>
+                friendsArray = if (it == null) arrayListOf() else it as ArrayList<FriendsInfoVO>
                 friendsAdapter.addItem(friendsArray)
                 friendsAdapter.notifyDataSetChanged()
             }

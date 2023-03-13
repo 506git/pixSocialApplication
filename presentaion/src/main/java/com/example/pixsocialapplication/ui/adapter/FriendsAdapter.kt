@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.domain.model.FriendInfo
 import com.example.domain.model.LibraryDataSearchList
 import com.example.domain.model.RoomInfo
+import com.example.domain.vo.FriendsInfoVO
 import com.example.pixsocialapplication.R
 import com.example.pixsocialapplication.databinding.ItemSampleBinding
 import com.example.pixsocialapplication.ui.chat.list.testData.Article
@@ -36,8 +37,8 @@ import com.example.pixsocialapplication.utils.ImageLoader
 /**
  * Adapter for an [Article] [List].
  */
-class FriendsAdapter(dataSet: ArrayList<FriendInfo>) : RecyclerView.Adapter<FriendsAdapter.ViewHolder>() {
-    private val eventList : ArrayList<FriendInfo> = dataSet
+class FriendsAdapter(dataSet: ArrayList<FriendsInfoVO>) : RecyclerView.Adapter<FriendsAdapter.ViewHolder>() {
+    private val eventList : ArrayList<FriendsInfoVO> = dataSet
 
     interface FriendItemClickListener{
         fun onItemClick(view: View, position: Int)
@@ -52,7 +53,7 @@ class FriendsAdapter(dataSet: ArrayList<FriendInfo>) : RecyclerView.Adapter<Frie
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_room_list, parent, false))
 
-    fun addItem(dataSet: ArrayList<FriendInfo>){
+    fun addItem(dataSet: ArrayList<FriendsInfoVO>){
         eventList.clear()
         eventList.addAll(dataSet)
     }
@@ -66,7 +67,7 @@ class FriendsAdapter(dataSet: ArrayList<FriendInfo>) : RecyclerView.Adapter<Frie
         private val txtName = itemView.findViewById<TextView>(R.id.text_name)
         private val txtId = itemView.findViewById<TextView>(R.id.text_id)
         private val imgRoom = itemView.findViewById<ImageView>(R.id.img_room)
-        fun bind(event: FriendInfo) {
+        fun bind(event: FriendsInfoVO) {
             txtName.text = event.name
             txtId.text = event.comment
             imgRoom.setOnClickListener {
