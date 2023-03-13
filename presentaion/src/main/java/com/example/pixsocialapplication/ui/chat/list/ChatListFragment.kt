@@ -66,7 +66,7 @@ class ChatListFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        roomUserInfoModel = arguments?.getParcelable("roomInfo", RoomUserInfoModel::class.java)!!
+//        roomUserInfoModel = arguments?.getParcelable("roomInfo", RoomUserInfoModel::class.java)!! <- 버전 오류
         roomUserInfoModel = arguments?.getParcelable<RoomUserInfoModel>("roomInfo")!!
     }
 
@@ -76,7 +76,7 @@ class ChatListFragment : Fragment() {
     ): View {
         binding = FragmentChatListBinding.inflate(layoutInflater)
         val filter = IntentFilter().apply { addAction("gallery") }
-
+        DLog.d("TEST---> ${roomUserInfoModel.toString()}","------>>>")
         data = JSONObject().apply {
             put("roomId", roomUserInfoModel.roomId)
             put("userId", roomUserInfoModel.userId)

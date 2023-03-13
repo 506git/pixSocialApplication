@@ -9,7 +9,7 @@ import com.example.data.model.LocalUser
 
 @Dao
 interface UserDao {
-    @Query("SELECT * FROM localUser")
+    @Query("SELECT * FROM local_user")
     fun getAll() : LocalUser
 //
 //    @Query("SELECT * FROM localUser WHERE ")

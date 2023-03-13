@@ -7,6 +7,7 @@ import com.example.domain.core.Result
 import com.example.domain.model.RoomListInfo
 import com.example.pixsocialapplication.utils.CommonEvent
 import com.example.pixsocialapplication.utils.Config
+import com.example.pixsocialapplication.utils.DLog
 import com.example.pixsocialapplication.utils.flowLib.MutableEventFlow
 import com.example.pixsocialapplication.utils.flowLib.asEventFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -42,6 +43,7 @@ class ChatRoomViewModel @Inject constructor(
                     }
                     is Result.Success -> {
                         event(CommonEvent.Loading(false))
+                        DLog.d(it.data?.result?.content.toString())
                         _getRoomList.emit(it.data?.result?.content ?: null)
                     }
                 }

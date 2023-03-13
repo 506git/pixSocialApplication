@@ -97,6 +97,24 @@ class LogInViewModel @Inject constructor(
         }
     }
 
+    fun getUserInfo(){
+        viewModelScope.launch(IO) {
+            databaseUseCase.getUserInfo().collect() {
+                when (it) {
+                    is Result.Error -> {
+
+                    }
+                    is Result.Loading -> {
+
+                    }
+                    is Result.Success -> {
+
+                    }
+                }
+            }
+        }
+    }
+
     private fun setID(data: UserInfoVO) {
         useCase.setStringPreferences(Config._ID, data._id)
         setName(data.name)

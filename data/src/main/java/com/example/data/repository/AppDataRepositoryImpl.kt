@@ -36,7 +36,6 @@ class AppDataRepositoryImpl @Inject constructor(
     private val TestRemoteSource: RemoteDataSource,
     private val firebaseStorage: FirebaseStorage,
     private val context: Context,
-    private val pushService: PushService,
     private val sharedPreferences: Preferences,
     private val socket: AppSocket
 ) : AppDataRepository {
@@ -62,8 +61,6 @@ class AppDataRepositoryImpl @Inject constructor(
                             comment = it.comment
                         )
                     }.onSuccess {
-//                        val json = Gson().toJson(it)
-//                        val userInfo = Gson().fromJson(json, UserInfoDTO::class.java)
                         trySend(Result.Success(it))
                     }.onFailure { e ->
                         trySend(Result.Error(Exception(e)))

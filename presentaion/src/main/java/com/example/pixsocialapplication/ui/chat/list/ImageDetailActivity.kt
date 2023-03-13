@@ -27,7 +27,6 @@ class ImageDetailActivity : CommonActivity() {
             ImageLoader(this@ImageDetailActivity).imageLoadWithURL(imageInfo?.imageUrl.toString(), imgDetail)
 
             imgDetail.setOnClickListener {
-                DLog.d("visible -> $visible")
                 if (visible) {
                     appbarView.visibility = View.GONE
                     visible = false
@@ -38,6 +37,5 @@ class ImageDetailActivity : CommonActivity() {
                 }
             }
         }
-
     }
 }

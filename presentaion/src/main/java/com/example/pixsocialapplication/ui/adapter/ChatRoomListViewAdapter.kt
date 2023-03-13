@@ -5,20 +5,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.example.domain.model.RoomChat
-import com.example.domain.model.RoomInfo
 import com.example.domain.vo.ChatListVO
 import com.example.pixsocialapplication.R
-import com.example.pixsocialapplication.utils.CommonUtils
+import com.example.pixsocialapplication.databinding.ItemChatImgRevBinding
+import com.example.pixsocialapplication.databinding.ItemChatImgSentBinding
+import com.example.pixsocialapplication.databinding.ItemChatTxtNoticeBinding
+import com.example.pixsocialapplication.databinding.ItemChatTxtRevBinding
+import com.example.pixsocialapplication.databinding.ItemChatTxtSentBinding
+import com.example.pixsocialapplication.ui.chat.viewholder.*
 import com.example.pixsocialapplication.utils.DLog
 import com.example.pixsocialapplication.utils.ImageLoader
 
-import timber.log.Timber
-
-class ChatRoomListViewAdapter(dataSet: ArrayList<ChatListVO>) : RecyclerView.Adapter<ChatRoomListViewAdapter.ViewHolder>() {
+class ChatRoomListViewAdapter(dataSet: ArrayList<ChatListVO>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val eventList: ArrayList<ChatListVO> = dataSet
 
     interface ChatItemClickListener {
@@ -40,36 +39,31 @@ class ChatRoomListViewAdapter(dataSet: ArrayList<ChatListVO>) : RecyclerView.Ada
         mItemLongClickListener = itemLongClickListener
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when(viewType){
             VIEW_TYPE_TEXT_MESSAGE_RECEIVED -> {
-                return ViewHolder(
-                    LayoutInflater.from(parent.context)
-                        .inflate(R.layout.item_room_chat_you, parent, false)
+                return TextMsgRcvViewHolder(
+                    ItemChatTxtRevBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 )
             }
             VIEW_TYPE_TEXT_MESSAGE_SENT -> {
-                return ViewHolder(
-                    LayoutInflater.from(parent.context)
-                        .inflate(R.layout.item_room_chat_me, parent, false)
+                return TextMsgSentViewHolder(
+                    ItemChatTxtSentBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 )
             }
             VIEW_TYPE_IMAGE_MESSAGE_RECEIVED -> {
-                return ViewHolder(
-                    LayoutInflater.from(parent.context)
-                        .inflate(R.layout.item_room_chat_you, parent, false)
+                return ImageMsgRcvViewHolder(
+                    ItemChatImgRevBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 )
             }
             VIEW_TYPE_IMAGE_MESSAGE_SENT -> {
-                return ViewHolder(
-                    LayoutInflater.from(parent.context)
-                        .inflate(R.layout.item_room_chat_me, parent, false)
+                return ImageMsgSentViewHolder(
+                    ItemChatImgSentBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 )
             }
             VIEW_TYPE_NOTICE_MESSAGE -> {
-                return ViewHolder(
-                    LayoutInflater.from(parent.context)
-                        .inflate(R.layout.item_room_chat_you, parent, false)
+                return NoticeMsgViewHolder(
+                    ItemChatTxtNoticeBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 )
             }
             else -> {
@@ -78,15 +72,6 @@ class ChatRoomListViewAdapter(dataSet: ArrayList<ChatListVO>) : RecyclerView.Ada
         }
     }
 
-
-    //    override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
-//        (holder.view as? TextView)?.also {
-//            it.text = eventList[position]
-//            it.clipToOutline = true
-//            val backgroundColorResId = if (position % 2 == 0) R.color.black else R.color.purple_700
-//            it.setBackgroundColor(ContextCompat.getColor(it.context, backgroundColorResId))
-//        }
-//    }
     fun addAllItem(dataSet: ArrayList<ChatListVO>) {
         eventList.clear()
         eventList.addAll(dataSet)
@@ -101,65 +86,42 @@ class ChatRoomListViewAdapter(dataSet: ArrayList<ChatListVO>) : RecyclerView.Ada
         val message = eventList[position]
         return if (message.message_sender == "me") {
             if (message.message_type == "image"){
-                VIEW_TYPE_TEXT_MESSAGE_SENT
-            } else {
                 VIEW_TYPE_IMAGE_MESSAGE_SENT
+            } else {
+                VIEW_TYPE_TEXT_MESSAGE_SENT
             }
-        } else {
+        } else if (message.message_sender == "you"){
             if (message.message_type == "image"){
-                VIEW_TYPE_TEXT_MESSAGE_RECEIVED
-            } else {
                 VIEW_TYPE_IMAGE_MESSAGE_RECEIVED
-            }
-        }
-    }
-
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        init { }
-
-        private val txtMessage = itemView.findViewById<TextView>(R.id.text_message)
-        private val txtName = itemView.findViewById<TextView>(R.id.text_name)
-        private val imgRoom = itemView.findViewById<ImageView>(R.id.img_room)
-        private val imgMessage = itemView.findViewById<ImageView>(R.id.img_message)
-        private val txtDate = itemView.findViewById<TextView>(R.id.text_date)
-        fun bind(event: ChatListVO) {
-            if (event.message_type == "image"){
-                txtMessage.visibility = View.GONE
-                imgMessage.visibility = View.VISIBLE
-                ImageLoader(context = itemView.context).imageLoadWithURL(
-                    event.message_body.toString(),
-                    imgMessage
-                )
-                imgMessage.setOnClickListener {
-                    mItemClickListener.onItemClick(absoluteAdapterPosition)
-                }
-                imgMessage.setOnLongClickListener {
-                    mItemLongClickListener.onItemLongClick(absoluteAdapterPosition)
-                    return@setOnLongClickListener false
-                }
             } else {
-                txtMessage.visibility = View.VISIBLE
-                txtMessage.text = event.message_body?.trim()
-                imgMessage.visibility = View.GONE
-                txtMessage.setOnLongClickListener {
-                    mItemLongClickListener.onItemLongClick(absoluteAdapterPosition)
-                    return@setOnLongClickListener false
-                }
+                VIEW_TYPE_TEXT_MESSAGE_RECEIVED
             }
-            if(event.message_sender != "me") {
-                txtName.text = event.message_name
-                ImageLoader(context = itemView.context).imageCircleLoadWithURL(
-                    event.message_profile,
-                    imgRoom
-                )
-            }
-            txtDate.text = event.createdAt
-
-        }
+        } else VIEW_TYPE_NOTICE_MESSAGE
     }
 
-    override fun onBindViewHolder(holder: ChatRoomListViewAdapter.ViewHolder, position: Int) {
-        holder.bind(eventList[position])
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        when(holder.itemViewType){
+            VIEW_TYPE_TEXT_MESSAGE_SENT -> {
+                val holder = holder as TextMsgSentViewHolder
+                holder.bind(eventList[position], mItemClickListener, mItemLongClickListener)
+            }
+            VIEW_TYPE_IMAGE_MESSAGE_SENT -> {
+                val holder = holder as ImageMsgSentViewHolder
+                holder.bind(eventList[position], mItemClickListener, mItemLongClickListener)
+            }
+            VIEW_TYPE_TEXT_MESSAGE_RECEIVED -> {
+                val holder = holder as TextMsgRcvViewHolder
+                holder.bind(eventList[position], mItemClickListener, mItemLongClickListener)
+            }
+            VIEW_TYPE_IMAGE_MESSAGE_RECEIVED -> {
+                val holder = holder as ImageMsgRcvViewHolder
+                holder.bind(eventList[position], mItemClickListener, mItemLongClickListener)
+            }
+            VIEW_TYPE_NOTICE_MESSAGE -> {
+                val holder = holder as NoticeMsgViewHolder
+                holder.bind(eventList[position])
+            }
+        }
     }
 
     override fun getItemCount(): Int = eventList.count()

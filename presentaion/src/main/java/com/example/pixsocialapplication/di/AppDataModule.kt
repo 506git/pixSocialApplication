@@ -29,11 +29,10 @@ class AppDataModule {
         testRemoteSource: RemoteDataSource,
         firebaseStorage: FirebaseStorage,
         @ApplicationContext appContext : Context,
-        pushService: PushService,
         preferences: Preferences,
         socket: AppSocket
     ): AppDataRepository {
-        return AppDataRepositoryImpl(auth, testRemoteSource, firebaseStorage, appContext, pushService, preferences, socket)
+        return AppDataRepositoryImpl(auth, testRemoteSource, firebaseStorage, appContext, preferences, socket)
     }
 
     @Provides

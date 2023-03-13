@@ -36,7 +36,6 @@ class SettingsActivity : CommonActivity() {
             btnBack.setSafeOnClickListener {
                 onBackPressed()
             }
-
         }
 
         // 뒤로가기

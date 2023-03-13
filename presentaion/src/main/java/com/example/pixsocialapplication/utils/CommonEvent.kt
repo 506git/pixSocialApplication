@@ -29,5 +29,18 @@ sealed class MessageEvent {
     data class AddMessage(val chat : ChatListVO) : MessageEvent()
 
     data class GoImageDetail(val chatListVO : ChatListVO) : MessageEvent()
+}
+
+sealed class SettingsEvent {
+    data class ShowToast(val text: String) : SettingsEvent()
+    data class OffLine(val state : Boolean) : SettingsEvent()
+    data class Loading(val visible: Boolean) : SettingsEvent()
+
+    object SignOut : SettingsEvent()
+    object ClearCache : SettingsEvent()
+
+    data class Version(val version : String)  : SettingsEvent()
+
+    data class GoToNav(val destination : Int) : SettingsEvent()
 
 }

@@ -17,10 +17,9 @@ import com.example.domain.model.User
 import com.example.pixsocialapplication.R
 import com.example.pixsocialapplication.databinding.FragmentSettingsMainBinding
 import com.example.pixsocialapplication.ui.intro.LogInActivity
-import com.example.pixsocialapplication.utils.CommonUtils
-import com.example.pixsocialapplication.utils.DLog
-import com.example.pixsocialapplication.utils.ImageLoader
-import com.example.pixsocialapplication.utils.setSafeOnClickListener
+import com.example.pixsocialapplication.utils.*
+import com.example.pixsocialapplication.utils.flowLib.repeatOnStarted
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -41,12 +40,9 @@ class SettingsMainFragment : Fragment() {
     ): View {
         binding = FragmentSettingsMainBinding.inflate(layoutInflater)
 
-
-
         with(binding) {
             btnTerms.setSafeOnClickListener {
-                view?.findNavController()
-                    ?.navigate(R.id.action_settingsMainFragment_to_settingDetailFragment)
+                handleEvent(SettingsEvent.GoToNav(R.id.action_settingsMainFragment_to_settingDetailFragment))
             }
             btnBlockUser.setSafeOnClickListener { }
             btnUsePermission.setSafeOnClickListener { }
@@ -54,19 +50,14 @@ class SettingsMainFragment : Fragment() {
                 CommonUtils.alertDialog(context!!, "캐시를 비우시겠습니까?", "확인", false,
                     onClick = DialogInterface.OnClickListener { dialog, _ ->
                         dialog.dismiss()
-                        settingViewModel.deleteCache(context!!)
-                })
-
+                        handleEvent(SettingsEvent.ClearCache)
+                    })
             }
             btnServiceCenter.setSafeOnClickListener { }
             btnUsePush.setSafeOnClickListener { }
             btnVersion.setSafeOnClickListener { }
             btnLogout.setSafeOnClickListener {
-                settingViewModel.logout()
-                activity?.finish()
-                startActivity(Intent(activity, LogInActivity::class.java).apply {
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                })
+                handleEvent(SettingsEvent.SignOut)
             }
         }
 
@@ -79,29 +70,55 @@ class SettingsMainFragment : Fragment() {
         settingViewModel.getBuildVersion(context!!)
         settingViewModel.getUserInfo()
 
-        settingViewModel.buildVersion.observe(viewLifecycleOwner) {
-            binding.btnVersion.text = "${getString(R.string.text_version)} : $it / $it"
+        repeatOnStarted {
+            settingViewModel.eventFlow.collect() { event ->
+                handleEvent(event)
+            }
         }
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED){
-                settingViewModel.state.collect(){
-                    val user = it.data
-                    with(binding) {
-                        txtUserName.text = user?.displayName ?: ""
-                        txtUserDesc.text = user?.desc ?: ""
-                        ImageLoader(context!!).imageCircleLoadWithURL(
-                            user?.imageUrl.toString() ?: "", imgProfile
-                        )
-                    }
+
+        repeatOnStarted {
+            settingViewModel.userInfo.collect() {
+                with(binding) {
+                    txtUserName.text = it.displayName ?: ""
+                    txtUserDesc.text = it.desc ?: ""
+                    ImageLoader(context!!).imageCircleLoadWithURL(
+                        it.imageUrl ?: "", imgProfile
+                    )
                 }
             }
         }
-//        settingViewModel.userInfo.observe(viewLifecycleOwner) {
-//            with(binding){
-//                txtUserName.text = it?.displayName?:""
-//                txtUserDesc.text = it?.desc?:""
-//                ImageLoader(context!!).imageCircleLoadWithURL(it?.imageUrl.toString()?:"", imgProfile)
-//            }
-//        }
+
+    }
+
+    private fun handleEvent(event: SettingsEvent) = when (event) {
+        is SettingsEvent.ShowToast -> CommonUtils.snackBar(
+            activity!!,
+            event.text,
+            Snackbar.LENGTH_SHORT
+        )
+        is SettingsEvent.OffLine -> CommonUtils.networkState = event.state
+        is SettingsEvent.Loading -> if (event.visible) CommonUtils.showDialog(activity!!) else CommonUtils.dismissDialog(
+            activity!!
+        )
+        is SettingsEvent.SignOut -> {
+            settingViewModel.logout()
+            activity?.finish()
+            startActivity(Intent(activity, LogInActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            })
+        }
+        is SettingsEvent.ClearCache -> {
+            try {
+                context?.cacheDir?.deleteRecursively()
+            } catch (e: Exception) {
+                DLog.d(e.toString())
+            }
+        }
+        is SettingsEvent.Version -> {
+            binding.btnVersion.text = "${getString(R.string.text_version)} :  / ${event.version}"
+        }
+        is SettingsEvent.GoToNav -> {
+            view?.findNavController()?.navigate(event.destination)
+        }
     }
 }
